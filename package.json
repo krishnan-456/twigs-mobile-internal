@@ -1,0 +1,73 @@
+{
+    "name": "@sparrowengg/twigs-react-native",
+    "version": "0.1.0",
+    "description": "Twigs React Native component library",
+    "main": "./dist/packages/index.js",
+    "module": "./dist/packages/index.mjs",
+    "types": "./dist/packages/index.d.ts",
+    "exports": {
+        ".": {
+            "types": "./dist/packages/index.d.ts",
+            "import": "./dist/packages/index.mjs",
+            "require": "./dist/packages/index.js"
+        },
+        "./theme": {
+            "types": "./dist/packages/theme.d.ts",
+            "import": "./dist/packages/theme.mjs",
+            "require": "./dist/packages/theme.js"
+        }
+    },
+    "files": [
+        "dist"
+    ],
+    "scripts": {
+        "build": "tsup",
+        "lint": "eslint packages/**/*.{ts,tsx}",
+        "lint:fix": "eslint packages/**/*.{ts,tsx} --fix",
+        "format": "prettier --write \"packages/**/*.{ts,tsx,json}\"",
+        "format:check": "prettier --check \"packages/**/*.{ts,tsx,json}\""
+    },
+    "keywords": [
+        "react-native",
+        "twigs-mobile",
+        "ui",
+        "component-library"
+    ],
+    "author": "SurveySparrow",
+    "license": "MIT",
+    "engines": {
+        "node": ">=18.20.1"
+    },
+    "peerDependencies": {
+        "@gorhom/bottom-sheet": ">=5.0.0",
+        "react": ">=18.0.0",
+        "react-native": ">=0.71.0",
+        "react-native-gesture-handler": ">=2.0.0",
+        "react-native-reanimated": ">=3.0.0",
+        "react-native-svg": ">=13.0.0"
+    },
+    "devDependencies": {
+        "@types/react": "^18.2.48",
+        "@types/react-native": "^0.73.0",
+        "@typescript-eslint/eslint-plugin": "^7.0.0",
+        "@typescript-eslint/parser": "^7.0.0",
+        "eslint": "^8.56.0",
+        "eslint-plugin-react": "^7.33.2",
+        "eslint-plugin-react-hooks": "^4.6.0",
+        "eslint-plugin-react-native": "^4.1.0",
+        "husky": "^9.0.0",
+        "lint-staged": "^15.2.0",
+        "prettier": "^3.2.0",
+        "tsup": "^8.0.1",
+        "typescript": "^5.3.3"
+    },
+    "lint-staged": {
+        "packages/**/*.{ts,tsx}": [
+            "eslint --fix",
+            "prettier --write"
+        ],
+        "packages/**/*.{json,md}": [
+            "prettier --write"
+        ]
+    }
+}
