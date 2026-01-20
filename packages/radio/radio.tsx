@@ -3,7 +3,8 @@ import { Pressable, StyleSheet, View, ViewStyle } from 'react-native';
 import { CommonStyleProps } from '../utils';
 import { Box } from '../box';
 import { Flex } from '../flex';
-import { theme } from '../theme';
+import { useTheme } from '../context';
+import type { TwigsTheme } from '../theme';
 
 type RadioSize = 'sm' | 'md';
 
@@ -27,31 +28,32 @@ export interface RadioProps extends CommonStyleProps {
   radioStyle?: ViewStyle;
 }
 
-const styles = StyleSheet.create({
-  outerCircle: {
-    borderRadius: 100,
-    borderWidth: 1,
-    backgroundColor: theme.colors.white900,
-  },
-  outerCircleDisabled: {
-    opacity: 0.5,
-  },
-  innerCircle: {
-    backgroundColor: theme.colors.secondary500,
-    borderRadius: 100,
-  },
-  labelContainer: {
-    marginLeft: 8,
-  },
-  container: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    alignSelf: 'flex-start',
-  },
-  containerDisabled: {
-    opacity: 0.4,
-  },
-});
+const createStyles = (theme: TwigsTheme) =>
+  StyleSheet.create({
+    outerCircle: {
+      borderRadius: 100,
+      borderWidth: 1,
+      backgroundColor: theme.colors.white900,
+    },
+    outerCircleDisabled: {
+      opacity: 0.5,
+    },
+    innerCircle: {
+      backgroundColor: theme.colors.secondary500,
+      borderRadius: 100,
+    },
+    labelContainer: {
+      marginLeft: 8,
+    },
+    container: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      alignSelf: 'flex-start',
+    },
+    containerDisabled: {
+      opacity: 0.4,
+    },
+  });
 
 export const Radio = React.forwardRef<any, RadioProps>(
   (
@@ -74,6 +76,8 @@ export const Radio = React.forwardRef<any, RadioProps>(
     },
     ref
   ) => {
+    const theme = useTheme();
+    const styles = createStyles(theme);
     const handlePress = () => {
       if (!disabled && onSelect) {
         onSelect(!selected);

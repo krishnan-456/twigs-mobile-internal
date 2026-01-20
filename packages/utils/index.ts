@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react';
-import type { ViewProps, ViewStyle } from 'react-native';
+import type { ViewProps, ViewStyle, TextStyle } from 'react-native';
 import type { AnimatedProps } from 'react-native-reanimated';
 import type { SvgProps, PathProps } from 'react-native-svg';
 import Animated from 'react-native-reanimated';
@@ -62,3 +62,16 @@ export const resolvePadding = (props: PaddingProps, defaultSpacing = 0): Resolve
   left: props.paddingLeft ?? props.paddingHorizontal ?? props.padding ?? defaultSpacing,
   right: props.paddingRight ?? props.paddingHorizontal ?? props.padding ?? defaultSpacing,
 });
+
+export const createTextStyle = (
+  fontFamily: string,
+  fontWeight?: '100' | '200' | '300' | '400' | '500' | '600' | '700' | '800' | '900' | 'normal' | 'bold'
+): Pick<TextStyle, 'fontFamily' | 'fontWeight'> => {
+  const style: Pick<TextStyle, 'fontFamily' | 'fontWeight'> = { fontFamily };
+  
+  if (fontFamily === 'System' && fontWeight) {
+    style.fontWeight = fontWeight;
+  }
+  
+  return style;
+};

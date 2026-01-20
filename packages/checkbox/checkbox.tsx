@@ -2,7 +2,8 @@ import React, { ReactNode, RefObject, useEffect } from 'react';
 import { Pressable, StyleSheet, View, ViewStyle } from 'react-native';
 import { useAnimatedStyle, useSharedValue, withSpring } from 'react-native-reanimated';
 import { AnimatedView, SvgComponent, PathComponent, CommonStyleProps } from '../utils';
-import { theme } from '../theme';
+import { useTheme } from '../context';
+import type { TwigsTheme } from '../theme';
 
 type CheckboxSize = 'sm' | 'md';
 type CheckedState = boolean | 'indeterminate';
@@ -27,7 +28,7 @@ export interface CheckboxProps extends CommonStyleProps {
   checkboxStyle?: ViewStyle;
 }
 
-const TickIcon: React.FC<TickIconProps> = ({ color = theme.colors.white900 }) => {
+const TickIcon: React.FC<TickIconProps> = ({ color }) => {
   return (
     <SvgComponent width="10" height="8" viewBox="0 0 10 8">
       <PathComponent
@@ -42,9 +43,7 @@ const TickIcon: React.FC<TickIconProps> = ({ color = theme.colors.white900 }) =>
   );
 };
 
-const HorizontalLineIcon: React.FC<HorizontalLineIconProps> = ({
-  color = theme.colors.white900,
-}) => {
+const HorizontalLineIcon: React.FC<HorizontalLineIconProps> = ({ color }) => {
   return (
     <SvgComponent width="10" height="2" viewBox="0 0 10 2">
       <PathComponent
@@ -59,42 +58,43 @@ const HorizontalLineIcon: React.FC<HorizontalLineIconProps> = ({
   );
 };
 
-const styles = StyleSheet.create({
-  checkboxBase: {
-    borderRadius: 4,
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    borderWidth: 1,
-  },
-  checkboxSm: {
-    width: 16,
-    height: 16,
-  },
-  checkboxMd: {
-    width: 20,
-    height: 20,
-  },
-  checkboxDisabled: {
-    opacity: 0.4,
-  },
-  iconContainer: {
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  labelContainer: {
-    marginLeft: 8,
-  },
-  container: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    alignSelf: 'flex-start',
-  },
-  containerDisabled: {
-    opacity: 0.4,
-  },
-});
+const createStyles = () =>
+  StyleSheet.create({
+    checkboxBase: {
+      borderRadius: 4,
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      borderWidth: 1,
+    },
+    checkboxSm: {
+      width: 16,
+      height: 16,
+    },
+    checkboxMd: {
+      width: 20,
+      height: 20,
+    },
+    checkboxDisabled: {
+      opacity: 0.4,
+    },
+    iconContainer: {
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+    },
+    labelContainer: {
+      marginLeft: 8,
+    },
+    container: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      alignSelf: 'flex-start',
+    },
+    containerDisabled: {
+      opacity: 0.4,
+    },
+  });
 
 export const Checkbox = React.forwardRef<any, CheckboxProps>(
   (
@@ -114,6 +114,8 @@ export const Checkbox = React.forwardRef<any, CheckboxProps>(
     },
     ref
   ) => {
+    const theme = useTheme();
+    const styles = createStyles();
     const opacity = useSharedValue(checked ? 1 : 0);
 
     useEffect(() => {

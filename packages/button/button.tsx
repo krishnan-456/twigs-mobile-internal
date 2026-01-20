@@ -1,9 +1,10 @@
 import React, { ReactElement, ReactNode } from 'react';
 import { Pressable, StyleSheet, Text, TextStyle, View, ViewStyle } from 'react-native';
 import { useAnimatedStyle, useSharedValue, withRepeat, withTiming } from 'react-native-reanimated';
-import { AnimatedView, CommonStyleProps } from '../utils';
+import { AnimatedView, CommonStyleProps, createTextStyle } from '../utils';
 import { Flex } from '../flex';
-import { theme } from '../theme';
+import { useTheme } from '../context';
+import type { TwigsTheme } from '../theme';
 
 type ButtonSize = 'xxs' | 'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl';
 type ButtonColor = 'primary' | 'secondary' | 'default' | 'negative' | 'neutral';
@@ -139,14 +140,16 @@ const getButtonStyles = ({
   color,
   variant,
   isIcon,
+  theme,
 }: {
   size: ButtonSize;
   color: ButtonColor;
   variant: ButtonVariant;
   isIcon: boolean;
+  theme: TwigsTheme;
 }): ViewStyle => {
   const sizeStyles = getSizeStyles(size, isIcon);
-  const colorStyles = getColorStyles(color, variant);
+  const colorStyles = getColorStyles(color, variant, theme);
 
   return {
     ...sizeStyles,
@@ -238,7 +241,8 @@ const getSizeStyles = (size: ButtonSize = 'sm', isIcon: boolean = false): ViewSt
 
 const getColorStyles = (
   color: ButtonColor = 'primary',
-  variant: ButtonVariant = 'solid'
+  variant: ButtonVariant = 'solid',
+  theme: TwigsTheme
 ): ViewStyle => {
   const colorConfig: ColorConfigMap = {
     primary: {
@@ -351,19 +355,21 @@ const getButtonTextStyles = ({
   size,
   color,
   variant,
+  theme,
 }: {
   size: ButtonSize;
   color: ButtonColor;
   variant: ButtonVariant;
+  theme: TwigsTheme;
 }): TextStyle => {
-  const sizes: Record<ButtonSize, { fontSize: number; fontFamily: string }> = {
-    xxs: { fontSize: 10, fontFamily: 'DMSans_500Medium' },
-    xs: { fontSize: 12, fontFamily: 'DMSans_500Medium' },
-    sm: { fontSize: 14, fontFamily: 'DMSans_500Medium' },
-    md: { fontSize: 14, fontFamily: 'DMSans_700Bold' },
-    lg: { fontSize: 16, fontFamily: 'DMSans_700Bold' },
-    xl: { fontSize: 16, fontFamily: 'DMSans_700Bold' },
-    '2xl': { fontSize: 16, fontFamily: 'DMSans_700Bold' },
+  const sizes: Record<ButtonSize, { fontSize: number; fontFamily: string; fontWeight: '500' | '700' }> = {
+    xxs: { fontSize: 10, fontFamily: theme.fonts.medium, fontWeight: '500' },
+    xs: { fontSize: 12, fontFamily: theme.fonts.medium, fontWeight: '500' },
+    sm: { fontSize: 14, fontFamily: theme.fonts.medium, fontWeight: '500' },
+    md: { fontSize: 14, fontFamily: theme.fonts.bold, fontWeight: '700' },
+    lg: { fontSize: 16, fontFamily: theme.fonts.bold, fontWeight: '700' },
+    xl: { fontSize: 16, fontFamily: theme.fonts.bold, fontWeight: '700' },
+    '2xl': { fontSize: 16, fontFamily: theme.fonts.bold, fontWeight: '700' },
   };
 
   const colorConfig: Record<ButtonColor, Record<ButtonVariant, string>> = {
@@ -400,7 +406,7 @@ const getButtonTextStyles = ({
   return {
     fontSize: sizeConfig.fontSize,
     color: textColor,
-    fontFamily: sizeConfig.fontFamily,
+    ...createTextStyle(sizeConfig.fontFamily, sizeConfig.fontWeight),
   };
 };
 
@@ -444,7 +450,7 @@ const getIconSize = (size: ButtonSize): number => {
   return sizes[size] || sizes.sm;
 };
 
-const getLoadingSpinnerColor = (color: ButtonColor, variant: ButtonVariant): string => {
+const getLoadingSpinnerColor = (color: ButtonColor, variant: ButtonVariant, theme: TwigsTheme): string => {
   if (variant === 'solid' && color !== 'default') {
     return theme.colors.white900;
   }
@@ -518,8 +524,9 @@ export const Button = React.forwardRef<any, ButtonProps>(
     },
     ref
   ) => {
+    const theme = useTheme();
     const isIcon = !!icon;
-    const spinnerColor = getLoadingSpinnerColor(color, variant);
+    const spinnerColor = getLoadingSpinnerColor(color, variant, theme);
     const hasNoIcon = !(leftIcon || rightIcon || icon);
 
     const opacity = useSharedValue(1);
@@ -592,8 +599,8 @@ export const Button = React.forwardRef<any, ButtonProps>(
       return colorConfig[color]?.[variant] || colorConfig.primary.solid;
     }, [color, variant]);
 
-    const buttonDynamicStyles = getButtonStyles({ size, color, variant, isIcon });
-    const buttonTextStyles = getButtonTextStyles({ size, color, variant });
+    const buttonDynamicStyles = getButtonStyles({ size, color, variant, isIcon, theme });
+    const buttonTextStyles = getButtonTextStyles({ size, color, variant, theme });
 
     const renderContent = React.useCallback(() => {
       if (isIcon) {

@@ -7,94 +7,60 @@ In house React Native component library built for Surveysparrow.
 
 ---
 
-## Installation
+## Components
 
-```bash
-npm install @sparrowengg/twigs-react-native
+### Bottom Sheet
 
-# Install peer dependencies
-npm install react-native-reanimated react-native-gesture-handler react-native-svg @gorhom/bottom-sheet
-```
-
-## Quick Setup
-
-### 1. Configure Babel
-
-Add to your `babel.config.js`:
-
-```js
-module.exports = {
-  presets: ['module:metro-react-native-babel-preset'],
-  plugins: [
-    'react-native-reanimated/plugin', // Must be last
-  ],
-};
-```
-
-### 2. Wrap Your App
+Modal and persistent bottom sheets with backdrop and snap points.
 
 ```tsx
-import { GestureHandlerRootView } from 'react-native-gesture-handler';
-import { BottomSheetModalProvider } from '@gorhom/bottom-sheet';
+import { TwigsBottomSheetModal, TwigsBottomSheet } from '@sparrowengg/twigs-react-native';
+import { useRef } from 'react';
 
-export default function App() {
+function MyComponent() {
+  const bottomSheetRef = useRef(null);
+
   return (
-    <GestureHandlerRootView style={{ flex: 1 }}>
-      <BottomSheetModalProvider>{/* Your app */}</BottomSheetModalProvider>
-    </GestureHandlerRootView>
+    <TwigsBottomSheetModal
+      ref={bottomSheetRef}
+      snapPoints={['50%', '90%']}
+      title="Sheet Title"
+    >
+      {/* Your content */}
+    </TwigsBottomSheetModal>
   );
 }
 ```
 
----
-
-## Components
-
-### Flex
-
-A powerful flexbox container for building layouts.
-
-```tsx
-import { Flex } from '@sparrowengg/twigs-react-native';
-
-<Flex direction="row" align="center" justify="space-between" gap={16} padding={20}>
-  {/* Your content */}
-</Flex>;
-```
-
 **Props:**
 
-| Prop        | Type                                                                                                      | Default    |
-| ----------- | --------------------------------------------------------------------------------------------------------- | ---------- |
-| `direction` | `'row'` \| `'column'` \| `'row-reverse'` \| `'column-reverse'`                                            | `'column'` |
-| `align`     | `'flex-start'` \| `'flex-end'` \| `'center'` \| `'stretch'` \| `'baseline'`                               | -          |
-| `justify`   | `'flex-start'` \| `'flex-end'` \| `'center'` \| `'space-between'` \| `'space-around'` \| `'space-evenly'` | -          |
-| `wrap`      | `'nowrap'` \| `'wrap'` \| `'wrap-reverse'`                                                                | -          |
-| `gap`       | `number`                                                                                                  | -          |
-| `padding`   | `number`                                                                                                  | -          |
-| `margin`    | `number`                                                                                                  | -          |
+| Prop                    | Type                                      | Default   |
+| ----------------------- | ----------------------------------------- | --------- |
+| `title`                 | `string`                                  | -         |
+| `snapPoints`            | `(string \| number)[]`                    | Required  |
+| `index`                 | `number`                                  | -         |
+| `enablePanDownToClose`  | `boolean`                                 | `true`    |
+| `pressBehavior`         | `'none'` \| `'close'` \| `'collapse'`     | `'close'` |
+| `style`                 | `ViewStyle`                               | -         |
+| `handleStyle`           | `ViewStyle`                               | -         |
+| `handleIndicatorStyle`  | `ViewStyle`                               | -         |
+| `headerStyle`           | `ViewStyle`                               | -         |
 
-Plus all standard margin/padding props (`paddingHorizontal`, `marginTop`, etc.)
-
-**Examples:**
+**Usage:**
 
 ```tsx
-// Horizontal layout
-<Flex direction="row" gap={12}>
-  <Text>Item 1</Text>
-  <Text>Item 2</Text>
-</Flex>
+// Open/Close programmatically
+bottomSheetRef.current?.present();
+bottomSheetRef.current?.dismiss();
 
-// Centered content
-<Flex align="center" justify="center" flex={1}>
-  <Text>Centered</Text>
-</Flex>
-
-// Spaced items
-<Flex direction="row" justify="space-between" padding={16}>
-  <Text>Left</Text>
-  <Text>Right</Text>
-</Flex>
+// Persistent bottom sheet (non-modal)
+<TwigsBottomSheet
+  ref={sheetRef}
+  snapPoints={['25%', '50%']}
+  title="Persistent Sheet"
+>
+  <Text>Always visible</Text>
+</TwigsBottomSheet>
 ```
 
 ### Button
@@ -120,13 +86,13 @@ import { Button } from '@sparrowengg/twigs-react-native';
 | `loading`   | `boolean`                                                                  | `false`     |
 | `leftIcon`  | `ReactElement`                                                             | -           |
 | `rightIcon` | `ReactElement`                                                             | -           |
-| `icon`      | `ReactElement` (for icon-only button)                                      | -           |
+| `icon`      | `ReactElement`                                                             | -           |
 | `onPress`   | `(event: any) => void`                                                     | -           |
 
 **Examples:**
 
 ```tsx
-// Basic buttons
+// Button variants
 <Button size="lg" color="primary">Primary Button</Button>
 <Button size="md" color="secondary" variant="outline">Secondary</Button>
 <Button size="sm" color="negative" variant="ghost">Delete</Button>
@@ -135,53 +101,66 @@ import { Button } from '@sparrowengg/twigs-react-native';
 <Button leftIcon={<Icon name="plus" />}>Create</Button>
 <Button rightIcon={<Icon name="arrow-right" />}>Next</Button>
 
-// Loading state
-<Button loading={true}>Processing...</Button>
-
-// Icon-only
+// Icon button
 <Button icon={<Icon name="search" />} variant="ghost" />
-
-// Disabled
-<Button disabled={true}>Disabled</Button>
-```
-
-### Other Components
-
-**Layout:** `Box`, `Flex`  
-**Typography:** `Text`  
-**Forms:** `TextInput`, `Checkbox`, `Radio`, `Switch`  
-**Media:** `Avatar`  
-**Overlays:** `TwigsBottomSheet`, `TwigsBottomSheetModal`
-
-```tsx
-import {
-  Box,
-  Text,
-  TextInput,
-  Checkbox,
-  Radio,
-  Switch,
-  Avatar,
-} from '@sparrowengg/twigs-react-native';
 ```
 
 ---
 
 ## Theming
 
-```tsx
-import { theme } from '@sparrowengg/twigs-react-native/theme';
+### Using Default Theme
 
-// Use theme colors
+```tsx
+import { theme } from '@sparrowengg/twigs-react-native';
+
 <Box css={{ backgroundColor: theme.colors.primary500 }}>
   <Text color={theme.colors.white900}>Themed Text</Text>
 </Box>;
 ```
 
-**Available theme tokens:**
+### Custom Theme
 
-- `theme.colors` - Primary, secondary, neutral, negative colors
-- `theme.borderRadius` - xs, sm, md, lg, xl, 2xl, 3xl
+Override default theme values using `TwigsProvider`:
+
+```tsx
+import { TwigsProvider } from '@sparrowengg/twigs-react-native';
+
+const customTheme = {
+  colors: {
+    primary500: '#FF6B6B',
+    primary600: '#EE5A52',
+  },
+  fonts: {
+    regular: 'CustomFont-Regular',
+    bold: 'CustomFont-Bold',
+  },
+};
+
+export default function App() {
+  return (
+    <TwigsProvider theme={customTheme}>
+      {/* Your app - all components will use custom theme */}
+    </TwigsProvider>
+  );
+}
+```
+
+### Access Theme in Components
+
+```tsx
+import { useTheme } from '@sparrowengg/twigs-react-native';
+
+function MyComponent() {
+  const theme = useTheme();
+  
+  return (
+    <View style={{ backgroundColor: theme.colors.primary500 }}>
+      <Text style={{ color: theme.colors.white900 }}>Custom Themed</Text>
+    </View>
+  );
+}
+```
 
 ---
 

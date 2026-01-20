@@ -8,7 +8,7 @@ import { Keyboard, StatusBar, StyleSheet, ViewStyle, StyleProp } from 'react-nat
 import type { AnimateStyle } from 'react-native-reanimated';
 import { Flex } from '../flex';
 import { Text } from '../text';
-import { theme } from '../theme';
+import { useTheme } from '../context';
 
 type AnimatedViewStyle = StyleProp<
   AnimateStyle<
@@ -33,6 +33,7 @@ interface TwigsBottomSheetProps extends Omit<
 
 export const TwigsBottomSheet = forwardRef<BottomSheet, TwigsBottomSheetProps>(
   ({ title, children, style, handleStyle, handleIndicatorStyle, headerStyle, ...props }, ref) => {
+    const theme = useTheme();
     const renderBackdrop = useCallback((props: any) => {
       const BackdropComponent = BottomSheetBackdrop as any;
       return (
@@ -115,7 +116,7 @@ export const TwigsBottomSheet = forwardRef<BottomSheet, TwigsBottomSheetProps>(
               paddingBottom={16}
               css={mergedHeaderStyle}
             >
-              <Text color={theme.colors.secondary700} fontFamily="DMSans_500Medium">
+              <Text color={theme.colors.secondary700} fontFamily={theme.fonts.medium}>
                 {title}
               </Text>
             </Flex>

@@ -7,8 +7,9 @@ import {
   TextStyle,
   ViewStyle,
 } from 'react-native';
-import { MarginProps, PaddingProps, CommonStyleProps } from '../utils';
-import { theme } from '../theme';
+import { MarginProps, PaddingProps, CommonStyleProps, createTextStyle } from '../utils';
+import { useTheme } from '../context';
+import type { TwigsTheme } from '../theme';
 import { Box } from '../box';
 import { Flex } from '../flex';
 import { Text } from '../text';
@@ -27,7 +28,6 @@ interface SizeConfig {
 }
 
 export interface TextInputProps extends MarginProps, PaddingProps, CommonStyleProps {
-  // Core props
   size?: TextInputSize;
   variant?: TextInputVariant;
   placeholder?: string;
@@ -42,16 +42,10 @@ export interface TextInputProps extends MarginProps, PaddingProps, CommonStylePr
   errorBorder?: boolean;
   placeholderTextColor?: string;
   cursorColor?: string;
-
-  // Security
   secureTextEntry?: boolean;
   showPassword?: boolean;
   setShowPassword?: (show: boolean) => void;
-
-  // Styling
   inputStyle?: TextStyle;
-
-  // React Native TextInput props
   readOnly?: boolean;
   autoCapitalize?: RNTextInputProps['autoCapitalize'];
   autoCorrect?: RNTextInputProps['autoCorrect'];
@@ -67,61 +61,58 @@ export interface TextInputProps extends MarginProps, PaddingProps, CommonStylePr
   onSubmitEditing?: RNTextInputProps['onSubmitEditing'];
   returnKeyType?: RNTextInputProps['returnKeyType'];
   textContentType?: RNTextInputProps['textContentType'];
-
-  // Additional props
   children?: ReactNode;
   errorMessage?: string;
 }
 
-// Use centralized theme colors
-const { colors } = theme;
-
-const styles = StyleSheet.create({
-  container: {
-    position: 'relative',
-    width: '100%',
-  },
-  containerDisabled: {
-    opacity: 0.6,
-  },
-  inputWrapper: {
-    position: 'relative',
-    width: '100%',
-    borderWidth: 1,
-    borderStyle: 'solid',
-  },
-  inputWrapperDisabled: {
-    backgroundColor: colors.neutral50,
-    opacity: 0.6,
-  },
-  textInput: {
-    flex: 1,
-    margin: 0,
-    padding: 0,
-    color: colors.neutral900,
-    fontFamily: 'DMSans_400Regular',
-    borderWidth: 0,
-    backgroundColor: 'transparent',
-    textAlignVertical: 'center',
-  },
-  iconContainer: {
-    position: 'absolute',
-    height: '100%',
-    zIndex: 1,
-  },
-  iconContainerLeft: {
-    left: 12,
-  },
-  iconContainerLeftElement: {
-    left: 0,
-  },
-  iconContainerRight: {
-    right: 12,
-  },
-  iconContainerRightElement: {
-    right: 0,
-  },
-});
+const createStyles = (theme: TwigsTheme) => {
+  return StyleSheet.create({
+    container: {
+      position: 'relative',
+      width: '100%',
+    },
+    containerDisabled: {
+      opacity: 0.6,
+    },
+    inputWrapper: {
+      position: 'relative',
+      width: '100%',
+      borderWidth: 1,
+      borderStyle: 'solid',
+    },
+    inputWrapperDisabled: {
+      backgroundColor: theme.colors.neutral50,
+      opacity: 0.6,
+    },
+    textInput: {
+      flex: 1,
+      margin: 0,
+      padding: 0,
+      color: theme.colors.neutral900,
+      ...createTextStyle(theme.fonts.regular, '400'),
+      borderWidth: 0,
+      backgroundColor: 'transparent',
+      textAlignVertical: 'center',
+    },
+    iconContainer: {
+      position: 'absolute',
+      height: '100%',
+      zIndex: 1,
+    },
+    iconContainerLeft: {
+      left: 12,
+    },
+    iconContainerLeftElement: {
+      left: 0,
+    },
+    iconContainerRight: {
+      right: 12,
+    },
+    iconContainerRightElement: {
+      right: 0,
+    },
+  });
+};
 
 const getSizeConfig = (size: TextInputSize): SizeConfig => {
   const configs: Record<TextInputSize, SizeConfig> = {
@@ -235,6 +226,8 @@ export const TextInput = forwardRef<RNTextInput, TextInputProps>(
     },
     ref
   ) => {
+    const theme = useTheme();
+    const styles = createStyles(theme);
     const [isFocused, setIsFocused] = useState(false);
     const internalRef = useRef<RNTextInput>(null);
     const textInputRef = ref || internalRef;
@@ -264,16 +257,16 @@ export const TextInput = forwardRef<RNTextInput, TextInputProps>(
     const inputWrapperStyles: ViewStyle = {
       height: config.height,
       borderRadius: config.borderRadius,
-      backgroundColor: variant === 'filled' ? colors.neutral50 : colors.white900,
+      backgroundColor: variant === 'filled' ? theme.colors.neutral50 : theme.colors.white900,
     };
 
     if (errorBorder) {
-      inputWrapperStyles.borderTopColor = isFocused ? colors.neutral500 : theme.colors.black300;
-      inputWrapperStyles.borderRightColor = isFocused ? colors.neutral500 : theme.colors.black300;
-      inputWrapperStyles.borderLeftColor = isFocused ? colors.neutral500 : theme.colors.black300;
-      inputWrapperStyles.borderBottomColor = colors.negative500;
+      inputWrapperStyles.borderTopColor = isFocused ? theme.colors.neutral500 : theme.colors.black300;
+      inputWrapperStyles.borderRightColor = isFocused ? theme.colors.neutral500 : theme.colors.black300;
+      inputWrapperStyles.borderLeftColor = isFocused ? theme.colors.neutral500 : theme.colors.black300;
+      inputWrapperStyles.borderBottomColor = theme.colors.negative500;
     } else {
-      inputWrapperStyles.borderColor = isFocused ? colors.neutral500 : theme.colors.black300;
+      inputWrapperStyles.borderColor = isFocused ? theme.colors.neutral500 : theme.colors.black300;
     }
 
     const textInputStyles: TextStyle = {
@@ -287,7 +280,7 @@ export const TextInput = forwardRef<RNTextInput, TextInputProps>(
         ref={textInputRef}
         style={[styles.textInput, textInputStyles, inputStyle]}
         placeholder={placeholder}
-        placeholderTextColor={placeholderTextColor ?? colors.neutral500}
+        placeholderTextColor={placeholderTextColor ?? theme.colors.neutral500}
         value={value}
         defaultValue={defaultValue}
         onChangeText={onChangeText}
@@ -295,7 +288,7 @@ export const TextInput = forwardRef<RNTextInput, TextInputProps>(
         onBlur={handleBlur}
         secureTextEntry={secureTextEntry && !shouldShowPassword}
         editable={!disabled && editable !== false}
-        cursorColor={cursorColor ?? colors.neutral900}
+        cursorColor={cursorColor ?? theme.colors.neutral900}
         readOnly={readOnly}
         autoCapitalize={autoCapitalize}
         autoCorrect={autoCorrect}
@@ -356,7 +349,7 @@ export const TextInput = forwardRef<RNTextInput, TextInputProps>(
                 >
                   {React.cloneElement(leftIcon as ReactElement<any>, {
                     size: config.iconSize,
-                    color: disabled ? colors.neutral500 : colors.neutral800,
+                    color: disabled ? theme.colors.neutral500 : theme.colors.neutral800,
                   })}
                 </Flex>
               )}
@@ -389,7 +382,7 @@ export const TextInput = forwardRef<RNTextInput, TextInputProps>(
                   {React.isValidElement(rightIcon)
                     ? React.cloneElement(rightIcon as ReactElement<any>, {
                         size: config.iconSize,
-                        color: disabled ? colors.neutral500 : colors.neutral800,
+                        color: disabled ? theme.colors.neutral500 : theme.colors.neutral800,
                       })
                     : rightIcon}
                 </Pressable>
@@ -408,7 +401,7 @@ export const TextInput = forwardRef<RNTextInput, TextInputProps>(
             {children}
           </Box>
           {errorMessage && (
-            <Text color={colors.negative500} fontSize={12}>
+            <Text color={theme.colors.negative500} fontSize={12}>
               {errorMessage}
             </Text>
           )}
@@ -439,7 +432,7 @@ export const TextInput = forwardRef<RNTextInput, TextInputProps>(
           {children}
         </Box>
         {errorMessage && (
-          <Text color={colors.negative500} fontSize={12}>
+          <Text color={theme.colors.negative500} fontSize={12}>
             {errorMessage}
           </Text>
         )}

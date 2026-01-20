@@ -3,6 +3,7 @@ import { Image, StyleSheet, ViewStyle } from 'react-native';
 import { CommonStyleProps } from '../utils';
 import { Flex } from '../flex';
 import { Text } from '../text';
+import { useTheme } from '../context';
 
 interface AvatarColor {
   bg: string;
@@ -75,6 +76,7 @@ export const Avatar: React.FC<AvatarProps> = ({
   css,
   style,
 }) => {
+  const theme = useTheme();
   const randomColor = useMemo(() => {
     const firstLetter = name?.charAt(0).toUpperCase() ?? '?';
     return (
@@ -108,7 +110,8 @@ export const Avatar: React.FC<AvatarProps> = ({
       ) : (
         <Text
           fontSize={textSize ? textSize : 14}
-          fontFamily="DMSans_700Bold"
+          fontFamily={theme.fonts.bold}
+          fontWeight="700"
           color={textColor ? textColor : randomColor?.text}
         >
           {cleanedName?.charAt(0)?.toUpperCase()}

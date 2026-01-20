@@ -1,11 +1,9 @@
 import React, { ReactNode } from 'react';
 import { Text as RNText, TextStyle } from 'react-native';
-import { MarginProps, PaddingProps, resolveMargin, resolvePadding } from '../utils';
-import { theme } from '../theme';
+import { MarginProps, PaddingProps, resolveMargin, resolvePadding, createTextStyle } from '../utils';
+import { useTheme } from '../context';
 
 const DEFAULT_FONT_SIZE = 14;
-const DEFAULT_FONT_FAMILY = 'DMSans_400Regular';
-const DEFAULT_COLOR = theme.colors.neutral900;
 
 export interface TextProps extends MarginProps, PaddingProps {
   children?: ReactNode;
@@ -37,6 +35,7 @@ export interface TextProps extends MarginProps, PaddingProps {
 }
 
 export const Text: React.FC<TextProps> = ({ children, css, style, ...rest }) => {
+  const theme = useTheme();
   const marginProps = {
     margin: rest.margin,
     marginHorizontal: rest.marginHorizontal,
@@ -59,10 +58,13 @@ export const Text: React.FC<TextProps> = ({ children, css, style, ...rest }) => 
   const resolvedMargin = resolveMargin(marginProps);
   const resolvedPadding = resolvePadding(paddingProps);
 
+  const fontFamily = rest.fontFamily ?? theme.fonts.regular;
+  const fontWeight = rest.fontWeight ?? '400';
+
   const dynamicStyles: TextStyle = {
     fontSize: rest.fontSize ?? DEFAULT_FONT_SIZE,
-    fontFamily: rest.fontFamily ?? DEFAULT_FONT_FAMILY,
-    color: rest.color ?? DEFAULT_COLOR,
+    ...createTextStyle(fontFamily, fontWeight),
+    color: rest.color ?? theme.colors.neutral900,
     marginTop: resolvedMargin.top,
     marginBottom: resolvedMargin.bottom,
     marginLeft: resolvedMargin.left,
@@ -72,8 +74,6 @@ export const Text: React.FC<TextProps> = ({ children, css, style, ...rest }) => 
     paddingLeft: resolvedPadding.left,
     paddingRight: resolvedPadding.right,
   };
-
-  if (rest.fontWeight) dynamicStyles.fontWeight = rest.fontWeight;
   if (rest.textAlign) dynamicStyles.textAlign = rest.textAlign;
   if (rest.textDecoration) dynamicStyles.textDecorationLine = rest.textDecoration;
   if (rest.textTransform) dynamicStyles.textTransform = rest.textTransform;

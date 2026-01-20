@@ -1,4 +1,183 @@
-export const theme = {
+export interface TwigsTheme {
+  colors: {
+    primary: string;
+    secondary: string;
+    accent50: string;
+    accent100: string;
+    accent200: string;
+    accent300: string;
+    accent400: string;
+    accent500: string;
+    accent600: string;
+    accent700: string;
+    accent800: string;
+    accent900: string;
+    primary50: string;
+    primary100: string;
+    primary200: string;
+    primary300: string;
+    primary400: string;
+    primary500: string;
+    primary600: string;
+    primary700: string;
+    primary800: string;
+    primary900: string;
+    warning50: string;
+    warning100: string;
+    warning200: string;
+    warning300: string;
+    warning400: string;
+    warning500: string;
+    warning600: string;
+    warning700: string;
+    warning800: string;
+    warning900: string;
+    highlight50: string;
+    highlight100: string;
+    highlight200: string;
+    highlight300: string;
+    highlight400: string;
+    highlight500: string;
+    highlight600: string;
+    highlight700: string;
+    highlight800: string;
+    highlight900: string;
+    positive50: string;
+    positive100: string;
+    positive200: string;
+    positive300: string;
+    positive400: string;
+    positive500: string;
+    positive600: string;
+    positive700: string;
+    positive800: string;
+    positive900: string;
+    secondary50: string;
+    secondary100: string;
+    secondary200: string;
+    secondary300: string;
+    secondary400: string;
+    secondary500: string;
+    secondary600: string;
+    secondary700: string;
+    secondary800: string;
+    secondary900: string;
+    negative50: string;
+    negative100: string;
+    negative200: string;
+    negative300: string;
+    negative400: string;
+    negative500: string;
+    negative600: string;
+    negative700: string;
+    negative800: string;
+    negative900: string;
+    neutral50: string;
+    neutral100: string;
+    neutral200: string;
+    neutral300: string;
+    neutral400: string;
+    neutral500: string;
+    neutral600: string;
+    neutral700: string;
+    neutral800: string;
+    neutral900: string;
+    black50: string;
+    black100: string;
+    black200: string;
+    black300: string;
+    black400: string;
+    black500: string;
+    black600: string;
+    black700: string;
+    black800: string;
+    black900: string;
+    white50: string;
+    white100: string;
+    white200: string;
+    white300: string;
+    white400: string;
+    white500: string;
+    white600: string;
+    white700: string;
+    white800: string;
+    white900: string;
+  };
+  space: {
+    [key: string]: string;
+  };
+  fontSizes: {
+    xxs: string;
+    xs: string;
+    sm: string;
+    md: string;
+    lg: string;
+    xl: string;
+    '2xl': string;
+    '3xl': string;
+    '4xl': string;
+    '5xl': string;
+  };
+  fonts: {
+    regular: string;
+    medium: string;
+    bold: string;
+  };
+  fontWeights: {
+    [key: string]: string;
+  };
+  lineHeights: {
+    xxs: string;
+    xs: string;
+    sm: string;
+    md: string;
+    lg: string;
+    xl: string;
+    '2xl': string;
+    '3xl': string;
+    '4xl': string;
+  };
+  letterSpacings: {
+    [key: string]: string;
+  };
+  sizes: {
+    [key: string]: string;
+  };
+  borderWidths: {
+    xs: string;
+    sm: string;
+    md: string;
+    lg: string;
+    xl: string;
+  };
+  borderStyles: {
+    [key: string]: string;
+  };
+  radii: {
+    none: string;
+    xs: string;
+    sm: string;
+    md: string;
+    lg: string;
+    xl: string;
+    '2xl': string;
+    '3xl': string;
+    '4xl': string;
+    round: string;
+    pill: string;
+  };
+  shadows: {
+    [key: string]: string;
+  };
+  zIndices: {
+    [key: string]: number;
+  };
+  transitions: {
+    [key: string]: string;
+  };
+}
+
+export const defaultTheme: TwigsTheme = {
   colors: {
     primary: '#2E666D',
     secondary: '#363A43',
@@ -168,8 +347,9 @@ export const theme = {
     '5xl': '2.986rem',
   },
   fonts: {
-    body: 'sytem-ui',
-    heading: 'sans-serif',
+    regular: 'System',
+    medium: 'System',
+    bold: 'System',
   },
   fontWeights: {
     '1': '100',

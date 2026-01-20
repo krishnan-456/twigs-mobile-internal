@@ -2,7 +2,8 @@ import React, { useEffect } from 'react';
 import { Pressable, PressableProps, StyleSheet, View } from 'react-native';
 import { Easing, useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated';
 import { AnimatedView, CommonStyleProps } from '../utils';
-import { theme } from '../theme';
+import { useTheme } from '../context';
+import type { TwigsTheme } from '../theme';
 
 const SWITCH_WIDTH = 40;
 const SWITCH_HEIGHT = 20;
@@ -12,23 +13,24 @@ const THUMB_MARGIN = 1;
 const THUMB_OFF_POSITION = THUMB_MARGIN;
 const THUMB_ON_POSITION = SWITCH_WIDTH - THUMB_SIZE - THUMB_MARGIN;
 
-const styles = StyleSheet.create({
-  switch: {
-    width: SWITCH_WIDTH,
-    height: SWITCH_HEIGHT,
-    borderRadius: 100,
-    justifyContent: 'center',
-  },
-  switchDisabled: {
-    opacity: 0.5,
-  },
-  thumb: {
-    width: THUMB_SIZE,
-    height: THUMB_SIZE,
-    borderRadius: 100,
-    backgroundColor: theme.colors.white900,
-  },
-});
+const createStyles = (theme: TwigsTheme) =>
+  StyleSheet.create({
+    switch: {
+      width: SWITCH_WIDTH,
+      height: SWITCH_HEIGHT,
+      borderRadius: 100,
+      justifyContent: 'center',
+    },
+    switchDisabled: {
+      opacity: 0.5,
+    },
+    thumb: {
+      width: THUMB_SIZE,
+      height: THUMB_SIZE,
+      borderRadius: 100,
+      backgroundColor: theme.colors.white900,
+    },
+  });
 
 export interface SwitchProps extends Omit<PressableProps, 'onPress' | 'style'>, CommonStyleProps {
   value?: boolean;
@@ -38,6 +40,8 @@ export interface SwitchProps extends Omit<PressableProps, 'onPress' | 'style'>, 
 
 export const Switch = React.forwardRef<View, SwitchProps>(
   ({ value = false, onValueChange, disabled = false, css, style, ...rest }, ref) => {
+    const theme = useTheme();
+    const styles = createStyles(theme);
     const translateX = useSharedValue(value ? THUMB_ON_POSITION : THUMB_OFF_POSITION);
 
     useEffect(() => {

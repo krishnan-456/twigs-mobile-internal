@@ -7,7 +7,7 @@ import {
 import React, { forwardRef, ReactNode, useCallback } from 'react';
 import { Keyboard, StatusBar, StyleSheet, ViewStyle, StyleProp } from 'react-native';
 import type { AnimateStyle } from 'react-native-reanimated';
-import { theme } from '../theme';
+import { useTheme } from '../context';
 import { Flex } from '../flex';
 import { Text } from '../text';
 
@@ -47,6 +47,7 @@ export const TwigsBottomSheetModal = forwardRef<BottomSheetModal, TwigsBottomShe
     },
     ref
   ) => {
+    const theme = useTheme();
     const renderBackdrop = useCallback(
       (props: any) => {
         const BackdropComponent = BottomSheetBackdrop as any;
@@ -129,7 +130,7 @@ export const TwigsBottomSheetModal = forwardRef<BottomSheetModal, TwigsBottomShe
               paddingBottom={16}
               css={mergedHeaderStyle}
             >
-              <Text color={theme.colors.secondary700} fontFamily="DMSans_500Medium">
+              <Text color={theme.colors.secondary700} fontFamily={theme.fonts.medium}>
                 {title}
               </Text>
             </Flex>
