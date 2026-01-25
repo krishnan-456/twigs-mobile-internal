@@ -1,15 +1,13 @@
 import {
   BottomSheetBackdrop,
-  BottomSheetModal,
-  BottomSheetModalProps,
-  BottomSheetView,
+  BottomSheetModal as GorhomBottomSheetModal,
+  BottomSheetModalProps as GorhomBottomSheetModalProps,
 } from '@gorhom/bottom-sheet';
-import React, { forwardRef, ReactNode, useCallback } from 'react';
+import React, { forwardRef, ReactNode, useCallback, useMemo } from 'react';
 import { Keyboard, StatusBar, StyleSheet, ViewStyle, StyleProp } from 'react-native';
 import type { AnimateStyle } from 'react-native-reanimated';
 import { useTheme } from '../context';
-import { Flex } from '../flex';
-import { Text } from '../text';
+import { BottomSheetHeader, BottomSheetHeaderProps } from './bottom-sheet-header';
 
 type AnimatedViewStyle = StyleProp<
   AnimateStyle<
@@ -20,9 +18,9 @@ type AnimatedViewStyle = StyleProp<
   >
 >;
 
-interface TwigsBottomSheetModalProps extends Omit<
-  BottomSheetModalProps,
-  'children' | 'style' | 'handleStyle' | 'handleIndicatorStyle'
+export interface BottomSheetModalProps extends Omit<
+  GorhomBottomSheetModalProps,
+  'children' | 'style' | 'handleStyle' | 'handleIndicatorStyle' | 'handleComponent'
 > {
   title?: string;
   children?: ReactNode;
@@ -33,7 +31,7 @@ interface TwigsBottomSheetModalProps extends Omit<
   pressBehavior?: 'none' | 'close' | 'collapse' | number;
 }
 
-export const TwigsBottomSheetModal = forwardRef<BottomSheetModal, TwigsBottomSheetModalProps>(
+export const BottomSheetModal = forwardRef<GorhomBottomSheetModal, BottomSheetModalProps>(
   (
     {
       title,
@@ -48,8 +46,9 @@ export const TwigsBottomSheetModal = forwardRef<BottomSheetModal, TwigsBottomShe
     ref
   ) => {
     const theme = useTheme();
+
     const renderBackdrop = useCallback(
-      (props: any) => {
+      (backdropProps: any) => {
         const BackdropComponent = BottomSheetBackdrop as any;
         return (
           <>
@@ -61,7 +60,7 @@ export const TwigsBottomSheetModal = forwardRef<BottomSheetModal, TwigsBottomShe
                 Keyboard.dismiss();
               }}
               pressBehavior={pressBehavior}
-              {...props}
+              {...backdropProps}
             />
           </>
         );
@@ -69,44 +68,36 @@ export const TwigsBottomSheetModal = forwardRef<BottomSheetModal, TwigsBottomShe
       [pressBehavior]
     );
 
-    const defaultModalStyle: ViewStyle = {
-      borderRadius: 16,
-      backgroundColor: theme.colors.white900,
-      marginHorizontal: 8,
-      borderWidth: 1,
-      borderColor: theme.colors.neutral100,
-      overflow: 'hidden',
-    };
+    const renderHandle = useCallback(
+      (handleProps: BottomSheetHeaderProps) => (
+        <BottomSheetHeader
+          {...handleProps}
+          title={title}
+          style={handleStyle}
+          indicatorStyle={handleIndicatorStyle}
+          headerStyle={headerStyle}
+        />
+      ),
+      [title, handleStyle, handleIndicatorStyle, headerStyle]
+    );
 
-    const defaultHandleStyle: ViewStyle = {
-      height: 20,
-      backgroundColor: theme.colors.secondary50,
-    };
+    const mergedModalStyle = useMemo(
+      () =>
+        StyleSheet.flatten([
+          {
+            borderRadius: 16,
+            backgroundColor: theme.colors.white900,
+            marginHorizontal: 8,
+            borderWidth: 1,
+            borderColor: theme.colors.neutral100,
+            overflow: 'hidden',
+          },
+          style,
+        ]),
+      [style, theme]
+    ) as AnimatedViewStyle;
 
-    const defaultHandleIndicatorStyle: ViewStyle = {
-      width: 50,
-      backgroundColor: theme.colors.secondary200,
-    };
-
-    const defaultHeaderStyle: ViewStyle = {
-      backgroundColor: theme.colors.secondary50,
-      borderBottomWidth: 1,
-      borderColor: theme.colors.neutral200,
-    };
-
-    const mergedModalStyle = StyleSheet.flatten([defaultModalStyle, style]) as AnimatedViewStyle;
-    const mergedHandleStyle = StyleSheet.flatten([
-      defaultHandleStyle,
-      handleStyle,
-    ]) as StyleProp<ViewStyle>;
-    const mergedHandleIndicatorStyle = StyleSheet.flatten([
-      defaultHandleIndicatorStyle,
-      handleIndicatorStyle,
-    ]) as StyleProp<ViewStyle>;
-    const mergedHeaderStyle = StyleSheet.flatten([defaultHeaderStyle, headerStyle]);
-
-    const BottomSheetModalComponent = BottomSheetModal as any;
-    const BottomSheetViewComponent = BottomSheetView as any;
+    const BottomSheetModalComponent = GorhomBottomSheetModal as any;
 
     return (
       <BottomSheetModalComponent
@@ -116,30 +107,14 @@ export const TwigsBottomSheetModal = forwardRef<BottomSheetModal, TwigsBottomShe
         bottomInset={24}
         backdropComponent={renderBackdrop}
         keyboardBlurBehavior="restore"
-        handleIndicatorStyle={mergedHandleIndicatorStyle}
-        handleStyle={mergedHandleStyle}
+        handleComponent={renderHandle}
         style={mergedModalStyle}
         {...props}
       >
-        <BottomSheetViewComponent>
-          {title && (
-            <Flex
-              direction="row"
-              align="center"
-              paddingHorizontal={16}
-              paddingBottom={16}
-              css={mergedHeaderStyle}
-            >
-              <Text color={theme.colors.secondary700} fontFamily={theme.fonts.medium}>
-                {title}
-              </Text>
-            </Flex>
-          )}
-          {children}
-        </BottomSheetViewComponent>
+        {children}
       </BottomSheetModalComponent>
     );
   }
 );
 
-TwigsBottomSheetModal.displayName = 'TwigsBottomSheetModal';
+BottomSheetModal.displayName = 'BottomSheetModal';

@@ -1,0 +1,56 @@
+---
+description: Twigs Mobile React Native component library conventions
+alwaysApply: true
+---
+
+# Twigs Mobile
+
+React Native component library for SurveySparrow.
+
+## Structure
+
+- `packages/` - Source components (one folder per component with `index.ts` + `component.tsx`)
+- `lib/` - Built output (run `yarn build`)
+
+## Component Patterns
+
+```tsx
+import React from 'react';
+import { Pressable, StyleSheet, ViewStyle } from 'react-native';
+import { CommonStyleProps } from '../utils';
+import { useTheme } from '../context';
+
+type Size = 'sm' | 'md' | 'lg';
+
+export interface ComponentProps extends CommonStyleProps {
+  size?: Size;
+  disabled?: boolean;
+}
+
+const styles = StyleSheet.create({
+  base: { /* static styles */ },
+  disabled: { opacity: 0.5 },
+});
+
+export const Component = React.forwardRef<any, ComponentProps>(
+  ({ size = 'md', disabled = false, css, style, ...rest }, ref) => {
+    const theme = useTheme();
+    return (
+      <Pressable
+        ref={ref}
+        style={[styles.base, disabled && styles.disabled, css, style]}
+        {...rest}
+      />
+    );
+  }
+);
+Component.displayName = 'Component';
+```
+
+## Key Rules
+
+- Always use `useTheme()` for colors (`theme.colors.primary500`, not `#00828D`)
+- Use `forwardRef` + `displayName` for all components
+- Extend `CommonStyleProps` for `css`/`style` prop support
+- Use `react-native-reanimated` for animations (`AnimatedView` from `../utils`)
+- Export component and props type from `index.ts`
