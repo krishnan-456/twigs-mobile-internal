@@ -3,7 +3,7 @@ import { Image, StyleSheet, ViewStyle } from 'react-native';
 import { Flex } from '../flex';
 import { Text } from '../text';
 import { useTheme } from '../context';
-import type { AvatarProps, AvatarSize } from './types';
+import type { AvatarProps, AvatarSize, AvatarSizeProp } from './types';
 
 interface AvatarColor {
   bg: string;
@@ -17,7 +17,7 @@ const styles = StyleSheet.create({
   },
 });
 
-const avatarColors: AvatarColor[] = [
+const AVATAR_COLORS: AvatarColor[] = [
   { bg: '#F4BEB44D', text: '#AB857E' },
   { bg: '#A65E6E4D', text: '#74424D' },
   { bg: '#C083D84D', text: '#865C97' },
@@ -25,6 +25,30 @@ const avatarColors: AvatarColor[] = [
   { bg: '#7158F54D', text: '#4F3EAC' },
   { bg: '#84BCEF4D', text: '#5C84A7' },
 ];
+
+const AVATAR_DIMENSIONS: Record<AvatarSizeProp, { width: number; height: number }> = {
+  xs: { width: 20, height: 20 },
+  sm: { width: 24, height: 24 },
+  md: { width: 32, height: 32 },
+  lg: { width: 40, height: 40 },
+  xl: { width: 48, height: 48 },
+  '2xl': { width: 56, height: 56 },
+  '3xl': { width: 64, height: 64 },
+  '4xl': { width: 72, height: 72 },
+  '5xl': { width: 120, height: 120 },
+};
+
+const AVATAR_FONT_SIZES: Record<AvatarSizeProp, number> = {
+  xs: 10,
+  sm: 12,
+  md: 14,
+  lg: 16,
+  xl: 19.2,
+  '2xl': 19.2,
+  '3xl': 19.2,
+  '4xl': 23.04,
+  '5xl': 39.808,
+};
 
 const getAvatarSize = (rounded: AvatarSize): number => {
   switch (rounded) {
@@ -49,58 +73,72 @@ const getAvatarSize = (rounded: AvatarSize): number => {
   }
 };
 
+const getFallbackInitials = (name: string): string => {
+  const [firstName, lastName] = name?.trim()?.split(' ') ?? [];
+  const firstInitial = firstName ? firstName.charAt(0).toUpperCase() : '';
+  const lastInitial = lastName ? lastName.charAt(0).toUpperCase() : '';
+  return `${firstInitial}${lastInitial}`;
+};
+
 export const Avatar: React.FC<AvatarProps> = ({
   imageSrc,
-  name,
-  email,
+  name = '?',
   textColor,
   textSize,
   backgroundColor,
-  width = 32,
-  height = 32,
+  width,
+  height,
   rounded = 'full',
+  size,
   css,
   style,
 }) => {
   const theme = useTheme();
   const randomColor = useMemo(() => {
-    const firstLetter = name?.charAt(0).toUpperCase() ?? '?';
+    const firstLetter = name.charAt(0).toUpperCase();
     return (
-      avatarColors[(firstLetter.charCodeAt(0) % 65) % avatarColors.length] || {
+      AVATAR_COLORS[(firstLetter.charCodeAt(0) % 65) % AVATAR_COLORS.length] || {
         bg: '#64748B14',
         text: '#64748B',
       }
     );
   }, [name]);
 
-  const cleanedName = useMemo(() => name?.replace(/[^\p{L}\p{N}]/gu, '') || email, [name, email]);
+  const avatarWidth = size ? AVATAR_DIMENSIONS[size].width : (width ?? 32);
+  const avatarHeight = size ? AVATAR_DIMENSIONS[size].height : (height ?? 32);
+  const avatarFontSize = textSize ?? (size ? AVATAR_FONT_SIZES[size] : 14);
+  const avatarBorderRadius = getAvatarSize(rounded);
 
-  const avatarStyles: ViewStyle = {
-    width,
-    height,
-    borderRadius: getAvatarSize(rounded),
-    backgroundColor: backgroundColor ? backgroundColor : randomColor?.bg,
-  };
+  const avatarStyles: ViewStyle = useMemo(
+    () => ({
+      width: avatarWidth,
+      height: avatarHeight,
+      borderRadius: avatarBorderRadius,
+      backgroundColor: backgroundColor ?? randomColor.bg,
+    }),
+    [avatarWidth, avatarHeight, avatarBorderRadius, backgroundColor, randomColor.bg]
+  );
+
+  const imageStyle = useMemo(
+    () => ({
+      width: avatarWidth,
+      height: avatarHeight,
+      borderRadius: avatarBorderRadius,
+    }),
+    [avatarWidth, avatarHeight, avatarBorderRadius]
+  );
 
   return (
     <Flex css={StyleSheet.flatten([styles.avatarBase, avatarStyles, css, style])}>
       {imageSrc ? (
-        <Image
-          source={{ uri: imageSrc }}
-          style={{
-            height: height,
-            width: width,
-            borderRadius: getAvatarSize(rounded),
-          }}
-        />
+        <Image source={{ uri: imageSrc }} style={imageStyle} />
       ) : (
         <Text
-          fontSize={textSize ? textSize : 14}
+          fontSize={avatarFontSize}
           fontFamily={theme.fonts.bold}
-          fontWeight="700"
-          color={textColor ? textColor : randomColor?.text}
+          color={textColor ?? randomColor.text}
         >
-          {cleanedName?.charAt(0)?.toUpperCase()}
+          {getFallbackInitials(name)}
         </Text>
       )}
     </Flex>
