@@ -1,5 +1,13 @@
 import React, { ReactElement, ReactNode } from 'react';
-import { Pressable, PressableProps, StyleSheet, Text, TextStyle, View, ViewStyle } from 'react-native';
+import {
+  Pressable,
+  PressableProps,
+  StyleSheet,
+  Text,
+  TextStyle,
+  View,
+  ViewStyle,
+} from 'react-native';
 import { useAnimatedStyle, useSharedValue, withRepeat, withTiming } from 'react-native-reanimated';
 import { AnimatedView, createTextStyle } from '../utils';
 import { Flex } from '../flex';
@@ -345,7 +353,10 @@ const getButtonTextStyles = ({
   variant: ButtonVariant;
   theme: TwigsTheme;
 }): TextStyle => {
-  const sizes: Record<ButtonSize, { fontSize: number; fontFamily: string; fontWeight: '500' | '700' }> = {
+  const sizes: Record<
+    ButtonSize,
+    { fontSize: number; fontFamily: string; fontWeight: '500' | '700' }
+  > = {
     xxs: { fontSize: 10, fontFamily: theme.fonts.medium, fontWeight: '500' },
     xs: { fontSize: 12, fontFamily: theme.fonts.medium, fontWeight: '500' },
     sm: { fontSize: 14, fontFamily: theme.fonts.medium, fontWeight: '500' },
@@ -433,7 +444,11 @@ const getIconSize = (size: ButtonSize): number => {
   return sizes[size] || sizes.sm;
 };
 
-const getLoadingSpinnerColor = (color: ButtonColor, variant: ButtonVariant, theme: TwigsTheme): string => {
+const getLoadingSpinnerColor = (
+  color: ButtonColor,
+  variant: ButtonVariant,
+  theme: TwigsTheme
+): string => {
   if (variant === 'solid' && color !== 'default') {
     return theme.colors.white900;
   }
@@ -608,6 +623,7 @@ export const Button = React.forwardRef<View, ButtonProps>(
               position="left"
               size={size}
               spinnerColor={spinnerColor}
+              // eslint-disable-next-line react-native/no-inline-styles
               containerStyle={{
                 marginRight: hasNoIcon && !loading ? 0 : buttonLoaderMargin,
               }}

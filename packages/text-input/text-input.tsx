@@ -1,3 +1,4 @@
+/* eslint-disable react-native/no-unused-styles */
 import React, { forwardRef, useRef, useState } from 'react';
 import {
   Pressable,
@@ -14,7 +15,7 @@ import type { TwigsTheme } from '../theme';
 import { Box } from '../box';
 import { Flex } from '../flex';
 import { Text } from '../text';
-import type { TextInputProps, TextInputSize, TextInputVariant } from './types';
+import type { TextInputProps, TextInputSize } from './types';
 
 interface SizeConfig {
   height: number;
@@ -183,7 +184,7 @@ export const TextInput = forwardRef<RNTextInput, TextInputProps>(
       returnKeyType,
       textContentType,
       placeholderTextColor,
-      ...rest
+      ..._rest
     },
     ref
   ) => {
@@ -222,9 +223,15 @@ export const TextInput = forwardRef<RNTextInput, TextInputProps>(
     };
 
     if (errorBorder) {
-      inputWrapperStyles.borderTopColor = isFocused ? theme.colors.neutral500 : theme.colors.black300;
-      inputWrapperStyles.borderRightColor = isFocused ? theme.colors.neutral500 : theme.colors.black300;
-      inputWrapperStyles.borderLeftColor = isFocused ? theme.colors.neutral500 : theme.colors.black300;
+      inputWrapperStyles.borderTopColor = isFocused
+        ? theme.colors.neutral500
+        : theme.colors.black300;
+      inputWrapperStyles.borderRightColor = isFocused
+        ? theme.colors.neutral500
+        : theme.colors.black300;
+      inputWrapperStyles.borderLeftColor = isFocused
+        ? theme.colors.neutral500
+        : theme.colors.black300;
       inputWrapperStyles.borderBottomColor = theme.colors.negative500;
     } else {
       inputWrapperStyles.borderColor = isFocused ? theme.colors.neutral500 : theme.colors.black300;

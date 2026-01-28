@@ -1,9 +1,10 @@
+/* eslint-disable react-native/no-unused-styles */
 import React, { useEffect } from 'react';
 import { Pressable, StyleSheet, View, ViewStyle } from 'react-native';
 import { useAnimatedStyle, useSharedValue, withSpring } from 'react-native-reanimated';
 import { AnimatedView, SvgComponent, PathComponent } from '../utils';
 import { useTheme } from '../context';
-import type { CheckboxProps, CheckboxSize, CheckedState } from './types';
+import type { CheckboxProps } from './types';
 
 interface TickIconProps {
   color?: string;
@@ -89,7 +90,6 @@ export const Checkbox = React.forwardRef<View, CheckboxProps>(
       disabled = false,
       children,
       size = 'sm',
-      id,
       containerRef,
       labelStyle,
       checkboxStyle,
