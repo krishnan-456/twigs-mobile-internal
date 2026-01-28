@@ -1,2 +1,2 @@
-export * from './radio';
-export * from './types';
+export { Radio } from './radio';
+export type { RadioProps, RadioSize } from './types';

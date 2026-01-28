@@ -1,2 +1,2 @@
-export * from './checkbox';
-export * from './types';
+export { Checkbox } from './checkbox';
+export type { CheckboxProps, CheckboxSize, CheckedState } from './types';

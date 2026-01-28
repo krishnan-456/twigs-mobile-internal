@@ -1,2 +1,2 @@
-export * from './text';
-export * from './types';
+export { Text } from './text';
+export type { TextProps } from './types';
