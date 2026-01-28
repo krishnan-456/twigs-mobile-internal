@@ -1,32 +1,7 @@
-import React, { ReactNode } from 'react';
+import React from 'react';
 import { View, ViewStyle } from 'react-native';
-import {
-  MarginProps,
-  PaddingProps,
-  CommonStyleProps,
-  resolveMargin,
-  resolvePadding,
-} from '../utils';
-
-export interface FlexProps extends MarginProps, PaddingProps, CommonStyleProps {
-  children?: ReactNode;
-  direction?: 'row' | 'column' | 'row-reverse' | 'column-reverse';
-  align?: 'flex-start' | 'flex-end' | 'center' | 'stretch' | 'baseline';
-  justify?:
-    | 'flex-start'
-    | 'flex-end'
-    | 'center'
-    | 'space-between'
-    | 'space-around'
-    | 'space-evenly';
-  wrap?: 'nowrap' | 'wrap' | 'wrap-reverse';
-  flex?: number;
-  flexGrow?: number;
-  flexShrink?: number;
-  flexBasis?: number | string;
-  alignSelf?: 'auto' | 'flex-start' | 'flex-end' | 'center' | 'stretch' | 'baseline';
-  gap?: number;
-}
+import { resolveMargin, resolvePadding } from '../utils';
+import type { FlexProps } from './types';
 
 export const Flex: React.FC<FlexProps> = ({ css, style, children, ...rest }) => {
   const marginProps = {
@@ -69,13 +44,7 @@ export const Flex: React.FC<FlexProps> = ({ css, style, children, ...rest }) => 
   if (rest.flex !== undefined) dynamicStyles.flex = rest.flex;
   if (rest.flexGrow !== undefined) dynamicStyles.flexGrow = rest.flexGrow;
   if (rest.flexShrink !== undefined) dynamicStyles.flexShrink = rest.flexShrink;
-  if (rest.flexBasis !== undefined) {
-    if (typeof rest.flexBasis === 'number') {
-      dynamicStyles.flexBasis = rest.flexBasis;
-    } else {
-      dynamicStyles.flexBasis = rest.flexBasis as any;
-    }
-  }
+  if (rest.flexBasis !== undefined) dynamicStyles.flexBasis = rest.flexBasis;
   if (rest.alignSelf) dynamicStyles.alignSelf = rest.alignSelf;
   if (rest.gap !== undefined) dynamicStyles.gap = rest.gap;
 

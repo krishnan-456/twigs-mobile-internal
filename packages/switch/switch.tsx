@@ -1,9 +1,10 @@
 import React, { useEffect } from 'react';
-import { Pressable, PressableProps, StyleSheet, View } from 'react-native';
+import { Pressable, StyleSheet, View } from 'react-native';
 import { Easing, useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated';
-import { AnimatedView, CommonStyleProps } from '../utils';
+import { AnimatedView } from '../utils';
 import { useTheme } from '../context';
 import type { TwigsTheme } from '../theme';
+import type { SwitchProps } from './types';
 
 const SWITCH_WIDTH = 40;
 const SWITCH_HEIGHT = 20;
@@ -31,12 +32,6 @@ const createStyles = (theme: TwigsTheme) =>
       backgroundColor: theme.colors.white900,
     },
   });
-
-export interface SwitchProps extends Omit<PressableProps, 'onPress' | 'style'>, CommonStyleProps {
-  value?: boolean;
-  onValueChange?: (value: boolean) => void;
-  disabled?: boolean;
-}
 
 export const Switch = React.forwardRef<View, SwitchProps>(
   ({ value = false, onValueChange, disabled = false, css, style, ...rest }, ref) => {

@@ -1,21 +1,20 @@
-import React, { ReactElement, ReactNode, forwardRef, useRef, useState } from 'react';
+import React, { forwardRef, useRef, useState } from 'react';
 import {
   Pressable,
   TextInput as RNTextInput,
-  TextInputProps as RNTextInputProps,
+  NativeSyntheticEvent,
+  TextInputFocusEventData,
   StyleSheet,
   TextStyle,
   ViewStyle,
 } from 'react-native';
-import { MarginProps, PaddingProps, CommonStyleProps, createTextStyle } from '../utils';
+import { createTextStyle } from '../utils';
 import { useTheme } from '../context';
 import type { TwigsTheme } from '../theme';
 import { Box } from '../box';
 import { Flex } from '../flex';
 import { Text } from '../text';
-
-type TextInputSize = 'sm' | 'md' | 'lg' | 'xl' | '2xl';
-type TextInputVariant = 'default' | 'filled';
+import type { TextInputProps, TextInputSize, TextInputVariant } from './types';
 
 interface SizeConfig {
   height: number;
@@ -25,44 +24,6 @@ interface SizeConfig {
   leftIconPadding: number;
   rightIconPadding: number;
   iconSize: number;
-}
-
-export interface TextInputProps extends MarginProps, PaddingProps, CommonStyleProps {
-  size?: TextInputSize;
-  variant?: TextInputVariant;
-  placeholder?: string;
-  value?: string;
-  defaultValue?: string;
-  onChangeText?: (text: string) => void;
-  leftIcon?: ReactElement;
-  rightIcon?: ReactElement;
-  rightElement?: ReactElement;
-  leftElement?: ReactElement;
-  disabled?: boolean;
-  errorBorder?: boolean;
-  placeholderTextColor?: string;
-  cursorColor?: string;
-  secureTextEntry?: boolean;
-  showPassword?: boolean;
-  setShowPassword?: (show: boolean) => void;
-  inputStyle?: TextStyle;
-  readOnly?: boolean;
-  autoCapitalize?: RNTextInputProps['autoCapitalize'];
-  autoCorrect?: RNTextInputProps['autoCorrect'];
-  autoFocus?: RNTextInputProps['autoFocus'];
-  blurOnSubmit?: RNTextInputProps['blurOnSubmit'];
-  editable?: RNTextInputProps['editable'];
-  keyboardType?: RNTextInputProps['keyboardType'];
-  maxLength?: RNTextInputProps['maxLength'];
-  multiline?: RNTextInputProps['multiline'];
-  numberOfLines?: RNTextInputProps['numberOfLines'];
-  onBlur?: RNTextInputProps['onBlur'];
-  onFocus?: RNTextInputProps['onFocus'];
-  onSubmitEditing?: RNTextInputProps['onSubmitEditing'];
-  returnKeyType?: RNTextInputProps['returnKeyType'];
-  textContentType?: RNTextInputProps['textContentType'];
-  children?: ReactNode;
-  errorMessage?: string;
 }
 
 const createStyles = (theme: TwigsTheme) => {
@@ -240,12 +201,12 @@ export const TextInput = forwardRef<RNTextInput, TextInputProps>(
     const isPassword = secureTextEntry && showPassword !== undefined;
     const shouldShowPassword = isPassword && showPassword;
 
-    const handleFocus = (e: any) => {
+    const handleFocus = (e: NativeSyntheticEvent<TextInputFocusEventData>) => {
       setIsFocused(true);
       onFocus?.(e);
     };
 
-    const handleBlur = (e: any) => {
+    const handleBlur = (e: NativeSyntheticEvent<TextInputFocusEventData>) => {
       setIsFocused(false);
       onBlur?.(e);
     };
@@ -347,10 +308,10 @@ export const TextInput = forwardRef<RNTextInput, TextInputProps>(
                   justify="center"
                   css={StyleSheet.flatten([styles.iconContainer, styles.iconContainerLeft])}
                 >
-                  {React.cloneElement(leftIcon as ReactElement<any>, {
+                  {React.cloneElement(leftIcon, {
                     size: config.iconSize,
                     color: disabled ? theme.colors.neutral500 : theme.colors.neutral800,
-                  })}
+                  } as Partial<typeof leftIcon.props>)}
                 </Flex>
               )}
 
@@ -380,10 +341,10 @@ export const TextInput = forwardRef<RNTextInput, TextInputProps>(
                   ])}
                 >
                   {React.isValidElement(rightIcon)
-                    ? React.cloneElement(rightIcon as ReactElement<any>, {
+                    ? React.cloneElement(rightIcon, {
                         size: config.iconSize,
                         color: disabled ? theme.colors.neutral500 : theme.colors.neutral800,
-                      })
+                      } as Partial<typeof rightIcon.props>)
                     : rightIcon}
                 </Pressable>
               )}

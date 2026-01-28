@@ -1,14 +1,11 @@
 import React, { ReactElement, ReactNode } from 'react';
-import { Pressable, StyleSheet, Text, TextStyle, View, ViewStyle } from 'react-native';
+import { Pressable, PressableProps, StyleSheet, Text, TextStyle, View, ViewStyle } from 'react-native';
 import { useAnimatedStyle, useSharedValue, withRepeat, withTiming } from 'react-native-reanimated';
-import { AnimatedView, CommonStyleProps, createTextStyle } from '../utils';
+import { AnimatedView, createTextStyle } from '../utils';
 import { Flex } from '../flex';
 import { useTheme } from '../context';
 import type { TwigsTheme } from '../theme';
-
-type ButtonSize = 'xxs' | 'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl';
-type ButtonColor = 'primary' | 'secondary' | 'default' | 'negative' | 'neutral';
-type ButtonVariant = 'solid' | 'ghost' | 'outline';
+import type { ButtonProps, ButtonSize, ButtonColor, ButtonVariant } from './types';
 
 interface SizeConfig {
   padding: string;
@@ -44,20 +41,6 @@ interface ButtonSideElementProps {
   size: ButtonSize;
   spinnerColor: string;
   containerStyle?: ViewStyle;
-}
-
-export interface ButtonProps extends CommonStyleProps {
-  children?: ReactNode;
-  size?: ButtonSize;
-  color?: ButtonColor;
-  variant?: ButtonVariant;
-  disabled?: boolean;
-  loading?: boolean;
-  leftIcon?: ReactElement;
-  rightIcon?: ReactElement;
-  icon?: ReactElement;
-  onPress?: (event: any) => void;
-  textStyle?: TextStyle;
 }
 
 const styles = StyleSheet.create({
@@ -490,7 +473,7 @@ const ButtonSideElement: React.FC<ButtonSideElementProps> = ({
       <View style={[iconContainerStyles, containerStyle]}>
         {React.cloneElement(icon, {
           size: iconSize,
-          ...((icon.props as any) || {}),
+          ...(icon.props || {}),
         })}
       </View>
     );
@@ -504,7 +487,7 @@ const AnimatedContentWrapper = AnimatedView as unknown as React.FC<
   React.ComponentProps<typeof AnimatedView> & { children: ReactNode }
 >;
 
-export const Button = React.forwardRef<any, ButtonProps>(
+export const Button = React.forwardRef<View, ButtonProps>(
   (
     {
       children,
@@ -559,8 +542,8 @@ export const Button = React.forwardRef<any, ButtonProps>(
       return spacing[size] || spacing.sm;
     }, [size]);
 
-    const handlePress = React.useCallback(
-      (event: any) => {
+    const handlePress = React.useCallback<NonNullable<PressableProps['onPress']>>(
+      (event) => {
         if (!disabled && !loading && onPress) {
           onPress(event);
         }
@@ -597,6 +580,7 @@ export const Button = React.forwardRef<any, ButtonProps>(
         },
       };
       return colorConfig[color]?.[variant] || colorConfig.primary.solid;
+      // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [color, variant]);
 
     const buttonDynamicStyles = getButtonStyles({ size, color, variant, isIcon, theme });

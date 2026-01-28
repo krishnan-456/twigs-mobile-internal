@@ -1,16 +1,7 @@
-import React, { forwardRef, ReactNode } from 'react';
+import React, { forwardRef } from 'react';
 import { View, ViewStyle } from 'react-native';
-import {
-  MarginProps,
-  PaddingProps,
-  CommonStyleProps,
-  resolveMargin,
-  resolvePadding,
-} from '../utils';
-
-export interface BoxProps extends MarginProps, PaddingProps, CommonStyleProps {
-  children?: ReactNode;
-}
+import { resolveMargin, resolvePadding } from '../utils';
+import type { BoxProps } from './types';
 
 export const Box = forwardRef<View, BoxProps>(({ css, style, children, ...rest }, ref) => {
   const marginProps = {

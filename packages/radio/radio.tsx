@@ -1,31 +1,14 @@
-import React, { ReactNode, RefObject } from 'react';
+import React from 'react';
 import { Pressable, StyleSheet, View, ViewStyle } from 'react-native';
-import { CommonStyleProps } from '../utils';
 import { Box } from '../box';
 import { Flex } from '../flex';
 import { useTheme } from '../context';
 import type { TwigsTheme } from '../theme';
-
-type RadioSize = 'sm' | 'md';
+import type { RadioProps, RadioSize } from './types';
 
 interface SizeConfig {
   outer: { width: number; height: number };
   inner: { width: number; height: number };
-}
-
-export interface RadioProps extends CommonStyleProps {
-  selected?: boolean;
-  onSelect?: (selected: boolean) => void;
-  disabled?: boolean;
-  children?: ReactNode;
-  size?: RadioSize;
-  width?: number;
-  height?: number;
-  innerWidth?: number;
-  innerHeight?: number;
-  containerRef?: RefObject<any>;
-  labelStyle?: ViewStyle;
-  radioStyle?: ViewStyle;
 }
 
 const createStyles = (theme: TwigsTheme) =>
@@ -55,7 +38,7 @@ const createStyles = (theme: TwigsTheme) =>
     },
   });
 
-export const Radio = React.forwardRef<any, RadioProps>(
+export const Radio = React.forwardRef<View, RadioProps>(
   (
     {
       selected = false,

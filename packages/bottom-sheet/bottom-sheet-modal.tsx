@@ -1,13 +1,14 @@
 import {
   BottomSheetBackdrop,
+  BottomSheetBackdropProps,
   BottomSheetModal as GorhomBottomSheetModal,
-  BottomSheetModalProps as GorhomBottomSheetModalProps,
 } from '@gorhom/bottom-sheet';
-import React, { forwardRef, ReactNode, useCallback, useMemo } from 'react';
+import React, { forwardRef, useCallback, useMemo } from 'react';
 import { Keyboard, StatusBar, StyleSheet, ViewStyle, StyleProp } from 'react-native';
 import type { AnimateStyle } from 'react-native-reanimated';
 import { useTheme } from '../context';
-import { BottomSheetHeader, BottomSheetHeaderProps } from './bottom-sheet-header';
+import { BottomSheetHeader } from './bottom-sheet-header';
+import type { BottomSheetModalProps, BottomSheetHeaderProps } from './types';
 
 type AnimatedViewStyle = StyleProp<
   AnimateStyle<
@@ -17,19 +18,6 @@ type AnimatedViewStyle = StyleProp<
     >
   >
 >;
-
-export interface BottomSheetModalProps extends Omit<
-  GorhomBottomSheetModalProps,
-  'children' | 'style' | 'handleStyle' | 'handleIndicatorStyle' | 'handleComponent'
-> {
-  title?: string;
-  children?: ReactNode;
-  style?: ViewStyle;
-  handleStyle?: ViewStyle;
-  handleIndicatorStyle?: ViewStyle;
-  headerStyle?: ViewStyle;
-  pressBehavior?: 'none' | 'close' | 'collapse' | number;
-}
 
 export const BottomSheetModal = forwardRef<GorhomBottomSheetModal, BottomSheetModalProps>(
   (
@@ -48,12 +36,11 @@ export const BottomSheetModal = forwardRef<GorhomBottomSheetModal, BottomSheetMo
     const theme = useTheme();
 
     const renderBackdrop = useCallback(
-      (backdropProps: any) => {
-        const BackdropComponent = BottomSheetBackdrop as any;
+      (backdropProps: BottomSheetBackdropProps) => {
         return (
           <>
             <StatusBar translucent backgroundColor="transparent" />
-            <BackdropComponent
+            <BottomSheetBackdrop
               appearsOnIndex={0}
               disappearsOnIndex={-1}
               onPress={() => {
@@ -97,10 +84,8 @@ export const BottomSheetModal = forwardRef<GorhomBottomSheetModal, BottomSheetMo
       [style, theme]
     ) as AnimatedViewStyle;
 
-    const BottomSheetModalComponent = GorhomBottomSheetModal as any;
-
     return (
-      <BottomSheetModalComponent
+      <GorhomBottomSheetModal
         ref={ref}
         detached
         enablePanDownToClose
@@ -112,7 +97,7 @@ export const BottomSheetModal = forwardRef<GorhomBottomSheetModal, BottomSheetMo
         {...props}
       >
         {children}
-      </BottomSheetModalComponent>
+      </GorhomBottomSheetModal>
     );
   }
 );

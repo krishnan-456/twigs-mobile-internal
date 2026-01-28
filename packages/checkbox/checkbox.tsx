@@ -1,12 +1,9 @@
-import React, { ReactNode, RefObject, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { Pressable, StyleSheet, View, ViewStyle } from 'react-native';
 import { useAnimatedStyle, useSharedValue, withSpring } from 'react-native-reanimated';
-import { AnimatedView, SvgComponent, PathComponent, CommonStyleProps } from '../utils';
+import { AnimatedView, SvgComponent, PathComponent } from '../utils';
 import { useTheme } from '../context';
-import type { TwigsTheme } from '../theme';
-
-type CheckboxSize = 'sm' | 'md';
-type CheckedState = boolean | 'indeterminate';
+import type { CheckboxProps, CheckboxSize, CheckedState } from './types';
 
 interface TickIconProps {
   color?: string;
@@ -14,18 +11,6 @@ interface TickIconProps {
 
 interface HorizontalLineIconProps {
   color?: string;
-}
-
-export interface CheckboxProps extends CommonStyleProps {
-  checked?: CheckedState;
-  onChange?: (checked: boolean) => void;
-  disabled?: boolean;
-  children?: ReactNode;
-  size?: CheckboxSize;
-  id?: string;
-  containerRef?: RefObject<any>;
-  labelStyle?: ViewStyle;
-  checkboxStyle?: ViewStyle;
 }
 
 const TickIcon: React.FC<TickIconProps> = ({ color }) => {
@@ -96,7 +81,7 @@ const createStyles = () =>
     },
   });
 
-export const Checkbox = React.forwardRef<any, CheckboxProps>(
+export const Checkbox = React.forwardRef<View, CheckboxProps>(
   (
     {
       checked = false,

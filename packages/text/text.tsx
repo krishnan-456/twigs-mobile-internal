@@ -1,38 +1,10 @@
-import React, { ReactNode } from 'react';
+import React from 'react';
 import { Text as RNText, TextStyle } from 'react-native';
-import { MarginProps, PaddingProps, resolveMargin, resolvePadding, createTextStyle } from '../utils';
+import { resolveMargin, resolvePadding, createTextStyle } from '../utils';
 import { useTheme } from '../context';
+import type { TextProps } from './types';
 
 const DEFAULT_FONT_SIZE = 14;
-
-export interface TextProps extends MarginProps, PaddingProps {
-  children?: ReactNode;
-  css?: TextStyle;
-  style?: TextStyle;
-  fontSize?: number;
-  fontFamily?: string;
-  color?: string;
-  fontWeight?:
-    | 'normal'
-    | 'bold'
-    | '100'
-    | '200'
-    | '300'
-    | '400'
-    | '500'
-    | '600'
-    | '700'
-    | '800'
-    | '900';
-  textAlign?: 'left' | 'center' | 'right' | 'justify';
-  textDecoration?: 'none' | 'underline' | 'line-through' | 'underline line-through';
-  textTransform?: 'none' | 'capitalize' | 'uppercase' | 'lowercase';
-  fontStyle?: 'normal' | 'italic';
-  lineHeight?: number;
-  letterSpacing?: number;
-  numberOfLines?: number;
-  ellipsizeMode?: 'head' | 'middle' | 'tail' | 'clip';
-}
 
 export const Text: React.FC<TextProps> = ({ children, css, style, ...rest }) => {
   const theme = useTheme();

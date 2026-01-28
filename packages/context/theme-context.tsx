@@ -5,13 +5,13 @@ export type DeepPartial<T> = {
   [P in keyof T]?: T[P] extends object ? DeepPartial<T[P]> : T[P];
 };
 
-function deepMerge<T extends Record<string, any>>(target: T, source: DeepPartial<T>): T {
-  const result = { ...target };
+function deepMerge<T>(target: T, source: DeepPartial<T>): T {
+  const result = { ...target } as T;
 
   for (const key in source) {
     if (Object.prototype.hasOwnProperty.call(source, key)) {
       const sourceValue = source[key];
-      const targetValue = result[key];
+      const targetValue = result[key as keyof T];
 
       if (
         sourceValue &&
@@ -21,9 +21,12 @@ function deepMerge<T extends Record<string, any>>(target: T, source: DeepPartial
         typeof targetValue === 'object' &&
         !Array.isArray(targetValue)
       ) {
-        result[key] = deepMerge(targetValue, sourceValue as any);
+        (result as Record<string, unknown>)[key] = deepMerge(
+          targetValue,
+          sourceValue as DeepPartial<typeof targetValue>
+        );
       } else if (sourceValue !== undefined) {
-        result[key] = sourceValue as any;
+        (result as Record<string, unknown>)[key] = sourceValue;
       }
     }
   }

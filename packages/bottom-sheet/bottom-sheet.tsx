@@ -1,12 +1,13 @@
 import GorhomBottomSheet, {
   BottomSheetBackdrop,
-  BottomSheetProps as GorhomBottomSheetProps,
+  BottomSheetBackdropProps,
 } from '@gorhom/bottom-sheet';
 import React, { forwardRef, useCallback, useMemo } from 'react';
 import { Keyboard, StatusBar, StyleSheet, ViewStyle, StyleProp } from 'react-native';
 import type { AnimateStyle } from 'react-native-reanimated';
 import { useTheme } from '../context';
-import { BottomSheetHeader, BottomSheetHeaderProps } from './bottom-sheet-header';
+import { BottomSheetHeader } from './bottom-sheet-header';
+import type { BottomSheetProps, BottomSheetHeaderProps } from './types';
 
 type AnimatedViewStyle = StyleProp<
   AnimateStyle<
@@ -17,27 +18,15 @@ type AnimatedViewStyle = StyleProp<
   >
 >;
 
-export interface BottomSheetProps extends Omit<
-  GorhomBottomSheetProps,
-  'style' | 'handleStyle' | 'handleIndicatorStyle' | 'handleComponent'
-> {
-  title?: string;
-  style?: ViewStyle;
-  handleStyle?: ViewStyle;
-  handleIndicatorStyle?: ViewStyle;
-  headerStyle?: ViewStyle;
-}
-
 export const BottomSheet = forwardRef<GorhomBottomSheet, BottomSheetProps>(
   ({ title, children, style, handleStyle, handleIndicatorStyle, headerStyle, ...props }, ref) => {
     const theme = useTheme();
 
-    const renderBackdrop = useCallback((backdropProps: any) => {
-      const BackdropComponent = BottomSheetBackdrop as any;
+    const renderBackdrop = useCallback((backdropProps: BottomSheetBackdropProps) => {
       return (
         <>
           <StatusBar translucent backgroundColor="transparent" />
-          <BackdropComponent
+          <BottomSheetBackdrop
             appearsOnIndex={0}
             disappearsOnIndex={-1}
             onPress={() => {
@@ -78,10 +67,8 @@ export const BottomSheet = forwardRef<GorhomBottomSheet, BottomSheetProps>(
       [style, theme]
     ) as AnimatedViewStyle;
 
-    const BottomSheetComponent = GorhomBottomSheet as any;
-
     return (
-      <BottomSheetComponent
+      <GorhomBottomSheet
         ref={ref}
         detached
         enablePanDownToClose
@@ -94,7 +81,7 @@ export const BottomSheet = forwardRef<GorhomBottomSheet, BottomSheetProps>(
         {...props}
       >
         {children}
-      </BottomSheetComponent>
+      </GorhomBottomSheet>
     );
   }
 );

@@ -1,21 +1,14 @@
 import React, { memo, useMemo } from 'react';
-import { StyleSheet, ViewStyle, StyleProp } from 'react-native';
+import { StyleSheet, ViewStyle } from 'react-native';
 import { BottomSheetHandle } from '@gorhom/bottom-sheet';
-import type { SharedValue } from 'react-native-reanimated';
 import { Flex } from '../flex';
 import { Text } from '../text';
 import { useTheme } from '../context';
-
-export interface BottomSheetHeaderProps {
-  animatedIndex: SharedValue<number>;
-  animatedPosition: SharedValue<number>;
-  title?: string;
-  style?: StyleProp<ViewStyle>;
-  indicatorStyle?: StyleProp<ViewStyle>;
-  headerStyle?: ViewStyle;
-}
+import type { BottomSheetHeaderProps } from './types';
 
 const BottomSheetHeaderComponent: React.FC<BottomSheetHeaderProps> = ({
+  animatedIndex,
+  animatedPosition,
   title,
   style,
   indicatorStyle,
@@ -43,23 +36,29 @@ const BottomSheetHeaderComponent: React.FC<BottomSheetHeaderProps> = ({
 
   const mergedHandleStyle = useMemo(
     () => StyleSheet.flatten([defaultHandleStyle, style]),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [style, theme]
   );
 
   const mergedIndicatorStyle = useMemo(
     () => StyleSheet.flatten([defaultIndicatorStyle, indicatorStyle]),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [indicatorStyle, theme]
   );
 
   const mergedHeaderStyle = useMemo(
     () => StyleSheet.flatten([defaultHeaderStyle, headerStyle]),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [headerStyle, theme]
   );
 
-  const HandleComponent = BottomSheetHandle as any;
-
   return (
-    <HandleComponent style={mergedHandleStyle} indicatorStyle={mergedIndicatorStyle}>
+    <BottomSheetHandle 
+      animatedIndex={animatedIndex}
+      animatedPosition={animatedPosition}
+      style={mergedHandleStyle} 
+      indicatorStyle={mergedIndicatorStyle}
+    >
       {title && (
         <Flex direction="row" align="center" paddingTop={8} css={mergedHeaderStyle}>
           <Text color={theme.colors.secondary700} fontFamily={theme.fonts.medium}>
@@ -67,7 +66,7 @@ const BottomSheetHeaderComponent: React.FC<BottomSheetHeaderProps> = ({
           </Text>
         </Flex>
       )}
-    </HandleComponent>
+    </BottomSheetHandle>
   );
 };
 

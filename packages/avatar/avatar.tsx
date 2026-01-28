@@ -1,27 +1,13 @@
 import React, { useMemo } from 'react';
 import { Image, StyleSheet, ViewStyle } from 'react-native';
-import { CommonStyleProps } from '../utils';
 import { Flex } from '../flex';
 import { Text } from '../text';
 import { useTheme } from '../context';
+import type { AvatarProps, AvatarSize } from './types';
 
 interface AvatarColor {
   bg: string;
   text: string;
-}
-
-type AvatarSize = 'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl' | '3xl' | 'full';
-
-export interface AvatarProps extends CommonStyleProps {
-  imageSrc?: string;
-  name?: string;
-  email?: string;
-  textColor?: string;
-  textSize?: number;
-  backgroundColor?: string;
-  width?: number;
-  height?: number;
-  rounded?: AvatarSize;
 }
 
 const styles = StyleSheet.create({
