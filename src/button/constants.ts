@@ -1,4 +1,3 @@
-import type { ViewStyle } from 'react-native';
 import type { ButtonSize, ButtonVariant } from './types';
 
 // ── Internal interfaces (not exported from index.ts) ──
@@ -37,8 +36,24 @@ const buildSizeConfig = (
   fontSize: number,
   iconSize: number
 ): { normal: SizeConfig; icon: SizeConfig } => ({
-  normal: { paddingVertical: pV, paddingHorizontal: pH, height, width: 'auto', borderRadius, fontSize, iconSize },
-  icon: { paddingVertical: 0, paddingHorizontal: 0, height, width: iconWidth, borderRadius, fontSize, iconSize },
+  normal: {
+    paddingVertical: pV,
+    paddingHorizontal: pH,
+    height,
+    width: 'auto',
+    borderRadius,
+    fontSize,
+    iconSize,
+  },
+  icon: {
+    paddingVertical: 0,
+    paddingHorizontal: 0,
+    height,
+    width: iconWidth,
+    borderRadius,
+    fontSize,
+    iconSize,
+  },
 });
 
 const SIZE_DATA = {
@@ -54,17 +69,6 @@ const SIZE_DATA = {
 /** Resolved size config for a given button size + icon mode. */
 export const getButtonSizeConfig = (size: ButtonSize, isIcon: boolean): SizeConfig =>
   isIcon ? SIZE_DATA[size].icon : SIZE_DATA[size].normal;
-
-/** Loader bar dimensions per button size. */
-export const LOADER_SIZES: Record<ButtonSize, { width: number; height: number }> = {
-  xxs: { width: 12, height: 3 },
-  xs: { width: 14, height: 3 },
-  sm: { width: 16, height: 3 },
-  md: { width: 20, height: 4 },
-  lg: { width: 20, height: 4 },
-  xl: { width: 24, height: 4 },
-  '2xl': { width: 24, height: 4 },
-};
 
 /** Icon pixel size per button size. */
 export const ICON_SIZES: Record<ButtonSize, number> = {
@@ -86,4 +90,18 @@ export const ICON_SPACING: Record<ButtonSize, number> = {
   lg: 4,
   xl: 6,
   '2xl': 8,
+};
+
+/**
+ * Border width for the outline variant, varying by size to match the web library.
+ * Web uses `$xs` (1px) for xxs–sm, `1.5px` for md, and `$sm` (2px) for lg–2xl.
+ */
+export const OUTLINE_BORDER_WIDTHS: Record<ButtonSize, number> = {
+  xxs: 1,
+  xs: 1,
+  sm: 1,
+  md: 1.5,
+  lg: 2,
+  xl: 2,
+  '2xl': 2,
 };

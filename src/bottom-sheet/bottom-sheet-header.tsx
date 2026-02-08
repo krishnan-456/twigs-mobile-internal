@@ -53,10 +53,10 @@ const BottomSheetHeaderComponent: React.FC<BottomSheetHeaderProps> = ({
   );
 
   return (
-    <BottomSheetHandle 
+    <BottomSheetHandle
       animatedIndex={animatedIndex}
       animatedPosition={animatedPosition}
-      style={mergedHandleStyle} 
+      style={mergedHandleStyle}
       indicatorStyle={mergedIndicatorStyle}
     >
       {title && (

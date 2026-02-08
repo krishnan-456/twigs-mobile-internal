@@ -3,8 +3,7 @@ import { render } from '@testing-library/react-native';
 import { Avatar } from '../avatar';
 import { TwigsProvider } from '../context';
 
-const wrap = (ui: React.ReactElement) =>
-  render(<TwigsProvider>{ui}</TwigsProvider>);
+const wrap = (ui: React.ReactElement) => render(<TwigsProvider>{ui}</TwigsProvider>);
 
 describe('Avatar', () => {
   // ── Render ──
@@ -68,9 +67,7 @@ describe('Avatar', () => {
   });
 
   it('sets accessibilityIgnoresInvertColors on Image', () => {
-    const tree = wrap(
-      <Avatar name="A" imageSrc="https://example.com/a.png" />
-    ).toJSON() as any;
+    const tree = wrap(<Avatar name="A" imageSrc="https://example.com/a.png" />).toJSON() as any;
     const imageChild = tree.children[0];
     expect(imageChild.props.accessibilityIgnoresInvertColors).toBe(true);
   });
@@ -89,9 +86,7 @@ describe('Avatar', () => {
   });
 
   it('uses custom width/height when no size prop', () => {
-    const tree = wrap(
-      <Avatar name="X" width={60} height={60} />
-    ).toJSON() as any;
+    const tree = wrap(<Avatar name="X" width={60} height={60} />).toJSON() as any;
     const flatStyle = Array.isArray(tree.props.style)
       ? Object.assign({}, ...tree.props.style.filter(Boolean))
       : tree.props.style;
@@ -133,9 +128,7 @@ describe('Avatar', () => {
   // ── Custom styling ──
 
   it('applies custom backgroundColor', () => {
-    const tree = wrap(
-      <Avatar name="A" backgroundColor="#FF0000" />
-    ).toJSON() as any;
+    const tree = wrap(<Avatar name="A" backgroundColor="#FF0000" />).toJSON() as any;
     const flatStyle = Array.isArray(tree.props.style)
       ? Object.assign({}, ...tree.props.style.filter(Boolean))
       : tree.props.style;

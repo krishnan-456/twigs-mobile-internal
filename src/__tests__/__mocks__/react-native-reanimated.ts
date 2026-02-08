@@ -12,9 +12,7 @@ export const Easing = {
 };
 
 const Animated = {
-  View: React.forwardRef((props: any, ref: any) =>
-    React.createElement(View, { ...props, ref })
-  ),
+  View: React.forwardRef((props: any, ref: any) => React.createElement(View, { ...props, ref })),
 };
 
 export default Animated;

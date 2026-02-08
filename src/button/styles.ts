@@ -8,6 +8,6 @@ export const buttonStyles = StyleSheet.create({
     justifyContent: 'center',
   },
   buttonDisabled: {
-    opacity: 0.5,
+    opacity: 0.4,
   },
 });

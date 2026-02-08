@@ -4,8 +4,7 @@ import { Text } from 'react-native';
 import { Checkbox } from '../checkbox';
 import { TwigsProvider } from '../context';
 
-const wrap = (ui: React.ReactElement) =>
-  render(<TwigsProvider>{ui}</TwigsProvider>);
+const wrap = (ui: React.ReactElement) => render(<TwigsProvider>{ui}</TwigsProvider>);
 
 describe('Checkbox', () => {
   // ── Render ──
@@ -80,9 +79,7 @@ describe('Checkbox', () => {
 
   it('derives accessibilityLabel from string children', () => {
     const { getByRole } = wrap(<Checkbox>Accept terms</Checkbox>);
-    expect(getByRole('checkbox').props.accessibilityLabel).toBe(
-      'Accept terms'
-    );
+    expect(getByRole('checkbox').props.accessibilityLabel).toBe('Accept terms');
   });
 
   it('does not derive accessibilityLabel from non-string children', () => {
@@ -96,18 +93,14 @@ describe('Checkbox', () => {
 
   it('has accessibilityHint for tap guidance', () => {
     const { getByRole } = wrap(<Checkbox />);
-    expect(getByRole('checkbox').props.accessibilityHint).toBe(
-      'Double tap to toggle'
-    );
+    expect(getByRole('checkbox').props.accessibilityHint).toBe('Double tap to toggle');
   });
 
   // ── Interactions ──
 
   it('calls onChange(true) when unchecked checkbox is pressed', () => {
     const onChange = jest.fn();
-    const { getByRole } = wrap(
-      <Checkbox checked={false} onChange={onChange} />
-    );
+    const { getByRole } = wrap(<Checkbox checked={false} onChange={onChange} />);
     fireEvent.press(getByRole('checkbox'));
     expect(onChange).toHaveBeenCalledWith(true);
     expect(onChange).toHaveBeenCalledTimes(1);
@@ -122,18 +115,14 @@ describe('Checkbox', () => {
 
   it('calls onChange(true) when indeterminate checkbox is pressed', () => {
     const onChange = jest.fn();
-    const { getByRole } = wrap(
-      <Checkbox checked="indeterminate" onChange={onChange} />
-    );
+    const { getByRole } = wrap(<Checkbox checked="indeterminate" onChange={onChange} />);
     fireEvent.press(getByRole('checkbox'));
     expect(onChange).toHaveBeenCalledWith(true);
   });
 
   it('does not call onChange when disabled', () => {
     const onChange = jest.fn();
-    const { getByRole } = wrap(
-      <Checkbox checked={false} onChange={onChange} disabled />
-    );
+    const { getByRole } = wrap(<Checkbox checked={false} onChange={onChange} disabled />);
     fireEvent.press(getByRole('checkbox'));
     expect(onChange).not.toHaveBeenCalled();
   });
@@ -170,8 +159,6 @@ describe('Checkbox', () => {
         <Checkbox checked="indeterminate" />
       </TwigsProvider>
     );
-    expect(getByRole('checkbox').props.accessibilityState.checked).toBe(
-      'mixed'
-    );
+    expect(getByRole('checkbox').props.accessibilityState.checked).toBe('mixed');
   });
 });

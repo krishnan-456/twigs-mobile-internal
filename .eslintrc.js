@@ -33,4 +33,15 @@ module.exports = {
     'react-native/no-color-literals': 'off',
     'react-native/sort-styles': 'off',
   },
+  overrides: [
+    {
+      files: ['src/__tests__/**/*.{ts,tsx}', 'src/__tests__/__mocks__/**/*.{ts,tsx}'],
+      env: { jest: true },
+      rules: {
+        'react-native/no-raw-text': 'off',
+        'react-native/no-inline-styles': 'off',
+        '@typescript-eslint/no-explicit-any': 'off',
+      },
+    },
+  ],
 };

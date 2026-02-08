@@ -7,8 +7,18 @@ export { Box } from './box';
 export type { BoxProps } from './box';
 
 // Button
-export { Button, LineLoader } from './button';
+export { Button } from './button';
 export type { ButtonProps, ButtonSize, ButtonColor, ButtonVariant } from './button';
+
+// Loader
+export { LineLoader, CircleLoader } from './loader';
+export type {
+  LineLoaderProps,
+  CircleLoaderProps,
+  LineLoaderSize,
+  CircleLoaderSize,
+  LoaderColor,
+} from './loader';
 
 // Checkbox
 export { Checkbox } from './checkbox';
@@ -98,7 +108,13 @@ export {
   createTextStyle,
   colorOpacity,
 } from './utils';
-export type { MarginProps, PaddingProps, ResolvedSpacing, CommonStyleProps, BaseAccessibilityProps } from './utils';
+export type {
+  MarginProps,
+  PaddingProps,
+  ResolvedSpacing,
+  CommonStyleProps,
+  BaseAccessibilityProps,
+} from './utils';
 
 // Theme
 export { defaultTheme, theme } from './theme';

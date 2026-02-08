@@ -1,11 +1,10 @@
 import React from 'react';
 import { render, fireEvent } from '@testing-library/react-native';
-import { Text, View } from 'react-native';
+import { Text } from 'react-native';
 import { Button } from '../button';
 import { TwigsProvider } from '../context';
 
-const wrap = (ui: React.ReactElement) =>
-  render(<TwigsProvider>{ui}</TwigsProvider>);
+const wrap = (ui: React.ReactElement) => render(<TwigsProvider>{ui}</TwigsProvider>);
 
 describe('Button', () => {
   // ── Render ──
@@ -40,7 +39,7 @@ describe('Button', () => {
   });
 
   describe('colors', () => {
-    const colors = ['primary', 'secondary', 'default', 'negative', 'neutral'] as const;
+    const colors = ['default', 'primary', 'secondary', 'bright', 'light', 'error'] as const;
 
     colors.forEach((color) => {
       it(`renders with color="${color}"`, () => {
@@ -62,7 +61,7 @@ describe('Button', () => {
   });
 
   it('renders all color+variant combinations without crashing', () => {
-    const colors = ['primary', 'secondary', 'default', 'negative', 'neutral'] as const;
+    const colors = ['default', 'primary', 'secondary', 'bright', 'light', 'error'] as const;
     const variants = ['solid', 'ghost', 'outline'] as const;
     colors.forEach((color) => {
       variants.forEach((variant) => {
@@ -80,18 +79,14 @@ describe('Button', () => {
 
   it('renders with leftIcon', () => {
     const icon = <Text testID="left-icon">L</Text>;
-    const { getByTestId, getByText } = wrap(
-      <Button leftIcon={icon}>With Icon</Button>
-    );
+    const { getByTestId, getByText } = wrap(<Button leftIcon={icon}>With Icon</Button>);
     expect(getByTestId('left-icon')).toBeTruthy();
     expect(getByText('With Icon')).toBeTruthy();
   });
 
   it('renders with rightIcon', () => {
     const icon = <Text testID="right-icon">R</Text>;
-    const { getByTestId, getByText } = wrap(
-      <Button rightIcon={icon}>With Icon</Button>
-    );
+    const { getByTestId, getByText } = wrap(<Button rightIcon={icon}>With Icon</Button>);
     expect(getByTestId('right-icon')).toBeTruthy();
     expect(getByText('With Icon')).toBeTruthy();
   });
@@ -117,9 +112,7 @@ describe('Button', () => {
   // ── Loading state ──
 
   it('shows loader when loading with no icon', () => {
-    const { getByRole, queryByText } = wrap(
-      <Button loading>Loading</Button>
-    );
+    const { getByRole, queryByText } = wrap(<Button loading>Loading</Button>);
     expect(getByRole('button')).toBeTruthy();
     expect(queryByText('Loading')).toBeTruthy();
   });
@@ -129,7 +122,11 @@ describe('Button', () => {
     const btn = getByRole('button');
     expect(btn.props.accessibilityState.busy).toBe(false);
 
-    rerender(<TwigsProvider><Button loading>Save</Button></TwigsProvider>);
+    rerender(
+      <TwigsProvider>
+        <Button loading>Save</Button>
+      </TwigsProvider>
+    );
     const btnAfter = getByRole('button');
     expect(btnAfter.props.accessibilityState.busy).toBe(true);
   });
@@ -176,9 +173,7 @@ describe('Button', () => {
 
   it('uses explicit accessibilityLabel over auto-derived', () => {
     const icon = <Text>X</Text>;
-    const { getByRole } = wrap(
-      <Button icon={icon} accessibilityLabel="Close" />
-    );
+    const { getByRole } = wrap(<Button icon={icon} accessibilityLabel="Close" />);
     expect(getByRole('button').props.accessibilityLabel).toBe('Close');
   });
 
@@ -228,12 +223,53 @@ describe('Button', () => {
     expect(onPress).toHaveBeenCalledTimes(3);
   });
 
+  // ── Loader prop ──
+
+  it('renders with default line loader when loading', () => {
+    const { getByRole } = wrap(<Button loading>Save</Button>);
+    expect(getByRole('button')).toBeTruthy();
+  });
+
+  it('renders with loader="circle" when loading', () => {
+    const { getByRole } = wrap(
+      <Button loading loader="circle">
+        Save
+      </Button>
+    );
+    expect(getByRole('button')).toBeTruthy();
+  });
+
+  it('renders with custom loader ReactElement when loading', () => {
+    const customLoader = <Text testID="custom-loader">...</Text>;
+    const { getByTestId } = wrap(
+      <Button loading loader={customLoader}>
+        Save
+      </Button>
+    );
+    expect(getByTestId('custom-loader')).toBeTruthy();
+  });
+
+  it('does not render loader when not loading', () => {
+    const customLoader = <Text testID="custom-loader">...</Text>;
+    const { queryByTestId } = wrap(<Button loader={customLoader}>Save</Button>);
+    expect(queryByTestId('custom-loader')).toBeNull();
+  });
+
+  // ── Disabled opacity ──
+
+  it('applies 0.4 opacity when disabled (matching web)', () => {
+    const tree = wrap(<Button disabled>Disabled</Button>);
+    const btn = tree.getByRole('button');
+    const flatStyle = Array.isArray(btn.props.style)
+      ? Object.assign({}, ...btn.props.style.filter(Boolean))
+      : btn.props.style;
+    expect(flatStyle.opacity).toBe(0.4);
+  });
+
   // ── Style overrides ──
 
   it('applies custom textStyle', () => {
-    const { getByText } = wrap(
-      <Button textStyle={{ letterSpacing: 2 }}>Styled</Button>
-    );
+    const { getByText } = wrap(<Button textStyle={{ letterSpacing: 2 }}>Styled</Button>);
     const textEl = getByText('Styled');
     const flatStyle = Array.isArray(textEl.props.style)
       ? Object.assign({}, ...textEl.props.style.filter(Boolean))

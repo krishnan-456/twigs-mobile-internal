@@ -59,10 +59,7 @@ export const BottomSheetModal = forwardRef<GorhomBottomSheetModal, BottomSheetMo
       [title, handleStyle, handleIndicatorStyle, headerStyle]
     );
 
-    const mergedModalStyle = useMemo(
-      () => getDefaultSheetStyle(theme, style),
-      [style, theme]
-    );
+    const mergedModalStyle = useMemo(() => getDefaultSheetStyle(theme, style), [style, theme]);
 
     return (
       <GorhomBottomSheetModal

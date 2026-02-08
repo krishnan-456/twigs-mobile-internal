@@ -3,8 +3,7 @@ import { render } from '@testing-library/react-native';
 import { Text } from '../text';
 import { TwigsProvider } from '../context';
 
-const wrap = (ui: React.ReactElement) =>
-  render(<TwigsProvider>{ui}</TwigsProvider>);
+const wrap = (ui: React.ReactElement) => render(<TwigsProvider>{ui}</TwigsProvider>);
 
 describe('Text', () => {
   // ── Render ──
@@ -58,9 +57,7 @@ describe('Text', () => {
   });
 
   it('applies textDecoration', () => {
-    const { getByText } = wrap(
-      <Text textDecoration="underline">Underline</Text>
-    );
+    const { getByText } = wrap(<Text textDecoration="underline">Underline</Text>);
     const el = getByText('Underline');
     const flatStyle = Array.isArray(el.props.style)
       ? Object.assign({}, ...el.props.style.filter(Boolean))
@@ -69,9 +66,7 @@ describe('Text', () => {
   });
 
   it('applies textTransform', () => {
-    const { getByText } = wrap(
-      <Text textTransform="uppercase">upper</Text>
-    );
+    const { getByText } = wrap(<Text textTransform="uppercase">upper</Text>);
     const el = getByText('upper');
     const flatStyle = Array.isArray(el.props.style)
       ? Object.assign({}, ...el.props.style.filter(Boolean))
@@ -105,9 +100,7 @@ describe('Text', () => {
   // ── Truncation ──
 
   it('forwards numberOfLines', () => {
-    const { getByText } = wrap(
-      <Text numberOfLines={2}>Truncated text</Text>
-    );
+    const { getByText } = wrap(<Text numberOfLines={2}>Truncated text</Text>);
     expect(getByText('Truncated text').props.numberOfLines).toBe(2);
   });
 
@@ -123,30 +116,22 @@ describe('Text', () => {
   // ── Accessibility ──
 
   it('forwards accessibilityRole', () => {
-    const { getByText } = wrap(
-      <Text accessibilityRole="header">Title</Text>
-    );
+    const { getByText } = wrap(<Text accessibilityRole="header">Title</Text>);
     expect(getByText('Title').props.accessibilityRole).toBe('header');
   });
 
   it('forwards accessibilityLabel', () => {
-    const { getByText } = wrap(
-      <Text accessibilityLabel="greeting">Hi</Text>
-    );
+    const { getByText } = wrap(<Text accessibilityLabel="greeting">Hi</Text>);
     expect(getByText('Hi').props.accessibilityLabel).toBe('greeting');
   });
 
   it('forwards accessibilityHint', () => {
-    const { getByText } = wrap(
-      <Text accessibilityHint="Tap to open">Link</Text>
-    );
+    const { getByText } = wrap(<Text accessibilityHint="Tap to open">Link</Text>);
     expect(getByText('Link').props.accessibilityHint).toBe('Tap to open');
   });
 
   it('forwards accessibilityState', () => {
-    const { getByText } = wrap(
-      <Text accessibilityState={{ disabled: true }}>Disabled</Text>
-    );
+    const { getByText } = wrap(<Text accessibilityState={{ disabled: true }}>Disabled</Text>);
     expect(getByText('Disabled').props.accessibilityState).toEqual({
       disabled: true,
     });

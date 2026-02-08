@@ -49,19 +49,28 @@ describe('resolveMargin', () => {
 
   it('resolves individual margins', () => {
     expect(resolveMargin({ marginTop: 10, marginLeft: 5 })).toEqual({
-      top: 10, bottom: 0, left: 5, right: 0,
+      top: 10,
+      bottom: 0,
+      left: 5,
+      right: 0,
     });
   });
 
   it('horizontal/vertical take precedence over margin', () => {
     expect(resolveMargin({ margin: 4, marginVertical: 8 })).toEqual({
-      top: 8, bottom: 8, left: 4, right: 4,
+      top: 8,
+      bottom: 8,
+      left: 4,
+      right: 4,
     });
   });
 
   it('individual takes precedence over horizontal/vertical', () => {
     expect(resolveMargin({ marginVertical: 8, marginTop: 12 })).toEqual({
-      top: 12, bottom: 8, left: 0, right: 0,
+      top: 12,
+      bottom: 8,
+      left: 0,
+      right: 0,
     });
   });
 });
@@ -73,7 +82,10 @@ describe('resolvePadding', () => {
 
   it('resolves individual paddings', () => {
     expect(resolvePadding({ paddingBottom: 16, paddingRight: 8 })).toEqual({
-      top: 0, bottom: 16, left: 0, right: 8,
+      top: 0,
+      bottom: 16,
+      left: 0,
+      right: 8,
     });
   });
 });

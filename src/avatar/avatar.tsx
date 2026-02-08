@@ -56,11 +56,7 @@ export const Avatar: React.FC<AvatarProps> = ({
       css={StyleSheet.flatten([avatarStyles.avatarBase, dynamicStyles, css, style])}
     >
       {imageSrc ? (
-        <Image
-          source={{ uri: imageSrc }}
-          style={imageStyle}
-          accessibilityIgnoresInvertColors
-        />
+        <Image source={{ uri: imageSrc }} style={imageStyle} accessibilityIgnoresInvertColors />
       ) : (
         <Text
           fontSize={avatarFontSize}

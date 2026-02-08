@@ -140,13 +140,24 @@ export const colorOpacity = (color: string, opacity: number): string => {
 
 export const createTextStyle = (
   fontFamily: string,
-  fontWeight?: '100' | '200' | '300' | '400' | '500' | '600' | '700' | '800' | '900' | 'normal' | 'bold'
+  fontWeight?:
+    | '100'
+    | '200'
+    | '300'
+    | '400'
+    | '500'
+    | '600'
+    | '700'
+    | '800'
+    | '900'
+    | 'normal'
+    | 'bold'
 ): Pick<TextStyle, 'fontFamily' | 'fontWeight'> => {
   const style: Pick<TextStyle, 'fontFamily' | 'fontWeight'> = { fontFamily };
-  
+
   if (fontFamily === 'System' && fontWeight) {
     style.fontWeight = fontWeight;
   }
-  
+
   return style;
 };

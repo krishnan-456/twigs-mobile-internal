@@ -4,46 +4,60 @@ import { useAnimatedStyle, useSharedValue, withRepeat, withTiming } from 'react-
 import { AnimatedView } from '../utils';
 import { Flex } from '../flex';
 import { useTheme } from '../context';
+import { LineLoader, CircleLoader } from '../loader';
+import type { LoaderColor } from '../loader';
 import type { ButtonProps, ButtonSize } from './types';
-import { ICON_SPACING } from './constants';
 import {
   getButtonStyles,
   getButtonTextStyles,
   getIconContainerStyles,
   getIconSize,
-  getLoadingSpinnerColor,
+  getLoaderColorFromButton,
+  getLineLoaderSizeFromButton,
+  getCircleLoaderSizeFromButton,
   getPressedStyle,
   getButtonLoaderMargin,
 } from './helpers';
 import { buttonStyles } from './styles';
-import { LineLoader } from './line-loader';
 
 interface ButtonSideElementProps {
   icon?: ReactElement;
   loading?: boolean;
+  loader?: ReactElement | 'line' | 'circle';
   position: 'left' | 'right' | 'center';
   size: ButtonSize;
-  spinnerColor: string;
+  loaderColor: LoaderColor;
   containerStyle?: ViewStyle;
 }
 
 const ButtonSideElement: React.FC<ButtonSideElementProps> = ({
   icon,
   loading,
+  loader = 'line',
   position,
   size,
-  spinnerColor,
+  loaderColor,
   containerStyle,
 }) => {
   const iconSize = getIconSize(size);
   const iconContainerStyle = getIconContainerStyles({ position, size });
 
   if (loading) {
-    return (
-      <View style={[iconContainerStyle, containerStyle]}>
-        <LineLoader color={spinnerColor} size={size} />
-      </View>
-    );
+    let loaderElement: ReactNode;
+
+    if (React.isValidElement(loader)) {
+      // Custom ReactElement loader
+      loaderElement = loader;
+    } else if (loader === 'circle') {
+      loaderElement = (
+        <CircleLoader color={loaderColor} size={getCircleLoaderSizeFromButton(size)} />
+      );
+    } else {
+      // Default: line loader
+      loaderElement = <LineLoader color={loaderColor} size={getLineLoaderSizeFromButton(size)} />;
+    }
+
+    return <View style={[iconContainerStyle, containerStyle]}>{loaderElement}</View>;
   }
 
   if (icon) {
@@ -80,6 +94,7 @@ export const Button = React.forwardRef<View, ButtonProps>(
       leftIcon,
       rightIcon,
       icon,
+      loader = 'line',
       onPress,
       css,
       style,
@@ -90,7 +105,7 @@ export const Button = React.forwardRef<View, ButtonProps>(
   ) => {
     const theme = useTheme();
     const isIcon = !!icon;
-    const spinnerColor = getLoadingSpinnerColor(color, variant, theme);
+    const loaderColor = getLoaderColorFromButton(color, variant);
     const hasNoIcon = !(leftIcon || rightIcon || icon);
 
     const opacity = useSharedValue(1);
@@ -103,10 +118,7 @@ export const Button = React.forwardRef<View, ButtonProps>(
       }
     }, [loading, opacity]);
 
-    const animatedContentStyle = useAnimatedStyle(
-      () => ({ opacity: opacity.value }),
-      []
-    );
+    const animatedContentStyle = useAnimatedStyle(() => ({ opacity: opacity.value }), []);
 
     const buttonLoaderMargin = React.useMemo(() => getButtonLoaderMargin(size), [size]);
 
@@ -134,9 +146,10 @@ export const Button = React.forwardRef<View, ButtonProps>(
           <ButtonSideElement
             icon={icon}
             loading={loading}
+            loader={loader}
             position="center"
             size={size}
-            spinnerColor={spinnerColor}
+            loaderColor={loaderColor}
           />
         );
       }
@@ -147,9 +160,10 @@ export const Button = React.forwardRef<View, ButtonProps>(
             <ButtonSideElement
               icon={leftIcon}
               loading={loading && (!!leftIcon || hasNoIcon)}
+              loader={loader}
               position="left"
               size={size}
-              spinnerColor={spinnerColor}
+              loaderColor={loaderColor}
               // eslint-disable-next-line react-native/no-inline-styles
               containerStyle={{
                 marginRight: hasNoIcon && !loading ? 0 : buttonLoaderMargin,
@@ -167,19 +181,30 @@ export const Button = React.forwardRef<View, ButtonProps>(
             <ButtonSideElement
               icon={rightIcon}
               loading={loading}
+              loader={loader}
               position="right"
               size={size}
-              spinnerColor={spinnerColor}
+              loaderColor={loaderColor}
               containerStyle={{ marginLeft: buttonLoaderMargin }}
             />
           )}
         </Flex>
       );
     }, [
-      isIcon, icon, loading, size, spinnerColor,
-      leftIcon, hasNoIcon, buttonLoaderMargin,
-      children, animatedContentStyle, buttonTextStyles,
-      textStyle, rightIcon,
+      isIcon,
+      icon,
+      loading,
+      loader,
+      size,
+      loaderColor,
+      leftIcon,
+      hasNoIcon,
+      buttonLoaderMargin,
+      children,
+      animatedContentStyle,
+      buttonTextStyles,
+      textStyle,
+      rightIcon,
     ]);
 
     return (
@@ -189,7 +214,7 @@ export const Button = React.forwardRef<View, ButtonProps>(
         accessible
         accessibilityRole="button"
         accessibilityState={{ disabled, busy: loading }}
-        accessibilityLabel={rest.accessibilityLabel ?? ((isIcon && !children) ? 'Button' : undefined)}
+        accessibilityLabel={rest.accessibilityLabel ?? (isIcon && !children ? 'Button' : undefined)}
         style={({ pressed }: { pressed: boolean }) => [
           buttonStyles.buttonBase,
           buttonDynamicStyles,

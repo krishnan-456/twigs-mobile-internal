@@ -4,8 +4,7 @@ import { Text } from 'react-native';
 import { Radio } from '../radio';
 import { TwigsProvider } from '../context';
 
-const wrap = (ui: React.ReactElement) =>
-  render(<TwigsProvider>{ui}</TwigsProvider>);
+const wrap = (ui: React.ReactElement) => render(<TwigsProvider>{ui}</TwigsProvider>);
 
 describe('Radio', () => {
   // ── Render ──
@@ -43,9 +42,7 @@ describe('Radio', () => {
   });
 
   it('supports custom width/height overrides', () => {
-    const { getByRole } = wrap(
-      <Radio width={30} height={30} innerWidth={14} innerHeight={14} />
-    );
+    const { getByRole } = wrap(<Radio width={30} height={30} innerWidth={14} innerHeight={14} />);
     expect(getByRole('radio')).toBeTruthy();
   });
 
@@ -60,9 +57,7 @@ describe('Radio', () => {
   it('uses checked (not selected) in accessibilityState when selected', () => {
     const { getByRole } = wrap(<Radio selected />);
     const radio = getByRole('radio');
-    expect(radio.props.accessibilityState).toEqual(
-      expect.objectContaining({ checked: true })
-    );
+    expect(radio.props.accessibilityState).toEqual(expect.objectContaining({ checked: true }));
     expect(radio.props.accessibilityState.selected).toBeUndefined();
   });
 
@@ -96,18 +91,14 @@ describe('Radio', () => {
 
   it('has accessibilityHint for tap guidance', () => {
     const { getByRole } = wrap(<Radio />);
-    expect(getByRole('radio').props.accessibilityHint).toBe(
-      'Double tap to select'
-    );
+    expect(getByRole('radio').props.accessibilityHint).toBe('Double tap to select');
   });
 
   // ── Interactions ──
 
   it('calls onSelect(true) when unselected radio is pressed', () => {
     const onSelect = jest.fn();
-    const { getByRole } = wrap(
-      <Radio selected={false} onSelect={onSelect} />
-    );
+    const { getByRole } = wrap(<Radio selected={false} onSelect={onSelect} />);
     fireEvent.press(getByRole('radio'));
     expect(onSelect).toHaveBeenCalledWith(true);
     expect(onSelect).toHaveBeenCalledTimes(1);
@@ -122,9 +113,7 @@ describe('Radio', () => {
 
   it('does not call onSelect when disabled', () => {
     const onSelect = jest.fn();
-    const { getByRole } = wrap(
-      <Radio selected={false} onSelect={onSelect} disabled />
-    );
+    const { getByRole } = wrap(<Radio selected={false} onSelect={onSelect} disabled />);
     fireEvent.press(getByRole('radio'));
     expect(onSelect).not.toHaveBeenCalled();
   });
@@ -142,7 +131,11 @@ describe('Radio', () => {
       expect.objectContaining({ checked: false })
     );
 
-    rerender(<TwigsProvider><Radio selected /></TwigsProvider>);
+    rerender(
+      <TwigsProvider>
+        <Radio selected />
+      </TwigsProvider>
+    );
     expect(getByRole('radio').props.accessibilityState).toEqual(
       expect.objectContaining({ checked: true })
     );

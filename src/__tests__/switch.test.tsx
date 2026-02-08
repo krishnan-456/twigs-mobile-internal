@@ -3,8 +3,7 @@ import { render, fireEvent } from '@testing-library/react-native';
 import { Switch } from '../switch';
 import { TwigsProvider } from '../context';
 
-const wrap = (ui: React.ReactElement) =>
-  render(<TwigsProvider>{ui}</TwigsProvider>);
+const wrap = (ui: React.ReactElement) => render(<TwigsProvider>{ui}</TwigsProvider>);
 
 describe('Switch', () => {
   // ── Render ──
@@ -71,9 +70,7 @@ describe('Switch', () => {
 
   it('calls onValueChange(true) when toggling off -> on', () => {
     const onValueChange = jest.fn();
-    const { getByRole } = wrap(
-      <Switch value={false} onValueChange={onValueChange} />
-    );
+    const { getByRole } = wrap(<Switch value={false} onValueChange={onValueChange} />);
     fireEvent.press(getByRole('switch'));
     expect(onValueChange).toHaveBeenCalledWith(true);
     expect(onValueChange).toHaveBeenCalledTimes(1);
@@ -81,18 +78,14 @@ describe('Switch', () => {
 
   it('calls onValueChange(false) when toggling on -> off', () => {
     const onValueChange = jest.fn();
-    const { getByRole } = wrap(
-      <Switch value onValueChange={onValueChange} />
-    );
+    const { getByRole } = wrap(<Switch value onValueChange={onValueChange} />);
     fireEvent.press(getByRole('switch'));
     expect(onValueChange).toHaveBeenCalledWith(false);
   });
 
   it('does not call onValueChange when disabled', () => {
     const onValueChange = jest.fn();
-    const { getByRole } = wrap(
-      <Switch value={false} onValueChange={onValueChange} disabled />
-    );
+    const { getByRole } = wrap(<Switch value={false} onValueChange={onValueChange} disabled />);
     fireEvent.press(getByRole('switch'));
     expect(onValueChange).not.toHaveBeenCalled();
   });
@@ -110,7 +103,11 @@ describe('Switch', () => {
       expect.objectContaining({ checked: false })
     );
 
-    rerender(<TwigsProvider><Switch value /></TwigsProvider>);
+    rerender(
+      <TwigsProvider>
+        <Switch value />
+      </TwigsProvider>
+    );
     expect(getByRole('switch').props.accessibilityState).toEqual(
       expect.objectContaining({ checked: true })
     );
@@ -122,7 +119,11 @@ describe('Switch', () => {
       text: 'Off',
     });
 
-    rerender(<TwigsProvider><Switch value /></TwigsProvider>);
+    rerender(
+      <TwigsProvider>
+        <Switch value />
+      </TwigsProvider>
+    );
     expect(getByRole('switch').props.accessibilityValue).toEqual({
       text: 'On',
     });

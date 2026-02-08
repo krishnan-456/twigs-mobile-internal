@@ -2,7 +2,8 @@ import { ReactNode } from 'react';
 import { DimensionValue } from 'react-native';
 import { MarginProps, PaddingProps, CommonStyleProps, BaseAccessibilityProps } from '../utils';
 
-export interface FlexProps extends MarginProps, PaddingProps, CommonStyleProps, BaseAccessibilityProps {
+export interface FlexProps
+  extends MarginProps, PaddingProps, CommonStyleProps, BaseAccessibilityProps {
   children?: ReactNode;
   direction?: 'row' | 'column' | 'row-reverse' | 'column-reverse';
   align?: 'flex-start' | 'flex-end' | 'center' | 'stretch' | 'baseline';
