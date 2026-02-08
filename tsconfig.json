@@ -6,10 +6,6 @@
     "jsx": "react-native",
     "declaration": true,
     "declarationMap": true,
-    "sourceMap": true,
-    "outDir": "./dist",
-    "rootDir": "./",
-    "removeComments": false,
     "strict": true,
     "noUnusedLocals": false,
     "noUnusedParameters": false,
@@ -20,16 +16,15 @@
     "allowSyntheticDefaultImports": true,
     "forceConsistentCasingInFileNames": true,
     "skipLibCheck": true,
-    "resolveJsonModule": true,
     "isolatedModules": true
   },
   "include": [
-    "packages/**/*.ts",
-    "packages/**/*.tsx"
+    "src/**/*.ts",
+    "src/**/*.tsx"
   ],
   "exclude": [
     "node_modules",
-    "dist",
+    "lib",
     "**/*.spec.ts",
     "**/*.spec.tsx",
     "**/*.test.ts",
