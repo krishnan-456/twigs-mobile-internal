@@ -1,0 +1,465 @@
+---
+description: Common mistakes and anti-patterns to avoid when building Twigs Mobile components
+globs:
+  - "src/**/*.tsx"
+  - "src/**/*.ts"
+---
+
+# Common Pitfalls
+
+Known mistakes that have been made before. Read this before implementing or
+reviewing any component. Each pitfall includes the **wrong** pattern and the
+**correct** pattern.
+
+---
+
+## 1. Hardcoded Colors
+
+**The #1 most common mistake.** Every color must come from the theme.
+
+```tsx
+// WRONG — hardcoded hex
+backgroundColor: '#00828D'
+color: '#64748B'
+borderColor: '#E2E8F0'
+
+// CORRECT — theme tokens
+backgroundColor: theme.colors.primary500
+color: theme.colors.neutral600
+borderColor: theme.colors.neutral200
+```
+
+For alpha/opacity variants:
+
+```tsx
+// WRONG — hardcoded hex with alpha
+backgroundColor: '#00828D1A'
+backgroundColor: 'rgba(0, 130, 141, 0.1)'
+
+// CORRECT — colorOpacity helper
+import { colorOpacity } from '../utils';
+backgroundColor: colorOpacity(theme.colors.primary500, 0.1)
+```
+
+---
+
+## 2. Missing forwardRef and displayName
+
+Every public component (exported from `index.ts`) must use `forwardRef` and set
+`displayName`. Internal sub-components are exempt.
+
+```tsx
+// WRONG — no forwardRef, no displayName
+export const Separator = (props: SeparatorProps) => { ... };
+
+// WRONG — forwardRef but missing displayName
+export const Separator = React.forwardRef<View, SeparatorProps>((props, ref) => { ... });
+
+// CORRECT
+export const Separator = React.forwardRef<View, SeparatorProps>(
+  (props, ref) => { ... }
+);
+Separator.displayName = 'Separator';
+```
+
+---
+
+## 3. Wrong Style Override Order
+
+The `css` and `style` props must always be applied **last** in the style array.
+This allows consumers to override any internal styles.
+
+```tsx
+// WRONG — css/style not last
+style={[css, style, styles.base, dynamicStyles]}
+
+// WRONG — style before css
+style={[styles.base, style, css]}
+
+// CORRECT — css then style, always at the end
+style={[styles.base, dynamicStyles, disabled && styles.disabled, css, style]}
+```
+
+---
+
+## 4. Using `selected` Instead of `checked`
+
+For checkable components (checkbox, radio, switch), always use `checked` in
+`accessibilityState`. Never use `selected`.
+
+```tsx
+// WRONG — using selected for checkable components
+accessibilityState={{ selected: isChecked, disabled }}
+
+// CORRECT — using checked (matches Radix aria-checked)
+accessibilityState={{ checked: isChecked, disabled }}
+
+// For radio buttons specifically:
+accessibilityState={{ checked: isSelected, disabled }}  // still use 'checked', not 'selected'
+```
+
+---
+
+## 5. Missing Accessibility Props
+
+Every interactive component must have accessibility props. Display components must
+forward them.
+
+```tsx
+// WRONG — no accessibility props
+<Pressable onPress={handlePress} style={styles.button}>
+  <Text>{label}</Text>
+</Pressable>
+
+// CORRECT — full accessibility props
+<Pressable
+  accessible
+  accessibilityRole="button"
+  accessibilityState={{ disabled, busy: loading }}
+  accessibilityLabel={accessibilityLabel ?? label}
+  accessibilityHint={accessibilityHint}
+  onPress={handlePress}
+  style={styles.button}
+>
+  <Text>{label}</Text>
+</Pressable>
+```
+
+---
+
+## 6. Props Interface Missing Base Extensions
+
+All component props must extend `CommonStyleProps` and `BaseAccessibilityProps`.
+
+```tsx
+// WRONG — missing extensions
+export interface SeparatorProps {
+  orientation?: 'horizontal' | 'vertical';
+}
+
+// WRONG — missing BaseAccessibilityProps
+export interface SeparatorProps extends ViewProps, CommonStyleProps {
+  orientation?: 'horizontal' | 'vertical';
+}
+
+// CORRECT — both extensions
+export interface SeparatorProps
+  extends Omit<ViewProps, 'style'>,
+    CommonStyleProps,
+    BaseAccessibilityProps {
+  orientation?: 'horizontal' | 'vertical';
+}
+```
+
+Always `Omit<*Props, 'style'>` from the RN base props to avoid conflict with
+`CommonStyleProps` which provides both `css` and `style`.
+
+---
+
+## 7. Using React Native Animated API
+
+Always use `react-native-reanimated`, never the built-in `Animated` API.
+
+```tsx
+// WRONG — built-in Animated API
+import { Animated } from 'react-native';
+const fadeAnim = new Animated.Value(0);
+Animated.timing(fadeAnim, { toValue: 1, duration: 200 }).start();
+
+// CORRECT — react-native-reanimated
+import { useSharedValue, withTiming, useAnimatedStyle } from 'react-native-reanimated';
+import { AnimatedView } from '../utils';
+
+const opacity = useSharedValue(0);
+opacity.value = withTiming(1, { duration: 200 });
+const animatedStyle = useAnimatedStyle(() => ({ opacity: opacity.value }));
+```
+
+---
+
+## 8. Inline Style Objects in JSX
+
+Never create style objects inline in JSX. They cause re-renders because a new
+object is created on every render.
+
+```tsx
+// WRONG — inline object
+<View style={{ backgroundColor: theme.colors.primary500, padding: 16 }} />
+
+// CORRECT — StyleSheet.create for static styles
+const styles = StyleSheet.create({
+  container: { padding: 16 },
+});
+
+// CORRECT — useMemo for dynamic styles
+const dynamicStyle = useMemo(
+  () => ({ backgroundColor: theme.colors.primary500 }),
+  [theme.colors.primary500]
+);
+<View style={[styles.container, dynamicStyle]} />
+```
+
+---
+
+## 9. Default Exports
+
+The project uses named exports exclusively. Never use default exports.
+
+```tsx
+// WRONG
+export default function Separator() { ... }
+export default Separator;
+
+// CORRECT
+export const Separator = React.forwardRef<View, SeparatorProps>(...);
+export { Separator } from './separator';
+```
+
+---
+
+## 10. Importing from Sibling Component Internals
+
+Never import from another component's internal files. Always import from `index.ts`.
+
+```tsx
+// WRONG — importing from internal file
+import { getSizeStyles } from '../button/helpers';
+import { BUTTON_SIZES } from '../button/constants';
+
+// CORRECT — import from public API (if it's exported)
+import { Button } from '../button';
+
+// CORRECT — if you need shared logic, put it in ../utils
+import { colorOpacity } from '../utils';
+```
+
+---
+
+## 11. Enums Instead of Union Types
+
+Never use TypeScript enums. Use union types or `Record` maps.
+
+```tsx
+// WRONG — enum
+enum Size {
+  SM = 'sm',
+  MD = 'md',
+  LG = 'lg',
+}
+
+// CORRECT — union type
+type Size = 'sm' | 'md' | 'lg';
+```
+
+---
+
+## 12. Type Keyword Instead of Interface for Props
+
+Props objects must use `interface`, not `type`.
+
+```tsx
+// WRONG — type alias for props
+type SeparatorProps = {
+  orientation?: 'horizontal' | 'vertical';
+};
+
+// CORRECT — interface
+interface SeparatorProps extends Omit<ViewProps, 'style'>, CommonStyleProps, BaseAccessibilityProps {
+  orientation?: 'horizontal' | 'vertical';
+}
+```
+
+Use `type` only for union types, tuple types, and mapped types.
+
+---
+
+## 13. Hardcoded Dimensions Without Constants
+
+Magic numbers for sizes, spacing, and dimensions should go in `constants.ts`.
+
+```tsx
+// WRONG — magic numbers in component
+const height = size === 'sm' ? 32 : size === 'md' ? 40 : 48;
+const fontSize = size === 'sm' ? 12 : size === 'md' ? 14 : 16;
+
+// CORRECT — size config in constants.ts
+// constants.ts
+export const SIZE_CONFIG: Record<Size, SizeConfig> = {
+  sm: { height: 32, fontSize: 12, padding: 8 },
+  md: { height: 40, fontSize: 14, padding: 12 },
+  lg: { height: 48, fontSize: 16, padding: 16 },
+};
+
+// component.tsx
+const config = SIZE_CONFIG[size];
+```
+
+---
+
+## 14. Forgetting to Wire Exports
+
+New components must be exported from **two** barrel files:
+
+1. `src/<name>/index.ts` — component's own barrel
+2. `src/index.ts` — root barrel (in alphabetical order)
+
+Both the component AND its types must be exported from each.
+
+```tsx
+// src/<name>/index.ts
+export { ComponentName } from './<name>';
+export type { ComponentNameProps, ComponentNameSize } from './types';
+
+// src/index.ts (add in alphabetical position)
+// ComponentName
+export { ComponentName } from './<name>';
+export type { ComponentNameProps, ComponentNameSize } from './<name>';
+```
+
+---
+
+## 15. Not Testing Accessibility
+
+Every test file must have an "Accessibility" describe block that validates the
+component's accessibility attributes.
+
+```tsx
+// WRONG — no accessibility tests
+describe('Separator', () => {
+  it('renders', () => { ... });
+});
+
+// CORRECT — includes accessibility tests
+describe('Separator', () => {
+  it('renders', () => { ... });
+
+  describe('Accessibility', () => {
+    it('has correct accessibilityRole', () => {
+      const { getByTestId } = wrap(<Separator testID="sep" />);
+      expect(getByTestId('sep').props.accessibilityRole).toBe('separator');
+    });
+  });
+});
+```
+
+---
+
+## 16. Sub-Agent Context Omission
+
+When launching sub-agents with the Task tool, forgetting to include necessary
+context is the most common orchestration mistake.
+
+```
+// WRONG — vague prompt, missing context
+"Write tests for the Separator component"
+
+// CORRECT — full context in prompt
+"Create a test file at /absolute/path/src/__tests__/separator.test.tsx
+for the Separator component.
+Import from '../separator'.
+Props interface:
+  - orientation: 'horizontal' | 'vertical' (default: 'horizontal')
+  - color: string (default: theme.colors.neutral200)
+accessibilityRole: 'separator'
+Wrap all renders in TwigsProvider.
+Reference: src/__tests__/button.test.tsx for patterns."
+```
+
+---
+
+## 17. Installing Unvetted Dependencies
+
+Never install a package without running the dependency vetting checklist from
+`component-commands.mdc`. Check: recency, popularity, RN compatibility,
+maintenance, and bundle size.
+
+```bash
+# WRONG — install without checking
+yarn add some-random-package
+
+# CORRECT — vet first
+npm view some-random-package time.modified  # last publish date
+# Check npmjs.com for weekly downloads
+# Check README for React Native support
+# Check GitHub for maintenance activity
+# THEN install if all checks pass
+yarn add some-random-package
+```
+
+---
+
+## 18. Modifying Test to Match Broken Code
+
+When a test fails, always investigate the component first.
+
+```
+// WRONG approach:
+1. Test fails
+2. Change the test expectation to match the buggy output
+3. Tests pass (but the bug remains)
+
+// CORRECT approach:
+1. Test fails
+2. Read the test to understand what it expects
+3. Read the component to find the bug
+4. Fix the component
+5. Tests pass (bug is fixed)
+```
+
+Only change a test if the **expectation itself** was genuinely wrong.
+
+---
+
+## 19. Creating Files in Wrong Locations
+
+```
+// WRONG locations
+src/components/separator/   ← no 'components' subdirectory
+src/Separator/              ← PascalCase directory name
+src/separator/Separator.tsx ← PascalCase filename
+
+// CORRECT locations
+src/separator/              ← lowercase, hyphenated directory
+src/separator/separator.tsx ← kebab-case filename matching directory
+src/separator/types.ts      ← role-based filename
+src/__tests__/separator.test.tsx  ← tests in __tests__/ directory
+docs/components/separator.md     ← docs in docs/components/
+```
+
+---
+
+## 20. Spreading Props Before Style Array
+
+The `...rest` spread must come AFTER all explicit props to avoid accidental
+overrides, but the `style` array order is what matters for style precedence.
+
+```tsx
+// WRONG — rest spread could override accessibility props
+<View
+  {...rest}
+  accessible
+  accessibilityRole="separator"
+  style={[styles.base, css, style]}
+/>
+
+// CORRECT — explicit props set, rest spread at end, style array ordered correctly
+<View
+  ref={ref}
+  accessible
+  accessibilityRole="separator"
+  accessibilityState={{ disabled }}
+  style={[styles.base, dynamicStyles, css, style]}
+  {...rest}  // rest goes last BUT won't override style since style is explicit
+/>
+```
+
+Note: In React Native, when both an explicit `style` prop and `style` in `...rest`
+exist, the explicit one wins. But for clarity, structure props → a11y → style → rest.
+
+Actually, the safest pattern used in this project is to destructure `css` and `style`
+out of props and apply them manually:
+
+```tsx
+const { css, style, ...rest } = props;
+<View style={[styles.base, css, style]} {...rest} />
+```

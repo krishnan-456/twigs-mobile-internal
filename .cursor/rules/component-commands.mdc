@@ -1,0 +1,146 @@
+---
+description: Protocol for `create <component>` and `publish <component>` chat commands. Read when user triggers these commands.
+globs:
+  - ".cursor/skills/*.md"
+---
+
+# Component Commands
+
+Two chat commands drive the component lifecycle. Read the matching skill before acting.
+
+## `create <component>`
+
+Trigger: message starts with `create` followed by a component name.
+
+1. **Read the master skill** at `.cursor/skills/master-orchestrator.md`.
+2. The master skill delegates to specialized skills in sequence:
+   - `.cursor/skills/discover-web-source.md` — Phase 1
+   - `.cursor/skills/feasibility-check.md` — Phase 2
+   - `.cursor/skills/implement-component.md` — Phase 3
+   - `.cursor/skills/write-tests.md` — Phase 4
+   - `.cursor/skills/write-docs.md` — Phase 5
+   - `.cursor/skills/quality-gate.md` — Phase 6
+3. If any phase fails, fix it before proceeding to the next.
+
+## `publish <component>`
+
+Trigger: message starts with `publish` followed by a component name, or just `publish` / `release`.
+
+1. **Read the master skill** at `.cursor/skills/master-orchestrator.md`.
+2. The master skill delegates to:
+   - `.cursor/skills/quality-gate.md` — Pre-flight checks
+   - `.cursor/skills/publish.md` — Changeset, version, publish
+
+---
+
+## Sub-Agent Strategy
+
+When executing `create` or `publish`, use the **Task tool** to parallelize work
+across sub-agents. This is the single most important optimization.
+
+### Agent type selection guide
+
+| Task | Agent Type | Model | Why |
+|------|-----------|-------|-----|
+| Fetch web source from GitHub | `explore` | default | Fast readonly web fetch |
+| Analyze existing RN component patterns | `explore` | default | Fast readonly code search |
+| Implement component source files | main agent | — | Needs full conversation context and user interaction |
+| Write test file | `generalPurpose` | `fast` | Independent file creation, well-defined template |
+| Write docs file | `generalPurpose` | `fast` | Independent file creation, well-defined template |
+| Run yarn commands (lint, test, build) | `shell` | `fast` | Command execution only |
+| Evaluate npm package viability | `explore` | default | Web search + analysis |
+
+### Parallel execution map
+
+```
+create <component> execution:
+
+  Phase 1 ─── [explore A] + [explore B]  ← parallel (2 agents)
+                    │
+  Phase 2 ─── [main agent]               ← sequential (user interaction)
+                    │
+  Phase 3 ─── [main agent]               ← sequential (file dependencies)
+                    │
+  Phase 4 ─── [general C] + [general D]  ← parallel (2 agents)
+                    │
+  Phase 5 ─── [shell E]                  ← sequential (commands)
+                    │
+  Phase 6 ─── [main agent]               ← sequential (finalize)
+```
+
+### Concurrency rules
+
+- **Never** launch more than 2 sub-agents simultaneously (stay well under the 4-agent Cursor limit).
+- **Always** wait for all parallel agents to complete before starting the next phase.
+- **Never** launch implementation agents in parallel — files have dependencies (types.ts must exist before component.tsx).
+- If a sub-agent fails, the main agent reads the error, fixes the issue, and either re-launches the agent or completes the task itself.
+
+### Context-passing rules
+
+Sub-agents have **NO access** to the conversation. When launching a sub-agent, always include:
+
+- **Component identity**: full name (PascalCase) and directory name (kebab-case)
+- **Workspace path**: absolute path to the project root
+- **Extracted data**: all props, variants, tokens, accessibility info the agent needs
+- **File paths**: exact paths to read from or write to
+- **Pattern references**: name of existing component to use as reference
+- **Conventions**: any non-obvious rules (e.g., "use TwigsProvider wrapper in tests")
+
+---
+
+## Feasibility Decision Tree
+
+| Classification | Criteria | Action |
+|---------------|---------|--------|
+| **Pure UI** | Built entirely with View, Text, Pressable, Image | Implement directly in RN |
+| **Needs RN alternative** | Uses DOM positioning (popover, tooltip, dropdown), portals, or complex CSS layout | Identify RN package; **ask user** before installing |
+| **Platform adaptation** | Uses hover states, CSS Grid, `<table>`, CSS transitions | Adapt for mobile patterns (pressed instead of hover, FlatList instead of table) |
+| **Not feasible in RN** | Relies on browser-only APIs (`<iframe>`, `document.body` portals, `window` APIs) | Tell the user; propose a fallback or skip |
+
+**Always ask the user before choosing a fallback approach.**
+
+### Common component classifications
+
+| Web Component | Classification | RN Approach |
+|--------------|---------------|-------------|
+| separator | Pure UI | View with borderBottom or fixed height |
+| chip / tag | Pure UI | Pressable + Text + optional close icon |
+| alert | Pure UI | View with icon + text + color variants |
+| avatar | Pure UI | Image with fallback initials |
+| stepper | Pure UI | View + Text + step indicators |
+| slider | Needs RN alternative | `@react-native-community/slider` or custom |
+| tooltip | Needs RN alternative | Custom Pressable + absolute positioned View |
+| popover | Needs RN alternative | `react-native-popover-view` or BottomSheet |
+| dialog | Platform adaptation | RN `Modal` component |
+| dropdown / select | Platform adaptation | BottomSheet-based picker |
+| table | Platform adaptation | FlatList with header row |
+| calendar / datepicker | Needs RN alternative | `react-native-calendars` or custom |
+| accordion | Pure UI | Animated View with collapsible sections |
+| tabs | Pure UI | Pressable row + content switching |
+
+---
+
+## Quality Gate (applies to both commands)
+
+For detailed Web-to-RN translation rules, see `web-library-reference.mdc`.
+For dependency vetting criteria, see the `feasibility-check.md` skill.
+
+Every component must satisfy before the command is considered done:
+
+- [ ] Uses `useTheme()` for all colors — no hardcoded hex
+- [ ] Uses `colorOpacity()` for alpha variants — no `#RRGGBBAA` literals
+- [ ] Extends `CommonStyleProps` and `BaseAccessibilityProps` in props interface
+- [ ] Has `React.forwardRef` + `displayName`
+- [ ] Appropriate `accessibilityRole` set (button, switch, checkbox, radio, image, separator, etc.)
+- [ ] Appropriate `accessibilityState` set (disabled, checked, busy, expanded)
+- [ ] `css` and `style` props applied last in the style array
+- [ ] Types exported from `src/<name>/index.ts`
+- [ ] Component + types exported from root `src/index.ts` (alphabetical order)
+- [ ] Test file at `src/__tests__/<name>.test.tsx` with 5 test areas
+- [ ] Docs file at `docs/components/<name>.md` with all sections
+- [ ] `docs/getting-started.md` component table updated
+- [ ] `yarn format` — no formatting issues
+- [ ] `yarn lint` — no lint errors
+- [ ] `yarn test` — all tests pass
+- [ ] `yarn build` — build succeeds
+- [ ] Changeset created in `.changeset/`

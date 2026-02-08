@@ -1,0 +1,234 @@
+---
+description: Cross-reference guide for Twigs Web library - fetch URLs, component inventory, token mapping
+globs:
+  - "src/**/*.tsx"
+  - "src/**/*.ts"
+---
+
+# Web Library Reference
+
+The React Native `twigs-mobile` library is the mobile counterpart of the web
+**@sparrowengg/twigs-react** library.
+
+**Repository:** https://github.com/surveysparrow/twigs
+**Packages path:** `packages/react-components/`
+**Live docs:** https://twigs.surveysparrow.com/
+
+## Validation Rule
+
+When implementing or modifying any component, **always cross-reference** the web
+twigs library to ensure:
+
+1. **Naming parity** — prop names, variant names (`solid`, `ghost`, `outline`),
+   and size names (`sm`, `md`, `lg`, etc.) should match the web library unless
+   React Native constraints require deviation.
+2. **Color tokens** — the same semantic color tokens (`primary500`,
+   `secondary500`, `negative600`, etc.) are used for the same purposes.
+3. **Design intent** — visual appearance, spacing ratios, and interaction states
+   (hover/pressed, disabled, focused) follow the web library's design intent,
+   adapted for mobile (e.g. `pressed` instead of `hover`).
+4. **API surface** — new props or components should align with the web library's
+   API where possible. If mobile-specific props are needed, document the deviation.
+
+## How to Cross-Reference
+
+1. Check the web component source at:
+   `https://github.com/surveysparrow/twigs/tree/master/packages/react-components/src`
+2. Look for the component under its name folder (e.g. `button/`, `input/`, `switch/`).
+3. Compare props interface, variants, color mappings, and size configs.
+4. Note any intentional deviations in a code comment: `// Mobile deviation: <reason>`.
+
+## When to Apply
+
+- Creating a new component
+- Adding a new variant or size to an existing component
+- Changing color/style mappings
+- Reviewing PR changes to components
+
+---
+
+## How to Fetch Web Source Programmatically
+
+When the `create` command is triggered, use these exact URLs to fetch web source:
+
+### Step 1 — List the component directory
+
+```
+WebFetch: https://api.github.com/repos/surveysparrow/twigs/contents/packages/react-components/src/<component-name>
+```
+
+Returns a JSON array of files. Look for `.tsx` and `.ts` files.
+If the response is a 404, the component does **not** exist in the web library.
+
+### Step 2 — Read individual source files
+
+```
+WebFetch: https://raw.githubusercontent.com/surveysparrow/twigs/master/packages/react-components/src/<component-name>/<filename>
+```
+
+### Step 3 — Required files to read (in priority order)
+
+1. `index.ts` or `index.tsx` — public exports (reveals the API surface)
+2. Main component file (usually `<name>.tsx` or `<name>.ts`)
+3. Types file if separate (`types.ts`, `<name>.types.ts`)
+4. Styles file if present (`styles.ts`, `<name>.styles.ts`)
+
+### Step 4 — If the component does NOT exist
+
+If the GitHub API returns 404 or the directory listing is empty:
+
+Ask the user:
+> "The component `<NAME>` doesn't exist in twigs-web.
+> Should I design it as a new mobile-only component, or did you mean a different name?"
+
+Do **not** proceed without user confirmation.
+
+### Name variations to try
+
+Some web components use different names. If the exact name fails, try:
+
+| User says | Also try |
+|-----------|---------|
+| `separator` | `divider` |
+| `textinput` | `input`, `text-input` |
+| `tag` | `chip`, `badge` |
+| `modal` | `dialog`, `alert-dialog` |
+| `dropdown` | `select`, `popover` |
+| `navbar` | `navigation`, `header` |
+| `spinner` | `loader` |
+| `toggle` | `switch` |
+
+---
+
+## Web Component Inventory
+
+All components available in `packages/react-components/src/`:
+
+### Layout
+- `box` — Basic layout container
+- `flex` — Flexbox container
+- `grid` — CSS Grid container
+- `stack` — Vertical/horizontal stack
+
+### Typography
+- `heading` — Heading text (h1-h6)
+- `text` — Body text (mapped to our `text` component)
+
+### Form Controls
+- `button` — Button with variants, sizes, loading state
+- `checkbox` — Checkbox with indeterminate support
+- `input` — Text input field
+- `radio` — Radio button
+- `select` — Dropdown select
+- `slider` — Range slider
+- `switch` — Toggle switch
+- `textarea` — Multi-line text input
+
+### Feedback
+- `alert` — Alert banner with variants
+- `alert-dialog` — Confirmation dialog
+- `dialog` — Modal dialog
+- `drawer` — Side drawer panel
+- `loader` — Loading spinner/bar
+- `toast` — Toast notifications
+
+### Data Display
+- `avatar` — User avatar with image/initials
+- `chip` — Compact element for tags/filters
+- `image` — Styled image component
+- `separator` — Visual divider line
+- `stepper` — Step indicator
+- `table` — Data table
+- `tabs` — Tab navigation
+- `tag` — Label/tag element
+
+### Navigation
+- `link` — Hyperlink
+- `pagination` — Page navigation
+
+### Overlay
+- `dropdown` — Dropdown menu
+- `hover-card` — Hover-triggered card
+- `popover` — Popover content
+- `tooltip` — Tooltip
+
+### Form Helpers
+- `form-helper-text` — Helper/error text below inputs
+- `form-label` — Label for form fields
+- `cascader` — Cascading dropdown
+
+---
+
+## Stitches-to-StyleSheet Token Mapping
+
+Web components use Stitches `css={{}}` with `$tokenName` references.
+Map them to React Native theme tokens:
+
+### Color tokens
+
+| Stitches | RN theme path | Usage |
+|----------|--------------|-------|
+| `$primary100` – `$primary900` | `theme.colors.primary100` – `theme.colors.primary900` | Brand colors |
+| `$secondary100` – `$secondary900` | `theme.colors.secondary100` – `theme.colors.secondary900` | Secondary brand |
+| `$positive100` – `$positive900` | `theme.colors.positive100` – `theme.colors.positive900` | Success states |
+| `$negative100` – `$negative900` | `theme.colors.negative100` – `theme.colors.negative900` | Error states |
+| `$warning100` – `$warning900` | `theme.colors.warning100` – `theme.colors.warning900` | Warning states |
+| `$neutral100` – `$neutral900` | `theme.colors.neutral100` – `theme.colors.neutral900` | Neutral/gray scale |
+| `$black900` | `theme.colors.black900` | Text color |
+| `$white900` | `theme.colors.white900` | Background color |
+
+### Spacing tokens
+
+| Stitches | RN theme path | Typical value |
+|----------|--------------|--------------|
+| `$space$2` | `theme.space[2]` | 4dp |
+| `$space$4` | `theme.space[4]` | 8dp |
+| `$space$6` | `theme.space[6]` | 12dp |
+| `$space$8` | `theme.space[8]` | 16dp |
+| `$space$10` | `theme.space[10]` | 20dp |
+| `$space$12` | `theme.space[12]` | 24dp |
+| `$space$16` | `theme.space[16]` | 32dp |
+
+### Typography tokens
+
+| Stitches | RN theme path |
+|----------|--------------|
+| `$fontSizes$xs` | `theme.fontSizes.xs` |
+| `$fontSizes$sm` | `theme.fontSizes.sm` |
+| `$fontSizes$md` | `theme.fontSizes.md` |
+| `$fontSizes$lg` | `theme.fontSizes.lg` |
+| `$fontSizes$xl` | `theme.fontSizes.xl` |
+| `$lineHeights$xs` | `theme.lineHeights.xs` |
+| `$lineHeights$sm` | `theme.lineHeights.sm` |
+| `$lineHeights$md` | `theme.lineHeights.md` |
+
+### Border & radius tokens
+
+| Stitches | RN theme path |
+|----------|--------------|
+| `$radii$sm` | `theme.radii.sm` |
+| `$radii$md` | `theme.radii.md` |
+| `$radii$lg` | `theme.radii.lg` |
+| `$radii$xl` | `theme.radii.xl` |
+| `$radii$round` | `theme.radii.round` (9999) |
+| `$borderWidths$sm` | `theme.borderWidths.sm` |
+| `$borderWidths$md` | `theme.borderWidths.md` |
+
+### CSS properties with NO direct RN equivalent
+
+| CSS Property | RN Approach |
+|-------------|-------------|
+| `transition` | `react-native-reanimated` (`withTiming`, `withSpring`) |
+| `box-shadow` | `shadowColor` + `shadowOffset` + `shadowOpacity` + `shadowRadius` (iOS), `elevation` (Android) |
+| `cursor: pointer` | Ignore — all Pressable elements are tappable |
+| `outline` | Ignore — use RN accessibility focus |
+| `::before` / `::after` | Render as sibling `View` elements |
+| `overflow: auto` | `ScrollView` wrapper |
+| `position: fixed` | `position: 'absolute'` (RN has no `fixed`) |
+| `z-index` | `zIndex` style prop (works in RN) |
+| `opacity` transition | `useSharedValue` + `useAnimatedStyle` + `withTiming` |
+| `transform` transition | Same reanimated pattern |
+| `display: grid` | Use `Flex` with `flexWrap: 'wrap'` or a column layout |
+| `display: inline` | Not supported — use `flexDirection: 'row'` parent |
+| `text-decoration` | `textDecorationLine`, `textDecorationStyle`, `textDecorationColor` |
+| `white-space` | `numberOfLines` + `ellipsizeMode` on `Text` |

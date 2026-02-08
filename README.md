@@ -5,7 +5,7 @@ React Native component library for SurveySparrow.
 ## Installation
 
 ```bash
-yarn add @sparrowengg/twigs-react-native
+yarn add testing-twigs
 ```
 
 **Peer Dependencies:**
@@ -17,7 +17,7 @@ yarn add @gorhom/bottom-sheet react-native-gesture-handler react-native-reanimat
 ## Quick Start
 
 ```tsx
-import { TwigsProvider, Button, Text, Flex } from '@sparrowengg/twigs-react-native';
+import { TwigsProvider, Button, Text, Flex } from 'testing-twigs';
 
 export default function App() {
   return (
@@ -41,7 +41,7 @@ import {
   BottomSheetView, 
   BottomSheetScrollView,
   BottomSheetTextInput 
-} from '@sparrowengg/twigs-react-native';
+} from 'testing-twigs';
 
 // Basic usage
 <BottomSheet ref={sheetRef} snapPoints={['50%']} title="Settings">
@@ -72,7 +72,7 @@ sheetRef.current?.close();
 ## Theming
 
 ```tsx
-import { TwigsProvider, useTheme } from '@sparrowengg/twigs-react-native';
+import { TwigsProvider, useTheme } from 'testing-twigs';
 
 // Custom theme
 <TwigsProvider theme={{ colors: { primary500: '#FF6B6B' } }}>

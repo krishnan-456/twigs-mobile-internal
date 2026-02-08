@@ -1,0 +1,59 @@
+---
+description: General React Native and TypeScript coding standards for this component library
+alwaysApply: true
+---
+
+# React Native & TypeScript Standards
+
+General coding standards that complement the Twigs-specific conventions in `project-overview.mdc`.
+
+## TypeScript
+
+- Use TypeScript for all code. Strict mode is enabled in `tsconfig.json`.
+- Favor `interface` over `type` for props and object shapes.
+- Avoid `any`; use precise types. If a generic is needed temporarily, prefer `unknown` and narrow with type guards.
+- Avoid enums; use union types (`type Size = 'sm' | 'md' | 'lg'`) or `Record` maps.
+- Use `import type { ... }` for type-only imports to keep bundles clean.
+
+## Component Patterns
+
+- Use functional components and hooks. Never use class components.
+- **Public/exported components**: use `React.forwardRef` with `displayName` (see `project-overview.mdc` for the full pattern).
+- **Internal sub-components** (not exported from `index.ts`): plain function components or `React.FC` are acceptable when no ref forwarding is needed.
+- Prefer named exports; avoid default exports.
+- Keep components small and focused on a single responsibility. When a file exceeds ~250 LOC, split per the folder layout rules in `project-overview.mdc` (constants, helpers, styles, sub-components).
+
+## Naming Conventions
+
+- **Variables / functions**: `camelCase` (e.g. `isLoading`, `handlePress`).
+- **Components**: `PascalCase` (e.g. `Button`, `LineLoader`).
+- **Directories**: lowercase, hyphenated (e.g. `text-input`, `bottom-sheet`).
+- **Type/interface names**: `PascalCase` (e.g. `ButtonProps`, `SizeConfig`).
+- Use descriptive names with auxiliary verbs where helpful (e.g. `isDisabled`, `hasError`).
+
+## Styling
+
+- Use `StyleSheet.create()` for all static styles; define them outside the component body.
+- Dynamic/computed styles that depend on props or theme should be built with memoized helper functions or `useMemo`.
+- Do not use inline style objects in JSX unless there is a clear, one-off reason.
+
+## Performance
+
+- Minimize `useEffect` and `useState`; derive values when possible.
+- Wrap expensive computations in `useMemo` and event handlers in `useCallback`.
+- Use `React.memo()` for leaf components with stable props.
+- Avoid anonymous functions in `renderItem` or event handler props to prevent unnecessary re-renders.
+- For `FlatList`, use `removeClippedSubviews`, `maxToRenderPerBatch`, `windowSize`, and `getItemLayout` (when item sizes are fixed).
+
+## Error Handling
+
+- Handle errors and edge cases at the start of functions with early returns / guard clauses.
+- Avoid deeply nested `if` / `else`; prefer the `if-return` pattern.
+- Validate public-facing props with sensible defaults and fallback values.
+
+## Code Organization
+
+- Group related code by feature, not by file type.
+- Keep types in a separate `types.ts` file per component.
+- Barrel `index.ts` files are the public API boundary; only re-export what consumers need.
+- Do not import from sibling component internals; only import from their `index.ts`.

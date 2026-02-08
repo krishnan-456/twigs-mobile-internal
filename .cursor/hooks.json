@@ -1,0 +1,27 @@
+{
+  "version": 1,
+  "hooks": {
+    "afterFileEdit": [
+      {
+        "command": ".cursor/hooks/format.sh",
+        "matcher": "\\.tsx?$"
+      },
+      {
+        "command": ".cursor/hooks/check-hardcoded-colors.sh",
+        "matcher": "\\.tsx$"
+      },
+      {
+        "command": ".cursor/hooks/check-displayname.sh",
+        "matcher": "\\.tsx$"
+      },
+      {
+        "command": ".cursor/hooks/check-a11y-role.sh",
+        "matcher": "\\.tsx$"
+      },
+      {
+        "command": ".cursor/hooks/check-barrel-export.sh",
+        "matcher": "index\\.ts$"
+      }
+    ]
+  }
+}
