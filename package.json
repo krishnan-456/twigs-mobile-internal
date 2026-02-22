@@ -1,6 +1,6 @@
 {
     "name": "testing-twigs",
-    "version": "0.1.12",
+    "version": "0.2.0",
     "description": "Twigs React Native component library",
     "main": "./lib/commonjs/index.js",
     "module": "./lib/module/index.js",
@@ -23,11 +23,15 @@
         "lib",
         "!**/__tests__",
         "!**/__fixtures__",
-        "!**/__mocks__"
+        "!**/__mocks__",
+        "!**/*.stories.*"
     ],
     "scripts": {
         "build": "bob build",
-        "prepare": "bob build",
+        "prepack": "bob build",
+        "example": "yarn --cwd example start",
+        "example:ios": "yarn --cwd example ios",
+        "example:android": "yarn --cwd example android",
         "lint": "eslint src/**/*.{ts,tsx}",
         "lint:fix": "eslint src/**/*.{ts,tsx} --fix",
         "format": "prettier --write \"src/**/*.{ts,tsx,json}\"",
@@ -80,9 +84,9 @@
         "react": "^18.3.1",
         "react-native": "^0.76.0",
         "react-native-builder-bob": "^0.30.2",
-        "react-native-gesture-handler": "^2.20.2",
-        "react-native-reanimated": "^3.19.1",
-        "react-native-svg": "^15.8.0",
+        "react-native-gesture-handler": "~2.20.2",
+        "react-native-reanimated": "~3.16.1",
+        "react-native-svg": "~15.8.0",
         "react-test-renderer": "18.3.1",
         "ts-jest": "^29.4.6",
         "typescript": "^5.3.3"
@@ -96,13 +100,24 @@
             "prettier --write"
         ]
     },
+    "workspaces": [
+        "example"
+    ],
+    "resolutions": {
+        "react": "18.3.1",
+        "react-native": "0.76.9",
+        "react-native-reanimated": "~3.16.1",
+        "react-native-gesture-handler": "~2.20.2",
+        "react-native-svg": "~15.8.0"
+    },
     "packageManager": "yarn@1.22.22+sha512.a6b2f7906b721bba3d67d4aff083df04dad64c399707841b7acf00f6b133b7ac24255f2652fa22ae3534329dc6180534e98d17432037ff6fd140556e2bb3137e",
     "react-native-builder-bob": {
         "source": "src",
         "output": "lib",
+        "exclude": ["**/{__tests__,__fixtures__,__mocks__}/**", "**/*.stories.{ts,tsx}"],
         "targets": [
-            "commonjs",
-            "module",
+            ["commonjs", { "configFile": true }],
+            ["module", { "configFile": true }],
             "typescript"
         ]
     }

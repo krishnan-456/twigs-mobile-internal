@@ -25,9 +25,12 @@
   "exclude": [
     "node_modules",
     "lib",
+    "src/__tests__",
     "**/*.spec.ts",
     "**/*.spec.tsx",
     "**/*.test.ts",
-    "**/*.test.tsx"
+    "**/*.test.tsx",
+    "**/*.stories.ts",
+    "**/*.stories.tsx"
   ]
 }

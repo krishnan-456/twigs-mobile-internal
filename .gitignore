@@ -28,3 +28,9 @@ Thumbs.db
 
 # ESLint cache
 .eslintcache
+
+# Example app
+example/node_modules/
+example/.expo/
+example/ios/
+example/android/

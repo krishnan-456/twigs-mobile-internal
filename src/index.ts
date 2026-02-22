@@ -1,3 +1,7 @@
+// Alert
+export { Alert } from './alert';
+export type { AlertProps, AlertStatus, AlertSize } from './alert';
+
 // Avatar
 export { Avatar } from './avatar';
 export type { AvatarProps, AvatarSize, AvatarSizeProp } from './avatar';
@@ -31,6 +35,10 @@ export type { FlexProps } from './flex';
 // Radio
 export { Radio } from './radio';
 export type { RadioProps, RadioSize } from './radio';
+
+// Separator
+export { Separator } from './separator';
+export type { SeparatorProps, SeparatorOrientation } from './separator';
 
 // Switch
 export { Switch } from './switch';

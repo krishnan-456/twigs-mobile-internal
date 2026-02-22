@@ -70,7 +70,9 @@ export default function App() {
 | `TextInput` | Text field with icons, elements, error states, password toggle |
 | `Checkbox` | Animated checkbox with indeterminate state |
 | `Radio` | Radio button with size variants |
+| `Separator` | Visual divider with horizontal and vertical orientations |
 | `Switch` | Animated toggle switch |
+| `Alert` | Contextual feedback messages with status variants and optional close |
 | `Avatar` | User avatar with image or initials fallback |
 | `Box` | Basic layout container |
 | `Flex` | Flexbox layout container |

@@ -1,0 +1,19 @@
+{
+    "expo": {
+        "name": "twigs-mobile-example",
+        "slug": "twigs-mobile-example",
+        "version": "1.0.0",
+        "scheme": "twigs-example",
+        "platforms": ["ios", "android"],
+        "newArchEnabled": true,
+        "ios": {
+            "bundleIdentifier": "com.surveysparrow.twigsmobile.example"
+        },
+        "android": {
+            "package": "com.surveysparrow.twigsmobile.example",
+            "adaptiveIcon": {
+                "backgroundColor": "#ffffff"
+            }
+        }
+    }
+}

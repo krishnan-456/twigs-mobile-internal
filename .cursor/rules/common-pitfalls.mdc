@@ -463,3 +463,34 @@ out of props and apply them manually:
 const { css, style, ...rest } = props;
 <View style={[styles.base, css, style]} {...rest} />
 ```
+
+---
+
+## 21. Using borderTopColor Rotation for Spinners
+
+Using `borderTopColor` with `borderRadius` and rotation animation is unreliable
+on Android. The border segment rendering differs between iOS and Android,
+leading to spinners that look correct on iOS but appear static on Android.
+
+```tsx
+// WRONG — borderTopColor spinner, unreliable on Android
+const loaderStyle = {
+  borderRadius: diameter / 2,
+  borderWidth: strokeWidth,
+  borderColor: colors.ring,
+  borderTopColor: colors.dot,  // does not render a distinct arc on Android
+};
+
+// CORRECT — SVG arc with strokeDasharray
+import { Svg, Circle } from 'react-native-svg';
+
+const circumference = 2 * Math.PI * radius;
+<Svg width={diameter} height={diameter}>
+  <Circle stroke={colors.ring}  strokeWidth={strokeWidth} fill="none" /* background ring */ />
+  <Circle stroke={colors.dot}   strokeWidth={strokeWidth} fill="none"
+          strokeDasharray={`${circumference * 0.25} ${circumference * 0.75}`}
+          strokeLinecap="round" /* active arc */ />
+</Svg>
+```
+
+Always prefer SVG-based arcs for circular loaders / spinners.
