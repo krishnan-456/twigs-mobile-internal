@@ -1,35 +1,33 @@
 ---
-description: Protocol for `create <component>` and `publish <component>` chat commands. Read when user triggers these commands.
+description: >
+  Reference document for the component creation and publishing workflows.
+  Provides sub-agent strategy, feasibility decision tree, and quality gate checklist.
+  The /create and /publish slash commands in .cursor/commands/ are the entry points.
 globs:
   - ".cursor/skills/*.md"
+  - ".cursor/commands/*.md"
 ---
 
-# Component Commands
+# Component Workflow Reference
 
-Two chat commands drive the component lifecycle. Read the matching skill before acting.
+Reference document for the `/create` and `/publish` workflows. The slash commands
+in `.cursor/commands/` are the entry points; this rule provides the sub-agent
+strategy, feasibility decision tree, and quality gate checklist that those
+commands and their skills rely on.
 
-## `create <component>`
+## Workflow Entry Points
 
-Trigger: message starts with `create` followed by a component name.
+| Command | File | Skill |
+|---------|------|-------|
+| `/create <component>` | `.cursor/commands/create.md` | `.cursor/skills/master-orchestrator.md` |
+| `/publish` | `.cursor/commands/publish.md` | `.cursor/skills/publish.md` |
 
-1. **Read the master skill** at `.cursor/skills/master-orchestrator.md`.
-2. The master skill delegates to specialized skills in sequence:
-   - `.cursor/skills/discover-web-source.md` — Phase 1
-   - `.cursor/skills/feasibility-check.md` — Phase 2
-   - `.cursor/skills/implement-component.md` — Phase 3
-   - `.cursor/skills/write-tests.md` — Phase 4
-   - `.cursor/skills/write-docs.md` — Phase 5
-   - `.cursor/skills/quality-gate.md` — Phase 6
-3. If any phase fails, fix it before proceeding to the next.
+## Available Agents
 
-## `publish <component>`
-
-Trigger: message starts with `publish` followed by a component name, or just `publish` / `release`.
-
-1. **Read the master skill** at `.cursor/skills/master-orchestrator.md`.
-2. The master skill delegates to:
-   - `.cursor/skills/quality-gate.md` — Pre-flight checks
-   - `.cursor/skills/publish.md` — Changeset, version, publish
+| Agent | File | Purpose |
+|-------|------|---------|
+| `code-reviewer` | `.cursor/agents/code-reviewer.md` | Read-only quality audit against conventions and pitfalls |
+| `web-source-analyzer` | `.cursor/agents/web-source-analyzer.md` | Extract web component API from twigs-react GitHub source |
 
 ---
 
@@ -55,17 +53,18 @@ across sub-agents. This is the single most important optimization.
 ```
 create <component> execution:
 
-  Phase 1 ─── [explore A] + [explore B]  ← parallel (2 agents)
-                    │
-  Phase 2 ─── [main agent]               ← sequential (user interaction)
-                    │
-  Phase 3 ─── [main agent]               ← sequential (file dependencies)
-                    │
-  Phase 4 ─── [general C] + [general D]  ← parallel (2 agents)
-                    │
-  Phase 5 ─── [shell E]                  ← sequential (commands)
-                    │
-  Phase 6 ─── [main agent]               ← sequential (finalize)
+  Phase 1   ─── [explore A] + [explore B]  ← parallel (2 agents)
+                      │
+  Phase 2   ─── [main agent]               ← sequential (user interaction)
+                      │
+  Phase 3   ─── [main agent]               ← sequential (file dependencies)
+  Phase 3.5 ─── [main agent]               ← sequential (story file, needs component)
+                      │
+  Phase 4   ─── [general C] + [general D]  ← parallel (2 agents)
+                      │
+  Phase 5   ─── [shell E]                  ← sequential (commands)
+                      │
+  Phase 6   ─── [main agent]               ← sequential (finalize)
 ```
 
 ### Concurrency rules
@@ -136,6 +135,7 @@ Every component must satisfy before the command is considered done:
 - [ ] `css` and `style` props applied last in the style array
 - [ ] Types exported from `src/<name>/index.ts`
 - [ ] Component + types exported from root `src/index.ts` (alphabetical order)
+- [ ] Story file at `src/<name>/<name>.stories.tsx` with interactive controls for all props
 - [ ] Test file at `src/__tests__/<name>.test.tsx` with 5 test areas
 - [ ] Docs file at `docs/components/<name>.md` with all sections
 - [ ] `docs/getting-started.md` component table updated

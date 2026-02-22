@@ -37,6 +37,10 @@ When launching as sub-agent, use this prompt:
 In the project at <WORKSPACE>, run these commands sequentially.
 If any command fails, return the FULL error output (first 50 lines) and STOP.
 
+0. Verify story file exists:
+   ls src/<DIR_NAME>/<DIR_NAME>.stories.tsx
+   If missing, report FAIL and STOP.
+
 1. Format the new component files:
    npx prettier --write "src/<DIR_NAME>/**/*.{ts,tsx}" "src/__tests__/<DIR_NAME>.test.tsx" "docs/components/<DIR_NAME>.md"
 
@@ -55,6 +59,7 @@ For each command, report:
 - Output: <relevant output, especially errors>
 
 Final summary:
+- Story file: PASS/FAIL
 - Format: PASS/FAIL
 - Lint: PASS/FAIL
 - Test: PASS/FAIL
@@ -77,6 +82,11 @@ If any command fails, return the FULL error output (first 50 lines) and STOP.
 3. Build project:
    yarn build
 
+4. Dry-run pack verification:
+   npm pack --dry-run 2>&1
+   Verify: no *.stories.* files, no __tests__/ dirs, no src/ raw TS, only lib/ contents.
+   Warn if package size > 500KB.
+
 For each command, report:
 - Command: <the command>
 - Status: PASS or FAIL
@@ -87,6 +97,7 @@ Final summary:
 - Lint: PASS/FAIL
 - Test: PASS/FAIL
 - Build: PASS/FAIL
+- Pack dry-run: PASS/FAIL
 - Overall: PASS/FAIL
 ```
 
@@ -218,21 +229,24 @@ Return to master orchestrator:
 {
   passed: boolean,
   results: {
+    storyFile?: { passed: boolean, output?: string },  // component mode only
     format: { passed: boolean, output?: string },
     lint: { passed: boolean, output?: string },
     test: { passed: boolean, output?: string },
     build: { passed: boolean, output?: string },
+    packDryRun?: { passed: boolean, output?: string },  // full mode only
   },
-  errors: string | null,  // first 50 lines of error output
-  failedStep: 'format' | 'lint' | 'test' | 'build' | null
+  errors: string | null,
+  failedStep: 'storyFile' | 'format' | 'lint' | 'test' | 'build' | 'packDryRun' | null
 }
 ```
 
-Example success:
+Example success (component mode):
 ```typescript
 {
   passed: true,
   results: {
+    storyFile: { passed: true },
     format: { passed: true },
     lint: { passed: true },
     test: { passed: true, output: 'Tests: 15 passed, 15 total' },
@@ -243,17 +257,18 @@ Example success:
 }
 ```
 
-Example failure:
+Example success (full/publish mode):
 ```typescript
 {
-  passed: false,
+  passed: true,
   results: {
     format: { passed: true },
-    lint: { passed: false, output: 'src/separator/separator.tsx:15:5 error ...' },
-    test: { passed: false },  // not run
-    build: { passed: false }, // not run
+    lint: { passed: true },
+    test: { passed: true, output: 'Tests: 15 passed, 15 total' },
+    build: { passed: true },
+    packDryRun: { passed: true, output: 'Tarball: 45 files, 120KB' },
   },
-  errors: "error: 'theme' is defined but never used (@typescript-eslint/no-unused-vars)\n...",
-  failedStep: 'lint'
+  errors: null,
+  failedStep: null
 }
 ```

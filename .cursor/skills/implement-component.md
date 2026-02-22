@@ -32,13 +32,14 @@ Return to master orchestrator:
 Create files in this order (dependencies flow top-down):
 
 ```
-1. types.ts          → props interface (no dependencies)
-2. constants.ts      → size maps, configs (imports types) [if medium/large]
-3. helpers.ts        → style functions (imports types, constants) [if medium/large]
-4. styles.ts         → StyleSheet.create [if medium/large]
-5. <dir-name>.tsx    → main component (imports all above)
-6. index.ts          → barrel exports
-7. Update src/index.ts → wire to root barrel
+1.   types.ts                  → props interface (no dependencies)
+2.   constants.ts              → size maps, configs (imports types) [if medium/large]
+3.   helpers.ts                → style functions (imports types, constants) [if medium/large]
+4.   styles.ts                 → StyleSheet.create [if medium/large]
+5.   <dir-name>.tsx            → main component (imports all above)
+5.5. <dir-name>.stories.tsx    → Storybook story with interactive controls
+6.   index.ts                  → barrel exports
+7.   Update src/index.ts       → wire to root barrel
 ```
 
 ### File Structure Decision
@@ -249,6 +250,67 @@ export const <ComponentName> = React.forwardRef<View, <ComponentName>Props>(
 - `...rest` spread for consumer overrides
 - `// Mobile deviation: <reason>` comments for any web differences
 
+### <dir-name>.stories.tsx
+
+```tsx
+import type { Meta, StoryObj } from '@storybook/react';
+import { <ComponentName> } from './<dir-name>';
+
+const meta: Meta<typeof <ComponentName>> = {
+  title: '<ComponentName>',
+  component: <ComponentName>,
+  argTypes: {
+    // Map every public prop to an argType with a control
+    size: {
+      control: 'select',
+      options: ['sm', 'md', 'lg'],  // from <ComponentName>Size union
+      description: 'Size variant',
+    },
+    disabled: {
+      control: 'boolean',
+      description: 'Whether the component is disabled',
+    },
+    // ... all other props from types.ts
+    // Use 'color' control for color props
+    // Use 'text' control for string props
+    // Use 'select' control for union type props
+    // Use 'boolean' control for boolean props
+    // Use 'number' control for numeric props
+  },
+  args: {
+    // Default values matching the component defaults
+    size: 'md',
+    disabled: false,
+  },
+};
+
+export default meta;
+type Story = StoryObj<typeof <ComponentName>>;
+
+export const Default: Story = {};
+
+// Add one story per meaningful variant combination
+export const Small: Story = {
+  args: { size: 'sm' },
+};
+
+export const Large: Story = {
+  args: { size: 'lg' },
+};
+
+export const Disabled: Story = {
+  args: { disabled: true },
+};
+```
+
+**Story file rules:**
+- Co-locate with the component: `src/<dir-name>/<dir-name>.stories.tsx`
+- Use CSF3 format (`Meta`, `StoryObj`)
+- Every public prop gets an `argType` with an appropriate control
+- `args` provides sensible defaults
+- Include stories for: Default, each size, each variant, disabled, and any notable state
+- Story files are excluded from the library build by bob's `exclude` config
+
 ### index.ts
 
 ```typescript
@@ -281,6 +343,7 @@ Return to master orchestrator:
   filesCreated: [
     'src/<dir-name>/types.ts',
     'src/<dir-name>/<dir-name>.tsx',
+    'src/<dir-name>/<dir-name>.stories.tsx',
     'src/<dir-name>/index.ts',
   ],
   propsInterface: `

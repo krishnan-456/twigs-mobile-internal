@@ -47,6 +47,12 @@ When user says `create <component>`, execute these phases in order:
 │  └── Output: Component files created + wired to barrel          │
 │       │                                                         │
 │       ▼                                                         │
+│  Phase 3.5: STORY                                               │
+│  ├── Created by implement skill (step 5.5)                      │
+│  ├── Execute: Main agent (needs component + types)              │
+│  └── Output: src/<name>/<name>.stories.tsx with controls        │
+│       │                                                         │
+│       ▼                                                         │
 │  Phase 4: TESTS                                                 │
 │  ├── Read: .cursor/skills/write-tests.md                        │
 │  ├── Launch: 1 generalPurpose agent                             │
@@ -87,6 +93,7 @@ When user says `create <component>`, execute these phases in order:
 ### Parallel Execution Points
 
 - **Phase 1**: Launch 2 explore agents simultaneously
+- **Phase 3 + 3.5**: Story file is created at the end of Phase 3 (same agent)
 - **Phase 4 + 5**: Can run in parallel (tests + docs are independent)
 - All other phases: Sequential
 
@@ -108,7 +115,8 @@ When user says `publish` or `release`:
 │       ▼                                                         │
 │  Step 2-7: PUBLISH                                              │
 │  ├── Read: .cursor/skills/publish.md                            │
-│  └── Execute: changeset → version → build → publish             │
+│  └── Execute: changeset → version → build → pack dry-run →     │
+│       publish                                                   │
 │                                                                 │
 └─────────────────────────────────────────────────────────────────┘
 ```
@@ -146,9 +154,10 @@ interface WorkflowContext {
   deviations?: string[];
   newDepsNeeded?: string[];
   
-  // Phase 3 output
+  // Phase 3 + 3.5 output
   filesCreated?: string[];
   propsInterface?: string;
+  storyFileCreated?: boolean;
   
   // Phase 4-5 output
   testFileCreated?: boolean;
@@ -204,6 +213,7 @@ After all phases complete:
 Files created:
   - src/<dir-name>/types.ts
   - src/<dir-name>/<dir-name>.tsx
+  - src/<dir-name>/<dir-name>.stories.tsx
   - src/<dir-name>/index.ts
   - src/__tests__/<dir-name>.test.tsx
   - docs/components/<dir-name>.md

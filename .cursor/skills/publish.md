@@ -46,6 +46,10 @@ ls .changeset/*.md 2>/dev/null | grep -v README.md | grep -v config.json
   Found <N> changeset(s):
   - <filename>: <package> <level> — <description>
   ```
+- **Version-conflict check:** Read the current version from `package.json` and check
+  if `CHANGELOG.md` already has a `## <current-version>` entry. If it does, warn the
+  user that the changelog may have been manually written or changesets already consumed
+  for this version. Ask whether to proceed (will bump to next version) or abort.
 - Proceed to Step 3
 
 **If NO changesets exist:**
@@ -98,12 +102,30 @@ yarn build
 
 This ensures `lib/` contains compiled output matching the new version.
 
+### Step 4.5 — Dry-Run Pack Verification
+
+Run `npm pack --dry-run` to verify the tarball contents before publishing:
+
+```bash
+npm pack --dry-run 2>&1
+```
+
+**Verify:**
+1. No `*.stories.*` files in the output
+2. No `__tests__/` directories in the output
+3. No `src/` raw TypeScript files in the output
+4. Only `lib/` contents are included
+5. Package size is reasonable (warn if > 500KB)
+
+If any unexpected files appear, **STOP** and fix the `files`/`exclude` config
+in `package.json` before proceeding.
+
 ### Step 5 — Publish Summary
 
 Present comprehensive summary before publishing:
 
 ```
-📦 Release Summary
+Release Summary
 ─────────────────────────────────
 Package: testing-twigs
 Version: <old> → <new>
@@ -112,20 +134,25 @@ Level: <patch/minor/major>
 Changes:
 <List from CHANGELOG.md new entry>
 
+Tarball contents (npm pack --dry-run):
+- <N> files, <size>
+- No leaked stories/tests/src files
+
 Files modified:
 - package.json (version bump)
 - CHANGELOG.md (new entry)
 - lib/ (rebuilt)
 
 Pre-flight checks:
-- Lint: ✓
-- Tests: ✓  
-- Build: ✓
+- Lint: passed
+- Tests: passed
+- Build: passed
+- Pack dry-run: passed
 
 Ready to publish to npm?
 This will run: yarn release
 
-⚠️  This action is irreversible. Confirm to proceed.
+WARNING: This action is irreversible. Confirm to proceed.
 ```
 
 ### Step 6 — Publish (User Confirmation Required)
