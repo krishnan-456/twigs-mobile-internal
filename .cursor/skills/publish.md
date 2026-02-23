@@ -165,7 +165,11 @@ Only after user confirms:
 yarn release
 ```
 
-The `release` script runs `yarn build && changeset publish`.
+The `release` script runs `yarn build && npm publish --access public`.
+Note: We use `npm publish` directly instead of `changeset publish` because
+the root `package.json` has `"private": true` (required for Yarn workspaces),
+and `changeset publish` skips private packages. `changeset version` still
+handles version bumping and changelog generation.
 
 **After publish:**
 1. Verify exit code 0

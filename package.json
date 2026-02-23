@@ -1,6 +1,7 @@
 {
     "name": "testing-twigs",
     "version": "0.2.0",
+    "private": true,
     "description": "Twigs React Native component library",
     "main": "./lib/commonjs/index.js",
     "module": "./lib/module/index.js",
@@ -40,7 +41,7 @@
         "test:watch": "jest --watch",
         "changeset": "changeset",
         "version": "changeset version",
-        "release": "yarn build && changeset publish"
+        "release": "yarn build && npm publish --access public"
     },
     "keywords": [
         "react-native",
