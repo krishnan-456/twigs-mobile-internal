@@ -1,5 +1,7 @@
 # Changelog
 
+## [0.3.1](https://github.com/krishnan-456/twigs-mobile-internal/compare/v0.3.0...v0.3.1) (2026-02-23)
+
 ## 0.3.0 (2026-02-23)
 
 ### Features
