@@ -7,4 +7,7 @@ export const Svg = React.forwardRef((props: any, ref: any) =>
 export const Path = React.forwardRef((props: any, ref: any) =>
   React.createElement(View, { ...props, ref })
 );
+export const Circle = React.forwardRef((props: any, ref: any) =>
+  React.createElement(View, { ...props, ref })
+);
 export default Svg;

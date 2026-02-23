@@ -7,7 +7,7 @@ This document describes the automated workflow for creating and publishing compo
 Twigs Mobile replicates components from the Twigs Web React library into React Native. Two Cursor chat commands drive the lifecycle:
 
 - `create <component>` - discovers the web component, replicates it in RN, adds docs + tests, runs format/lint/test/build.
-- `publish <component>` - runs the release checklist, creates a changeset, bumps the version, updates the changelog, and publishes to npm.
+- `publish` - runs the release checklist, bumps the version via `release-it`, auto-generates the changelog, and publishes to npm.
 
 ## Create Workflow
 
@@ -20,7 +20,7 @@ When you type `create <component>` in Cursor chat:
 5. Wire exports - Adds exports to `src/<component>/index.ts` and `src/index.ts`.
 6. Document - Creates `docs/components/<component>.md`.
 7. Test - Creates `src/__tests__/<component>.test.tsx` covering render, variants, accessibility, interaction, and state transitions.
-8. Quality gate - Runs `yarn format`, `yarn lint:fix`, `yarn test`, `yarn build`.
+8. Quality gate - Runs `npm run format`, `npm run lint:fix`, `npm test`, `npm run build`.
 
 ## Publish Workflow
 
@@ -31,9 +31,7 @@ When you type `publish <component>` in Cursor chat:
 3. Verify exports - Checks barrel files and build output.
 4. Verify docs - Ensures `docs/components/<component>.md` is present.
 5. Verify tests - Runs component-specific tests.
-6. Changeset - Creates a changeset with appropriate semver level.
-7. Version - Bumps version and updates CHANGELOG.md.
-8. Publish - Runs `yarn release` to build and publish to npm.
+6. Release - Runs `npm run release` (release-it) to bump version, update CHANGELOG.md, build, and publish to npm.
 
 ## Component Documentation Convention
 

@@ -5,13 +5,13 @@ React Native component library for SurveySparrow.
 ## Installation
 
 ```bash
-yarn add testing-twigs
+npm install testing-twigs
 ```
 
 **Peer Dependencies:**
 
 ```bash
-yarn add @gorhom/bottom-sheet react-native-gesture-handler react-native-reanimated react-native-svg
+npm install @gorhom/bottom-sheet react-native-gesture-handler react-native-reanimated react-native-svg
 ```
 
 ## Quick Start
@@ -30,6 +30,24 @@ export default function App() {
   );
 }
 ```
+
+## Components
+
+| Component | Description |
+|---|---|
+| `Button` | Pressable button with variants (solid, ghost, outline), sizes, loading state |
+| `TextInput` | Text field with icons, elements, error states, password toggle |
+| `Checkbox` | Animated checkbox with indeterminate state |
+| `Radio` | Radio button with size variants |
+| `Switch` | Animated toggle switch |
+| `Separator` | Visual divider with horizontal and vertical orientations |
+| `Alert` | Contextual feedback messages with status variants and optional close |
+| `Avatar` | User avatar with image or initials fallback |
+| `Box` | Basic layout container |
+| `Flex` | Flexbox layout container |
+| `Text` | Themed text component |
+| `BottomSheet` | Gorhom bottom sheet wrapper with themed header |
+| `BottomSheetModal` | Modal variant of bottom sheet |
 
 ## Bottom Sheet
 

@@ -45,7 +45,7 @@ across sub-agents. This is the single most important optimization.
 | Implement component source files | main agent | — | Needs full conversation context and user interaction |
 | Write test file | `generalPurpose` | `fast` | Independent file creation, well-defined template |
 | Write docs file | `generalPurpose` | `fast` | Independent file creation, well-defined template |
-| Run yarn commands (lint, test, build) | `shell` | `fast` | Command execution only |
+| Run npm commands (lint, test, build) | `shell` | `fast` | Command execution only |
 | Evaluate npm package viability | `explore` | default | Web search + analysis |
 
 ### Parallel execution map
@@ -139,8 +139,7 @@ Every component must satisfy before the command is considered done:
 - [ ] Test file at `src/__tests__/<name>.test.tsx` with 5 test areas
 - [ ] Docs file at `docs/components/<name>.md` with all sections
 - [ ] `docs/getting-started.md` component table updated
-- [ ] `yarn format` — no formatting issues
-- [ ] `yarn lint` — no lint errors
-- [ ] `yarn test` — all tests pass
-- [ ] `yarn build` — build succeeds
-- [ ] Changeset created in `.changeset/`
+- [ ] `npm run format` — no formatting issues
+- [ ] `npm run lint` — no lint errors
+- [ ] `npm test` — all tests pass
+- [ ] `npm run build` — build succeeds

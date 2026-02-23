@@ -1,10 +1,10 @@
 # Publish to npm
 
-Run the full release workflow: quality gate, changeset management, version bump, build, dry-run pack verification, and publish to npm.
+Run the full release workflow using `release-it`: quality gate, version bump, changelog generation, build, and publish to npm.
 
 ## Objective
 
-Publish the `testing-twigs` package to npm with proper versioning, changelog, and verification.
+Publish the `testing-twigs` package to npm with automated versioning and changelog.
 
 ## Workflow
 
@@ -15,33 +15,37 @@ Publish the `testing-twigs` package to npm with proper versioning, changelog, an
 
 | Step | What | Command |
 |------|------|---------|
-| 1. Quality Gate | Run lint, test, build | `yarn lint && yarn test && yarn build` |
-| 2. Changesets | Check for existing `.changeset/*.md` files; create if none | `ls .changeset/*.md` |
-| 3. Version Bump | Consume changesets, bump version, update CHANGELOG | `npx changeset version` |
-| 4. Build | Clean build with new version | `yarn build` |
-| 4.5. Dry-Run Pack | Verify tarball contents -- no stories, tests, or src files | `npm pack --dry-run` |
-| 5. Summary | Present release summary to user | -- |
-| 6. Publish | **Wait for user confirmation**, then publish | `yarn release` |
-| 7. Cleanup | Git tag, commit version bump | `git tag v<version>` |
+| 1. Pre-Flight | Verify clean working directory on `main` | `git status` |
+| 2. Dry Run | Preview version bump, changelog, hooks | `npm run release:dry` |
+| 3. Release | **Wait for user confirmation**, then release | `npm run release` |
+| 4. Post-Release | Push tags to remote, verify on npm | `git push origin main --follow-tags` |
+
+## What `release-it` Does Automatically
+
+1. Runs lint, test, build (pre-release hooks)
+2. Prompts for semver bump (patch/minor/major)
+3. Bumps `package.json` version
+4. Generates `CHANGELOG.md` from conventional commits
+5. Rebuilds with new version
+6. Runs `npm pack --dry-run`
+7. Creates git commit + tag
+8. Publishes to npm
 
 ## Safety Rules
 
-- **NEVER** publish without explicit user confirmation at Step 6.
-- **STOP** if `npm pack --dry-run` shows unexpected files (stories, tests, raw TypeScript).
-- **WARN** if `CHANGELOG.md` already has an entry for the current `package.json` version.
-- **WARN** if package size exceeds 500KB.
+- **NEVER** release without running dry-run first (Step 2).
+- **NEVER** release without explicit user confirmation at Step 3.
+- **ALWAYS** verify the working directory is clean before starting.
+- **WARN** if not on `main` branch.
 
-## Pre-Flight Checks (Quality Gate)
+## Conventional Commits
 
-Before proceeding to changesets, verify all checks pass:
-
-- `yarn lint` -- no lint errors
-- `yarn test` -- all tests pass
-- `yarn build` -- build succeeds
-- `npm pack --dry-run` -- only `lib/` contents, no leaked files
+For changelog generation, commit messages should follow the format:
+- `feat: <description>` -- new features (appears in changelog)
+- `fix: <description>` -- bug fixes (appears in changelog)
+- `chore: <description>` -- maintenance (hidden from changelog)
 
 ## References
 
-- `.cursor/skills/publish.md` -- full publish workflow with error recovery
-- `.cursor/skills/quality-gate.md` -- quality gate commands and failure handling
-- `.cursor/skills/master-orchestrator.md` -- publishing flow diagram
+- `.cursor/skills/publish.md` -- full workflow with error recovery
+- `.release-it.json` -- release-it configuration

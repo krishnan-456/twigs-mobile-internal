@@ -1,254 +1,139 @@
 ---
 name: publish
 description: >
-  Handle changeset management, version bumping, and npm publishing.
-  Called by master-orchestrator for the publish workflow.
+  Handle version bumping, changelog updates, and npm publishing using release-it.
 ---
 
 # Publish
 
-This skill handles the release workflow: changeset management, version bumping,
-changelog generation, and publishing to npm.
+This skill handles the release workflow using **release-it** for automated version
+management, changelog generation, and npm publishing.
 
-## Input
+## Tool: release-it
 
-From master orchestrator:
-- `workspacePath`: absolute path to project root
-- `qualityGatePassed`: must be true before proceeding
+`release-it` automates the entire release lifecycle:
+- Interactive prompt to pick semver bump (patch / minor / major)
+- Bumps `version` in `package.json`
+- Auto-generates `CHANGELOG.md` from conventional commits (via `@release-it/conventional-changelog`)
+- Runs pre-release hooks (lint, test, build, pack dry-run)
+- Publishes to npm (`--access public`)
+- Creates git commit + annotated tag (`v<version>`)
 
-## Output
+Config: `.release-it.json`
 
-Return to master orchestrator:
-- `published`: boolean
-- `version`: the new version string
-- `changelog`: the new changelog entry
+## Conventional Commit Format
+
+For changelog auto-generation, commit messages should follow
+[Conventional Commits](https://www.conventionalcommits.org/):
+
+```
+feat: add Tooltip component
+fix: CircleLoader not spinning on Android
+perf: memoize button style calculations
+refactor: extract loader constants
+docs: update getting-started guide
+chore: update dev dependencies
+```
+
+Commits prefixed with `feat` and `fix` appear in the changelog.
+`chore`, `style`, `test`, `ci` are hidden.
 
 ---
 
 ## Workflow Steps
 
-### Step 1 — Check Prerequisites
+### Step 1 — Pre-Flight Check
 
-Verify quality gate has passed. If not, abort and tell master to run quality-gate first.
-
-### Step 2 — Check for Existing Changesets
-
-List changeset files:
+Verify the working directory is clean and on `main`:
 
 ```bash
-ls .changeset/*.md 2>/dev/null | grep -v README.md | grep -v config.json
+git status
+git branch --show-current
 ```
 
-**If changesets exist:**
-- Read each file to understand what's being released
-- Show summary to user:
-  ```
-  Found <N> changeset(s):
-  - <filename>: <package> <level> — <description>
-  ```
-- **Version-conflict check:** Read the current version from `package.json` and check
-  if `CHANGELOG.md` already has a `## <current-version>` entry. If it does, warn the
-  user that the changelog may have been manually written or changesets already consumed
-  for this version. Ask whether to proceed (will bump to next version) or abort.
-- Proceed to Step 3
+If there are uncommitted changes, commit or stash them first.
+`release-it` requires a clean working directory (`requireCleanWorkingDir: true`).
 
-**If NO changesets exist:**
-- Ask user what type of release:
-  ```
-  No changesets found. What type of release is this?
-  - patch: Bug fixes, minor improvements
-  - minor: New components, new features  
-  - major: Breaking API changes
-  ```
-- After user responds, create changeset:
-  ```
-  .changeset/<random-8-chars>.md
-  ---
-  "testing-twigs": <level>
-  ---
-  
-  <Description of changes>
-  ```
+### Step 2 — Dry Run
 
-### Step 3 — Version Bump
-
-Run changeset version:
+Always run a dry run first to preview the release:
 
 ```bash
-npx changeset version
+npm run release:dry
 ```
 
-This command:
-- Consumes all `.changeset/*.md` files (except README, config)
-- Updates `package.json` version field
-- Updates `CHANGELOG.md` with release notes
+This shows:
+- What version will be bumped to
+- What changelog entries will be generated
+- What hooks will run
+- What will be published
 
-**Verify:**
-1. Read `package.json` — confirm new version
-2. Read top of `CHANGELOG.md` — confirm new entry
-3. Show user:
-   ```
-   Version bump: <old-version> → <new-version>
-   Changelog entry added for <new-version>
-   ```
+Review the output with the user before proceeding.
 
-### Step 4 — Post-Version Build
-
-Run clean build with new version:
-
-```bash
-yarn build
-```
-
-This ensures `lib/` contains compiled output matching the new version.
-
-### Step 4.5 — Dry-Run Pack Verification
-
-Run `npm pack --dry-run` to verify the tarball contents before publishing:
-
-```bash
-npm pack --dry-run 2>&1
-```
-
-**Verify:**
-1. No `*.stories.*` files in the output
-2. No `__tests__/` directories in the output
-3. No `src/` raw TypeScript files in the output
-4. Only `lib/` contents are included
-5. Package size is reasonable (warn if > 500KB)
-
-If any unexpected files appear, **STOP** and fix the `files`/`exclude` config
-in `package.json` before proceeding.
-
-### Step 5 — Publish Summary
-
-Present comprehensive summary before publishing:
-
-```
-Release Summary
-─────────────────────────────────
-Package: testing-twigs
-Version: <old> → <new>
-Level: <patch/minor/major>
-
-Changes:
-<List from CHANGELOG.md new entry>
-
-Tarball contents (npm pack --dry-run):
-- <N> files, <size>
-- No leaked stories/tests/src files
-
-Files modified:
-- package.json (version bump)
-- CHANGELOG.md (new entry)
-- lib/ (rebuilt)
-
-Pre-flight checks:
-- Lint: passed
-- Tests: passed
-- Build: passed
-- Pack dry-run: passed
-
-Ready to publish to npm?
-This will run: yarn release
-
-WARNING: This action is irreversible. Confirm to proceed.
-```
-
-### Step 6 — Publish (User Confirmation Required)
+### Step 3 — Release (User Confirmation Required)
 
 **WAIT for explicit user confirmation.**
 
 Only after user confirms:
 
 ```bash
-yarn release
+npm run release
 ```
 
-The `release` script runs `yarn build && npm publish --access public`.
-Note: We use `npm publish` directly instead of `changeset publish` because
-the root `package.json` has `"private": true` (required for Yarn workspaces),
-and `changeset publish` skips private packages. `changeset version` still
-handles version bumping and changelog generation.
+`release-it` will interactively:
+1. Run lint, test, build (before:init hooks)
+2. Prompt for version bump (patch/minor/major)
+3. Bump `package.json` version
+4. Update `CHANGELOG.md`
+5. Rebuild with new version (after:bump hook)
+6. Run `npm pack --dry-run` (before:release hook)
+7. Create git commit: `chore: release v<version>`
+8. Create git tag: `v<version>`
+9. Publish to npm
 
-**After publish:**
-1. Verify exit code 0
-2. Report success:
-   ```
-   ✅ Published testing-twigs@<new-version> to npm.
-   
-   Post-publish checklist:
-   - [ ] Verify: https://www.npmjs.com/package/testing-twigs
-   - [ ] Tag: git tag v<new-version>
-   - [ ] Push tag: git push origin v<new-version>
-   - [ ] Update consuming projects
-   ```
-3. Offer to create git tag:
+### Step 4 — Post-Release
+
+After successful publish:
+
+1. Verify the tag was created:
    ```bash
-   git tag v<new-version>
-   git push origin v<new-version>
+   git tag -l 'v*' | tail -5
    ```
 
-### Step 7 — Post-Publish Cleanup
-
-1. Verify `.changeset/` only has README.md and config.json
-2. If leftover changeset files exist, investigate
-3. Commit version bump if not committed:
+2. Push to remote (release-it does NOT auto-push by default):
    ```bash
-   git add package.json CHANGELOG.md
-   git commit -m "chore: release testing-twigs@<new-version>"
+   git push origin main --follow-tags
+   ```
+
+3. Verify on npm:
+   ```bash
+   npm view testing-twigs version
    ```
 
 ---
 
 ## Error Recovery
 
-### Build fails after version bump
-- Version already bumped in package.json and CHANGELOG.md
-- Fix the build error
-- Re-run `yarn build`
-- Do NOT re-run `npx changeset version`
+### Hooks fail (lint/test/build)
+- `release-it` aborts before any version change
+- Fix the issue, then re-run `npm run release`
 
 ### Publish fails (network/auth)
-- Version bump is local only — nothing published
-- Fix issue (usually `npm login` or network)
-- Re-run `yarn release`
+- Version is already bumped in `package.json` and tagged
+- Fix auth: `npm login`
+- Re-publish: `npm publish --access public`
 
-### Wrong version level
-- If BEFORE publishing: manually edit package.json version
-- If AFTER publishing: create new changeset with correct level, publish again
+### Wrong version bumped
+- If NOT published yet: `git reset --hard HEAD~1 && git tag -d v<version>`
+- If already published: publish a new corrected version
 
-### "No changesets found" during version
-- Changesets already consumed by previous run
-- Check CHANGELOG.md for entry
-- If entry exists, proceed to build/publish
-- If not, create new changeset manually
+### Need to skip hooks
+- Emergency release: `npx release-it --no-hooks`
+- Skip only git: `npx release-it --no-git`
 
 ---
 
-## Output Format
+## Semver Policy
 
-Return to master orchestrator:
-
-```typescript
-{
-  published: boolean,
-  version: string,
-  previousVersion: string,
-  changelog: string,  // new changelog entry text
-  gitTagCreated: boolean,
-  errors: string | null
-}
-```
-
-Example:
-```typescript
-{
-  published: true,
-  version: '0.1.13',
-  previousVersion: '0.1.12',
-  changelog: '### Minor Changes\n\n- Add Separator component',
-  gitTagCreated: true,
-  errors: null
-}
-```
+- **Pre-1.0 (current):** Minor = new features or breaking changes, Patch = bug fixes
+- **Post-1.0:** Follow strict semver -- Major = breaking, Minor = features, Patch = fixes

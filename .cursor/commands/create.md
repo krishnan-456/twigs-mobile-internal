@@ -1,6 +1,6 @@
 # Create Component
 
-Create a new twigs-mobile component end-to-end: discover the web counterpart, assess feasibility, implement source files with a Storybook story, write tests and docs, run the quality gate, and create a changeset.
+Create a new twigs-mobile component end-to-end: discover the web counterpart, assess feasibility, implement source files with a Storybook story, write tests and docs, and run the quality gate.
 
 ## Objective
 
@@ -22,7 +22,7 @@ Create the component named in the user's message (e.g., `/create Tooltip` create
 | 4. Tests | `write-tests.md` | generalPurpose sub-agent | `src/__tests__/<name>.test.tsx` |
 | 5. Docs | `write-docs.md` | generalPurpose sub-agent | `docs/components/<name>.md` + getting-started update |
 | 6. Quality Gate | `quality-gate.md` | shell sub-agent | format, lint, test, build |
-| 7. Finalize | Master orchestrator | Main agent | Changeset + completion report |
+| 7. Finalize | Master orchestrator | Main agent | Completion report |
 
 ### Phase 4 + 5 run in parallel (tests and docs are independent).
 
@@ -42,11 +42,10 @@ Before the command is complete, every item must pass:
 - Test file at `src/__tests__/<name>.test.tsx` with 5 test areas
 - Docs file at `docs/components/<name>.md` with all sections
 - `docs/getting-started.md` component table updated
-- `yarn format` -- no formatting issues
-- `yarn lint` -- no lint errors
-- `yarn test` -- all tests pass
-- `yarn build` -- build succeeds
-- Changeset created in `.changeset/`
+- `npm run format` -- no formatting issues
+- `npm run lint` -- no lint errors
+- `npm test` -- all tests pass
+- `npm run build` -- build succeeds
 
 ## References
 

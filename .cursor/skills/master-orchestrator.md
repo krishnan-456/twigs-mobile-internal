@@ -72,7 +72,6 @@ When user says `create <component>`, execute these phases in order:
 │       │                                                         │
 │       ▼                                                         │
 │  Phase 7: FINALIZE                                              │
-│  ├── Create changeset                                           │
 │  ├── Run final checklist                                        │
 │  └── Report to user                                             │
 │                                                                 │
@@ -115,8 +114,8 @@ When user says `publish` or `release`:
 │       ▼                                                         │
 │  Step 2-7: PUBLISH                                              │
 │  ├── Read: .cursor/skills/publish.md                            │
-│  └── Execute: changeset → version → build → pack dry-run →     │
-│       publish                                                   │
+│  └── Execute: release-it (version → changelog → build →         │
+│       pack dry-run → publish)                                   │
 │                                                                 │
 └─────────────────────────────────────────────────────────────────┘
 ```
@@ -167,7 +166,7 @@ interface WorkflowContext {
   qualityGatePassed?: boolean;
   
   // Final
-  changesetId?: string;
+  releaseVersion?: string;
 }
 ```
 
@@ -217,8 +216,6 @@ Files created:
   - src/<dir-name>/index.ts
   - src/__tests__/<dir-name>.test.tsx
   - docs/components/<dir-name>.md
-  - .changeset/<id>.md
-
 Files modified:
   - src/index.ts (added exports)
   - docs/getting-started.md (updated component table)

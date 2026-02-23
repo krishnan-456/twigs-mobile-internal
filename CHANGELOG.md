@@ -1,8 +1,8 @@
----
-"testing-twigs": minor
----
+# testing-twigs
 
-Add Separator component, fix CircleLoader, and set up Storybook example app
+## 0.2.0
+
+### Minor Changes
 
 - Add Separator component with horizontal/vertical orientation and theme-aware colors
 - Fix CircleLoader spinner not rotating on Android by switching from borderTopColor to SVG strokeDasharray
@@ -10,3 +10,4 @@ Add Separator component, fix CircleLoader, and set up Storybook example app
 - Add Storybook example app with interactive controls for all components
 - Add react-native-reanimated/plugin to babel.config.js for proper workletization in library build
 - Configure react-native-builder-bob to use project babel config (configFile: true)
+- Migrate from Yarn v1 to npm for package management

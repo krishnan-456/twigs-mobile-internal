@@ -375,7 +375,7 @@ maintenance, and bundle size.
 
 ```bash
 # WRONG — install without checking
-yarn add some-random-package
+npm install some-random-package
 
 # CORRECT — vet first
 npm view some-random-package time.modified  # last publish date
@@ -383,7 +383,7 @@ npm view some-random-package time.modified  # last publish date
 # Check README for React Native support
 # Check GitHub for maintenance activity
 # THEN install if all checks pass
-yarn add some-random-package
+npm install some-random-package
 ```
 
 ---

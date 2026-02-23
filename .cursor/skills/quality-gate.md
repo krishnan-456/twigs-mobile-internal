@@ -48,10 +48,10 @@ If any command fails, return the FULL error output (first 50 lines) and STOP.
    npx eslint src/<DIR_NAME>/ src/__tests__/<DIR_NAME>.test.tsx --fix
 
 3. Run tests for the new component:
-   yarn test -- --testPathPattern='<DIR_NAME>'
+   npm test -- --testPathPattern='<DIR_NAME>'
 
 4. Build the entire project:
-   yarn build
+   npm run build
 
 For each command, report:
 - Command: <the command>
@@ -74,13 +74,13 @@ In the project at <WORKSPACE>, run these commands sequentially.
 If any command fails, return the FULL error output (first 50 lines) and STOP.
 
 1. Lint entire project:
-   yarn lint
+   npm run lint
 
 2. Run all tests:
-   yarn test
+   npm test
 
 3. Build project:
-   yarn build
+   npm run build
 
 4. Dry-run pack verification:
    npm pack --dry-run 2>&1
@@ -113,8 +113,8 @@ Agent settings: `subagent_type: "shell"`
 # Component mode
 npx prettier --write "src/<dir-name>/**/*.{ts,tsx}" "src/__tests__/<dir-name>.test.tsx" "docs/components/<dir-name>.md"
 
-# Full mode (handled by yarn format)
-yarn format
+# Full mode
+npm run format
 ```
 
 **What it checks:**
@@ -131,7 +131,7 @@ yarn format
 npx eslint src/<dir-name>/ src/__tests__/<dir-name>.test.tsx --fix
 
 # Full mode
-yarn lint
+npm run lint
 ```
 
 **What it checks:**
@@ -154,10 +154,10 @@ yarn lint
 
 ```bash
 # Component mode
-yarn test -- --testPathPattern='<dir-name>'
+npm test -- --testPathPattern='<dir-name>'
 
 # Full mode
-yarn test
+npm test
 ```
 
 **What it checks:**
@@ -177,7 +177,7 @@ yarn test
 ### 4. Build (react-native-builder-bob)
 
 ```bash
-yarn build
+npm run build
 ```
 
 **What it checks:**

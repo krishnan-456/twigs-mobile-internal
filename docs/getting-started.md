@@ -5,8 +5,6 @@ Twigs Mobile is a React Native component library for [SurveySparrow](https://sur
 ## Installation
 
 ```bash
-yarn add testing-twigs
-# or
 npm install testing-twigs
 ```
 
@@ -15,7 +13,7 @@ npm install testing-twigs
 Ensure these peer dependencies are installed in your React Native project:
 
 ```bash
-yarn add react-native-reanimated react-native-gesture-handler react-native-svg @gorhom/bottom-sheet
+npm install react-native-reanimated react-native-gesture-handler react-native-svg @gorhom/bottom-sheet
 ```
 
 ## Setup
@@ -129,7 +127,7 @@ All interactive components include baseline accessibility attributes:
 - **Button**: `accessibilityRole="button"`, `accessibilityState={{ disabled, busy }}`
 - **Switch**: `accessibilityRole="switch"`, `accessibilityState={{ checked, disabled }}`
 - **Checkbox**: `accessibilityRole="checkbox"`, `accessibilityState={{ checked, disabled }}`
-- **Radio**: `accessibilityRole="radio"`, `accessibilityState={{ selected, disabled }}`
+- **Radio**: `accessibilityRole="radio"`, `accessibilityState={{ checked, disabled }}`
 - **TextInput**: Error messages use `accessibilityRole="alert"` with `accessibilityLiveRegion="polite"`
 
 Pass `accessibilityLabel` and `accessibilityHint` via props for custom labels.
