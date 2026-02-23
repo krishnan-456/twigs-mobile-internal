@@ -1,6 +1,6 @@
 {
     "name": "testing-twigs",
-    "version": "0.2.0",
+    "version": "0.3.0",
     "description": "Twigs React Native component library",
     "main": "./lib/commonjs/index.js",
     "module": "./lib/module/index.js",
