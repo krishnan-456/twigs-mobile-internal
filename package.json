@@ -52,11 +52,11 @@
     ],
     "repository": {
         "type": "git",
-        "url": "https://github.com/surveysparrow/twigs-mobile.git"
+        "url": "https://github.com/krishnan-456/twigs-mobile-internal.git"
     },
-    "homepage": "https://github.com/surveysparrow/twigs-mobile#readme",
+    "homepage": "https://github.com/krishnan-456/twigs-mobile-internal#readme",
     "bugs": {
-        "url": "https://github.com/surveysparrow/twigs-mobile/issues"
+        "url": "https://github.com/krishnan-456/twigs-mobile-internal/issues"
     },
     "author": "SurveySparrow",
     "license": "MIT",
