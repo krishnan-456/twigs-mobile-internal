@@ -1,14 +1,16 @@
 import React, { useMemo } from 'react';
-import { View, Pressable, Text as RNText } from 'react-native';
+import { View, Text as RNText } from 'react-native';
 import { useTheme } from '../context';
+import { Button } from '../button';
 import type { AlertProps } from './types';
-import { DEFAULT_SIZE, DEFAULT_STATUS, SIZE_CONFIG } from './constants';
+import { DEFAULT_SIZE, DEFAULT_STATUS } from './constants';
 import {
   getSizeStyles,
   getStatusContainerStyles,
   getIconColor,
   getTextStyles,
-  getIconSize,
+  getStatusIconSize,
+  getCloseIconSize,
 } from './helpers';
 import { styles } from './styles';
 import { STATUS_ICONS, CloseIcon } from './icons';
@@ -45,26 +47,27 @@ export const Alert = React.forwardRef<View, AlertProps>(
     const textStyles = useMemo(() => getTextStyles(theme, status, size), [theme, status, size]);
 
     const iconColor = useMemo(() => getIconColor(theme, status), [theme, status]);
-    const iconSize = useMemo(() => getIconSize(size), [size]);
-    const closeIconSize = useMemo(() => SIZE_CONFIG[size].iconSize - 4, [size]);
+    const statusIconSize = useMemo(() => getStatusIconSize(size), [size]);
+    const closeIconSize = useMemo(() => getCloseIconSize(size), [size]);
 
     // Render the appropriate icon
     const renderIcon = () => {
       if (icon) {
         return React.cloneElement(icon, {
-          width: iconSize,
-          height: iconSize,
+          width: statusIconSize,
+          height: statusIconSize,
           color: iconColor,
         });
       }
 
       const DefaultIcon = STATUS_ICONS[status];
-      return <DefaultIcon size={iconSize} color={iconColor} />;
+      return <DefaultIcon size={statusIconSize} color={iconColor} />;
     };
 
     // Mobile deviation: Using accessibilityLiveRegion for dynamic alerts
     // instead of aria-live which is web-only
-    const computedLiveRegion = accessibilityLiveRegion ?? (status === 'error' || status === 'warning' ? 'polite' : 'none');
+    const computedLiveRegion =
+      accessibilityLiveRegion ?? (status === 'error' || status === 'warning' ? 'polite' : 'none');
 
     return (
       <View
@@ -84,18 +87,18 @@ export const Alert = React.forwardRef<View, AlertProps>(
           {typeof children === 'string' ? <RNText style={textStyles}>{children}</RNText> : children}
         </View>
 
-        {closable && onClose && (
-          <Pressable
-            onPress={onClose}
+        {closable && (
+          <Button
             accessible
-            accessibilityRole="button"
             accessibilityLabel="Close alert"
             accessibilityHint="Dismisses this alert"
+            size={size === 'sm' ? 'xs' : 'sm'}
+            color="default"
+            variant="ghost"
+            icon={<CloseIcon size={closeIconSize} color={theme.colors.neutral800} />}
             style={styles.closeButton}
-            hitSlop={{ top: 8, right: 8, bottom: 8, left: 8 }}
-          >
-            <CloseIcon size={closeIconSize} color={iconColor} />
-          </Pressable>
+            {...(onClose && { onPress: onClose })}
+          />
         )}
       </View>
     );

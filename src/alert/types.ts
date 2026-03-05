@@ -2,7 +2,7 @@ import type { ViewProps } from 'react-native';
 import type { CommonStyleProps, BaseAccessibilityProps } from '../utils';
 
 /** Alert status variants for visual appearance */
-export type AlertStatus = 'info' | 'success' | 'warning' | 'error';
+export type AlertStatus = 'default' | 'info' | 'success' | 'warning' | 'error';
 
 /** Alert size variants */
 export type AlertSize = 'sm' | 'md';

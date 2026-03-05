@@ -97,11 +97,13 @@ export const CircleLoading: Story = {
 export const Sizes: Story = {
   render: () => (
     <View style={{ flexDirection: 'row', gap: 8, alignItems: 'center', flexWrap: 'wrap' }}>
+      <Button size="xxs">XXS</Button>
       <Button size="xs">XS</Button>
       <Button size="sm">SM</Button>
       <Button size="md">MD</Button>
       <Button size="lg">LG</Button>
       <Button size="xl">XL</Button>
+      <Button size="2xl">2XL</Button>
     </View>
   ),
 };
@@ -109,9 +111,41 @@ export const Sizes: Story = {
 export const Colors: Story = {
   render: () => (
     <View style={{ flexDirection: 'row', gap: 8, flexWrap: 'wrap' }}>
+      <Button color="default">Default</Button>
       <Button color="primary">Primary</Button>
       <Button color="secondary">Secondary</Button>
+      <Button color="bright">Bright</Button>
+      <Button color="light">Light</Button>
       <Button color="error">Error</Button>
+    </View>
+  ),
+};
+
+export const DisabledStates: Story = {
+  render: () => (
+    <View style={{ gap: 10 }}>
+      <View style={{ flexDirection: 'row', gap: 8, flexWrap: 'wrap' }}>
+        <Button variant="solid" color="primary" disabled>
+          Solid
+        </Button>
+        <Button variant="ghost" color="primary" disabled>
+          Ghost
+        </Button>
+        <Button variant="outline" color="primary" disabled>
+          Outline
+        </Button>
+      </View>
+      <View style={{ flexDirection: 'row', gap: 8, flexWrap: 'wrap' }}>
+        <Button variant="solid" color="default" disabled>
+          Default
+        </Button>
+        <Button variant="solid" color="secondary" disabled>
+          Secondary
+        </Button>
+        <Button variant="solid" color="error" disabled>
+          Error
+        </Button>
+      </View>
     </View>
   ),
 };

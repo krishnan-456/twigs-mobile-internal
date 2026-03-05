@@ -5,7 +5,8 @@ interface SizeConfig {
   paddingVertical: number;
   fontSize: number;
   lineHeight: number;
-  iconSize: number;
+  statusIconSize: number;
+  closeIconSize: number;
   gap: number;
   borderRadius: number;
 }
@@ -13,20 +14,22 @@ interface SizeConfig {
 /** Size configuration for alert variants */
 export const SIZE_CONFIG: Record<AlertSize, SizeConfig> = {
   sm: {
-    paddingHorizontal: 12,
-    paddingVertical: 8,
+    paddingHorizontal: 8,
+    paddingVertical: 6,
     fontSize: 14,
     lineHeight: 20,
-    iconSize: 20,
+    statusIconSize: 20,
+    closeIconSize: 14,
     gap: 8,
     borderRadius: 8,
   },
   md: {
     paddingHorizontal: 16,
-    paddingVertical: 12,
+    paddingVertical: 16,
     fontSize: 16,
     lineHeight: 24,
-    iconSize: 24,
+    statusIconSize: 24,
+    closeIconSize: 16,
     gap: 12,
     borderRadius: 12,
   },
@@ -40,6 +43,7 @@ export const DEFAULT_STATUS: AlertStatus = 'info';
 
 /** Status to theme color key mapping for backgrounds */
 export const STATUS_BG_COLORS: Record<AlertStatus, string> = {
+  default: 'neutral100',
   info: 'accent100',
   success: 'positive100',
   warning: 'warning100',
@@ -48,6 +52,7 @@ export const STATUS_BG_COLORS: Record<AlertStatus, string> = {
 
 /** Status to theme color key mapping for borders */
 export const STATUS_BORDER_COLORS: Record<AlertStatus, string> = {
+  default: 'neutral200',
   info: 'accent200',
   success: 'positive200',
   warning: 'warning200',
@@ -56,16 +61,12 @@ export const STATUS_BORDER_COLORS: Record<AlertStatus, string> = {
 
 /** Status to theme color key mapping for icons */
 export const STATUS_ICON_COLORS: Record<AlertStatus, string> = {
-  info: 'accent500',
-  success: 'positive500',
-  warning: 'warning600',
-  error: 'negative500',
+  default: 'neutral600',
+  info: 'accent800',
+  success: 'positive800',
+  warning: 'warning800',
+  error: 'negative800',
 };
 
-/** Status to theme color key mapping for text */
-export const STATUS_TEXT_COLORS: Record<AlertStatus, string> = {
-  info: 'accent700',
-  success: 'positive700',
-  warning: 'warning700',
-  error: 'negative700',
-};
+/** Text color token — all variants use dark text per Figma spec */
+export const ALERT_TEXT_COLOR = 'black900';

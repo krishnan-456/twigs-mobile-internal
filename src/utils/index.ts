@@ -1,9 +1,6 @@
-import type { ReactNode } from 'react';
 import type { AccessibilityRole, ViewProps, ViewStyle, TextStyle } from 'react-native';
 import type { AnimatedProps } from 'react-native-reanimated';
-import type { SvgProps, PathProps } from 'react-native-svg';
 import Animated from 'react-native-reanimated';
-import { Path, Svg } from 'react-native-svg';
 
 /**
  * Aligned with React Native accessibility API:
@@ -72,16 +69,9 @@ export interface CommonStyleProps {
 }
 
 type AnimatedViewComponent = React.FC<AnimatedProps<ViewProps>>;
-type SvgComponentType = React.FC<SvgProps & { children?: ReactNode }>;
-type PathComponentType = React.FC<PathProps>;
-
 export const AnimatedView: AnimatedViewComponent = Animated.View as unknown as React.FC<
   AnimatedProps<ViewProps>
 >;
-
-export const SvgComponent: SvgComponentType = Svg as unknown as SvgComponentType;
-
-export const PathComponent: PathComponentType = Path as unknown as PathComponentType;
 
 export const resolveMargin = (props: MarginProps, defaultSpacing = 0): ResolvedSpacing => ({
   top: props.marginTop ?? props.marginVertical ?? props.margin ?? defaultSpacing,

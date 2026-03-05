@@ -24,6 +24,19 @@ export const AVATAR_FONT_SIZES: Record<AvatarSizeProp, number> = {
   '5xl': 39.808,
 };
 
+/** Anonymous border widths per size (aligned with design guidance). */
+export const AVATAR_ANONYMOUS_BORDER_WIDTHS: Record<AvatarSizeProp, number> = {
+  xs: 1,
+  sm: 1,
+  md: 1.5,
+  lg: 1.5,
+  xl: 1.5,
+  '2xl': 2,
+  '3xl': 2,
+  '4xl': 2,
+  '5xl': 2,
+};
+
 /** Border radius per rounded variant. */
 export const AVATAR_BORDER_RADII: Record<AvatarSize, number> = {
   xs: 4,
@@ -35,3 +48,5 @@ export const AVATAR_BORDER_RADII: Record<AvatarSize, number> = {
   '3xl': 32,
   full: 999,
 };
+
+export const DEFAULT_AVATAR_NAME = '?';

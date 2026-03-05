@@ -1,2 +1,2 @@
 export { Switch } from './switch';
-export type { SwitchProps } from './types';
+export type { SwitchProps, SwitchSize } from './types';

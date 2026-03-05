@@ -7,11 +7,11 @@ export interface RadioSizeConfig {
 
 export const RADIO_SIZE_CONFIGS: Record<RadioSize, RadioSizeConfig> = {
   sm: {
-    outer: { width: 14, height: 14 },
+    outer: { width: 16, height: 16 },
     inner: { width: 8, height: 8 },
   },
   md: {
-    outer: { width: 18, height: 18 },
+    outer: { width: 20, height: 20 },
     inner: { width: 12, height: 12 },
   },
 };

@@ -38,7 +38,8 @@ describe('Alert', () => {
   // ── Variants ──
 
   describe('status', () => {
-    const statuses: Array<'info' | 'success' | 'warning' | 'error'> = [
+    const statuses: Array<'default' | 'info' | 'success' | 'warning' | 'error'> = [
+      'default',
       'info',
       'success',
       'warning',
@@ -122,6 +123,16 @@ describe('Alert', () => {
       );
       const alert = getByTestId('alert');
       expect(alert.props.accessibilityLiveRegion).toBe('polite');
+    });
+
+    it('sets accessibilityLiveRegion="none" for default status', () => {
+      const { getByTestId } = wrap(
+        <Alert testID="alert" status="default">
+          Default message
+        </Alert>
+      );
+      const alert = getByTestId('alert');
+      expect(alert.props.accessibilityLiveRegion).toBe('none');
     });
 
     it('sets accessibilityLiveRegion="none" for info status', () => {
@@ -209,9 +220,15 @@ describe('Alert', () => {
       expect(queryByLabelText('Close alert')).toBeNull();
     });
 
-    it('does not render close button when closable={true} but onClose is not provided', () => {
-      const { queryByLabelText } = wrap(<Alert closable>Alert message</Alert>);
-      expect(queryByLabelText('Close alert')).toBeNull();
+    it('renders close button when closable={true} even if onClose is not provided', () => {
+      const { getByLabelText } = wrap(<Alert closable>Alert message</Alert>);
+      expect(getByLabelText('Close alert')).toBeTruthy();
+    });
+
+    it('does not throw when close button is pressed without onClose', () => {
+      const { getByLabelText } = wrap(<Alert closable>Alert message</Alert>);
+      const closeButton = getByLabelText('Close alert');
+      expect(() => fireEvent.press(closeButton)).not.toThrow();
     });
 
     it('renders close button when closable={true} and onClose is provided', () => {
@@ -273,6 +290,26 @@ describe('Alert', () => {
   // ── State transitions ──
 
   describe('state transitions', () => {
+    it('updates accessibilityLiveRegion when status changes from default to error', () => {
+      const { getByTestId, rerender } = wrap(
+        <Alert testID="alert" status="default">
+          Alert message
+        </Alert>
+      );
+      const alertBefore = getByTestId('alert');
+      expect(alertBefore.props.accessibilityLiveRegion).toBe('none');
+
+      rerender(
+        <TwigsProvider>
+          <Alert testID="alert" status="error">
+            Alert message
+          </Alert>
+        </TwigsProvider>
+      );
+      const alertAfter = getByTestId('alert');
+      expect(alertAfter.props.accessibilityLiveRegion).toBe('polite');
+    });
+
     it('updates accessibilityLiveRegion when status changes from info to error', () => {
       const { getByTestId, rerender } = wrap(
         <Alert testID="alert" status="info">

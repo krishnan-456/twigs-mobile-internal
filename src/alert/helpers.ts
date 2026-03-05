@@ -6,7 +6,7 @@ import {
   STATUS_BG_COLORS,
   STATUS_BORDER_COLORS,
   STATUS_ICON_COLORS,
-  STATUS_TEXT_COLORS,
+  ALERT_TEXT_COLOR,
 } from './constants';
 
 /** Returns size-dependent styles for the alert container */
@@ -38,9 +38,9 @@ export function getIconColor(theme: TwigsTheme, status: AlertStatus): string {
   return theme.colors[colorKey];
 }
 
-/** Returns text styles for the alert content */
-export function getTextStyles(theme: TwigsTheme, status: AlertStatus, size: AlertSize): TextStyle {
-  const colorKey = STATUS_TEXT_COLORS[status] as keyof typeof theme.colors;
+/** Returns text styles for the alert content — uses dark text for all variants per Figma */
+export function getTextStyles(theme: TwigsTheme, _status: AlertStatus, size: AlertSize): TextStyle {
+  const colorKey = ALERT_TEXT_COLOR as keyof typeof theme.colors;
   const config = SIZE_CONFIG[size];
 
   return {
@@ -51,7 +51,12 @@ export function getTextStyles(theme: TwigsTheme, status: AlertStatus, size: Aler
   };
 }
 
-/** Returns the icon size for a given alert size */
-export function getIconSize(size: AlertSize): number {
-  return SIZE_CONFIG[size].iconSize;
+/** Returns the status icon size for a given alert size */
+export function getStatusIconSize(size: AlertSize): number {
+  return SIZE_CONFIG[size].statusIconSize;
+}
+
+/** Returns the close icon size for a given alert size */
+export function getCloseIconSize(size: AlertSize): number {
+  return SIZE_CONFIG[size].closeIconSize;
 }

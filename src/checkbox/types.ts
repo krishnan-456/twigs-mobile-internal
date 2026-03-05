@@ -1,11 +1,15 @@
-import { ReactNode, RefObject } from 'react';
-import { View, ViewStyle } from 'react-native';
-import { CommonStyleProps, BaseAccessibilityProps } from '../utils';
+import type { ReactNode, RefObject } from 'react';
+import type { PressableProps, StyleProp, View, ViewStyle } from 'react-native';
+import type { BaseAccessibilityProps, CommonStyleProps } from '../utils';
 
 export type CheckboxSize = 'sm' | 'md';
 export type CheckedState = boolean | 'indeterminate';
 
-export interface CheckboxProps extends CommonStyleProps, BaseAccessibilityProps {
+export interface CheckboxProps
+  extends
+    Omit<PressableProps, 'style' | 'onPress' | 'children'>,
+    CommonStyleProps,
+    BaseAccessibilityProps {
   checked?: CheckedState;
   onChange?: (checked: boolean) => void;
   disabled?: boolean;
@@ -13,6 +17,6 @@ export interface CheckboxProps extends CommonStyleProps, BaseAccessibilityProps 
   size?: CheckboxSize;
   id?: string;
   containerRef?: RefObject<View>;
-  labelStyle?: ViewStyle;
-  checkboxStyle?: ViewStyle;
+  labelStyle?: StyleProp<ViewStyle>;
+  checkboxStyle?: StyleProp<ViewStyle>;
 }

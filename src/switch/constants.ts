@@ -1,7 +1,43 @@
-export const SWITCH_WIDTH = 40;
-export const SWITCH_HEIGHT = 20;
-export const THUMB_SIZE = 18;
-export const THUMB_MARGIN = 1;
+import type { SwitchSize } from './types';
 
-export const THUMB_OFF_POSITION = THUMB_MARGIN;
-export const THUMB_ON_POSITION = SWITCH_WIDTH - THUMB_SIZE - THUMB_MARGIN;
+export interface SwitchSizeConfig {
+  track: {
+    width: number;
+    height: number;
+  };
+  thumb: {
+    size: number;
+    offPosition: number;
+    onPosition: number;
+  };
+}
+
+export const SWITCH_SIZE_CONFIGS: Record<SwitchSize, SwitchSizeConfig> = {
+  sm: {
+    track: {
+      width: 28,
+      height: 14,
+    },
+    thumb: {
+      size: 12,
+      offPosition: 1,
+      onPosition: 15,
+    },
+  },
+  md: {
+    track: {
+      width: 40,
+      height: 20,
+    },
+    thumb: {
+      size: 18,
+      offPosition: 1,
+      onPosition: 21,
+    },
+  },
+};
+
+export const DEFAULT_SWITCH_SIZE: SwitchSize = 'md';
+
+export const getSwitchSizeConfig = (size: SwitchSize): SwitchSizeConfig =>
+  SWITCH_SIZE_CONFIGS[size] || SWITCH_SIZE_CONFIGS[DEFAULT_SWITCH_SIZE];

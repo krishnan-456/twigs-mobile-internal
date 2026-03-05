@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import type { Meta, StoryObj } from '@storybook/react-native';
-import { Text, View } from 'react-native';
+import { StyleSheet, Text, View } from 'react-native';
 import { Radio } from './radio';
 import type { RadioProps } from './types';
 
@@ -49,6 +49,15 @@ export default meta;
 
 type Story = StoryObj<typeof meta>;
 
+const styles = StyleSheet.create({
+  stack: { gap: 16 },
+  row: {
+    flexDirection: 'row',
+    gap: 16,
+    alignItems: 'center',
+  },
+});
+
 export const Default: Story = {
   args: {
     children: <Text>Radio option</Text>,
@@ -88,7 +97,7 @@ export const RadioGroup: Story = {
   render: () => {
     const [selected, setSelected] = useState(0);
     return (
-      <View style={{ gap: 16 }}>
+      <View style={styles.stack}>
         <Radio selected={selected === 0} onSelect={() => setSelected(0)}>
           <Text>Option A</Text>
         </Radio>
@@ -101,4 +110,23 @@ export const RadioGroup: Story = {
       </View>
     );
   },
+};
+
+export const FigmaStateMatrix: Story = {
+  render: () => (
+    <View style={styles.stack}>
+      <View style={styles.row}>
+        <Radio size="sm" />
+        <Radio size="sm" selected />
+        <Radio size="sm" disabled />
+        <Radio size="sm" selected disabled />
+      </View>
+      <View style={styles.row}>
+        <Radio size="md" />
+        <Radio size="md" selected />
+        <Radio size="md" disabled />
+        <Radio size="md" selected disabled />
+      </View>
+    </View>
+  ),
 };

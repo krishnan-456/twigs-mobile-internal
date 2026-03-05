@@ -6,6 +6,7 @@ import type { ButtonSize, ButtonColor, ButtonVariant } from './types';
 import {
   getButtonSizeConfig,
   ICON_SIZES,
+  ICON_ONLY_SIZES,
   ICON_SPACING,
   OUTLINE_BORDER_WIDTHS,
   type ColorConfigMap,
@@ -96,7 +97,7 @@ export const getColorStyles = (
       solid: {
         background: theme.colors.white900,
         text: theme.colors.secondary500,
-        pressedBackground: theme.colors.black100,
+        pressedBackground: colorOpacity(theme.colors.black900, 0.08),
       },
       ghost: {
         background: 'transparent',
@@ -114,7 +115,7 @@ export const getColorStyles = (
       solid: {
         background: colorOpacity(theme.colors.white200, 0.1),
         text: theme.colors.white900,
-        pressedBackground: theme.colors.white400,
+        pressedBackground: colorOpacity(theme.colors.white900, 0.2),
       },
       ghost: {
         background: 'transparent',
@@ -200,13 +201,13 @@ export const getButtonTextStyles = ({
     ButtonSize,
     { fontSize: number; fontFamily: string; fontWeight: '500' | '700' }
   > = {
-    xxs: { fontSize: 10, fontFamily: theme.fonts.medium, fontWeight: '500' },
-    xs: { fontSize: 12, fontFamily: theme.fonts.medium, fontWeight: '500' },
-    sm: { fontSize: 14, fontFamily: theme.fonts.medium, fontWeight: '500' },
-    md: { fontSize: 14, fontFamily: theme.fonts.bold, fontWeight: '700' },
-    lg: { fontSize: 16, fontFamily: theme.fonts.bold, fontWeight: '700' },
-    xl: { fontSize: 16, fontFamily: theme.fonts.bold, fontWeight: '700' },
-    '2xl': { fontSize: 16, fontFamily: theme.fonts.bold, fontWeight: '700' },
+    xxs: { fontSize: theme.fontSizes.xxs, fontFamily: theme.fonts.bold, fontWeight: '700' },
+    xs: { fontSize: theme.fontSizes.xs, fontFamily: theme.fonts.medium, fontWeight: '500' },
+    sm: { fontSize: theme.fontSizes.sm, fontFamily: theme.fonts.medium, fontWeight: '500' },
+    md: { fontSize: theme.fontSizes.sm, fontFamily: theme.fonts.bold, fontWeight: '700' },
+    lg: { fontSize: theme.fontSizes.md, fontFamily: theme.fonts.bold, fontWeight: '700' },
+    xl: { fontSize: theme.fontSizes.lg, fontFamily: theme.fonts.bold, fontWeight: '700' },
+    '2xl': { fontSize: theme.fontSizes.lg, fontFamily: theme.fonts.bold, fontWeight: '700' },
   };
 
   const colorConfig: Record<ButtonColor, Record<ButtonVariant, string>> = {
@@ -254,7 +255,13 @@ export const getButtonTextStyles = ({
 
 // ── Icon / loader helpers ──
 
-export const getIconSize = (size: ButtonSize): number => ICON_SIZES[size] || ICON_SIZES.sm;
+export const getIconSize = (size: ButtonSize, position: 'left' | 'right' | 'center'): number => {
+  if (position === 'center') {
+    return ICON_ONLY_SIZES[size] || ICON_ONLY_SIZES.sm;
+  }
+
+  return ICON_SIZES[size] || ICON_SIZES.sm;
+};
 
 export const getIconContainerStyles = ({
   position,
@@ -345,7 +352,7 @@ export const getPressedStyle = (
     default: {
       solid: { backgroundColor: colorOpacity(theme.colors.secondary500, 0.2) },
       ghost: { backgroundColor: colorOpacity(theme.colors.black500, 0.08) },
-      outline: { backgroundColor: theme.colors.black50 },
+      outline: { backgroundColor: colorOpacity(theme.colors.black900, 0.04) },
     },
     primary: {
       solid: { backgroundColor: theme.colors.primary700 },
@@ -364,7 +371,7 @@ export const getPressedStyle = (
       },
     },
     bright: {
-      solid: { backgroundColor: theme.colors.black100 },
+      solid: { backgroundColor: colorOpacity(theme.colors.black900, 0.08) },
       ghost: { backgroundColor: colorOpacity(theme.colors.white300, 0.2) },
       outline: {
         backgroundColor: 'transparent',
@@ -372,7 +379,7 @@ export const getPressedStyle = (
       },
     },
     light: {
-      solid: { backgroundColor: theme.colors.white400 },
+      solid: { backgroundColor: colorOpacity(theme.colors.white900, 0.2) },
       ghost: { backgroundColor: colorOpacity(theme.colors.white300, 0.2) },
       outline: {
         backgroundColor: 'transparent',

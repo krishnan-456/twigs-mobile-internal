@@ -1,10 +1,13 @@
 import React, { useEffect } from 'react';
-import { Pressable, View, ViewStyle } from 'react-native';
+import { Pressable, StyleSheet, View, ViewStyle } from 'react-native';
 import { useAnimatedStyle, useSharedValue, withSpring } from 'react-native-reanimated';
+import { Box } from '../box';
+import { Flex } from '../flex';
 import { AnimatedView } from '../utils';
 import { useTheme } from '../context';
 import type { CheckboxProps } from './types';
-import { checkboxStyles as styles } from './styles';
+import { getCheckboxSizeConfig } from './constants';
+import { createCheckboxStyles } from './styles';
 import { TickIcon, HorizontalLineIcon } from './icons';
 
 export const Checkbox = React.forwardRef<View, CheckboxProps>(
@@ -18,6 +21,11 @@ export const Checkbox = React.forwardRef<View, CheckboxProps>(
       containerRef,
       labelStyle,
       checkboxStyle,
+      accessible = true,
+      accessibilityRole,
+      accessibilityLabel,
+      accessibilityHint = 'Double tap to toggle',
+      accessibilityState,
       css,
       style,
       ...rest
@@ -25,6 +33,7 @@ export const Checkbox = React.forwardRef<View, CheckboxProps>(
     ref
   ) => {
     const theme = useTheme();
+    const styles = createCheckboxStyles(theme);
     const opacity = useSharedValue(checked ? 1 : 0);
 
     useEffect(() => {
@@ -35,13 +44,10 @@ export const Checkbox = React.forwardRef<View, CheckboxProps>(
     }, [checked, opacity]);
 
     const handlePress = () => {
-      if (!disabled && onChange) {
-        if (checked === 'indeterminate') {
-          onChange(true);
-        } else {
-          onChange(!checked);
-        }
-      }
+      if (disabled) return;
+      const nextChecked = checked === 'indeterminate' ? true : !checked;
+      // Mobile deviation: keep boolean callback payload for backward compatibility.
+      onChange?.(nextChecked);
     };
 
     const iconStyle = useAnimatedStyle(() => ({
@@ -49,11 +55,14 @@ export const Checkbox = React.forwardRef<View, CheckboxProps>(
     }));
 
     const isIndeterminate = checked === 'indeterminate';
-    const isChecked = checked === true || checked === 'indeterminate';
+    const isChecked = checked !== false;
+    const sizeConfig = getCheckboxSizeConfig(size);
 
     const checkboxDynamicStyles: ViewStyle = {
-      borderColor: isChecked ? 'transparent' : theme.colors.neutral700,
-      backgroundColor: isChecked ? theme.colors.secondary500 : theme.colors.white900,
+      width: sizeConfig.width,
+      height: sizeConfig.height,
+      borderColor: isChecked ? 'transparent' : theme.colors.neutral400,
+      backgroundColor: isChecked ? theme.colors.secondary600 : theme.colors.white900,
     };
 
     return (
@@ -62,24 +71,23 @@ export const Checkbox = React.forwardRef<View, CheckboxProps>(
         style={[styles.container, disabled && styles.containerDisabled, css, style]}
         disabled={disabled}
         onPress={handlePress}
-        accessible
-        accessibilityRole="checkbox"
+        accessible={accessible}
+        accessibilityRole={accessibilityRole ?? 'checkbox'}
         accessibilityState={{
-          checked: checked === 'indeterminate' ? 'mixed' : checked,
+          checked: isIndeterminate ? 'mixed' : checked,
           disabled,
+          ...accessibilityState,
         }}
-        accessibilityLabel={typeof children === 'string' ? children : undefined}
-        accessibilityHint="Double tap to toggle"
+        accessibilityLabel={
+          accessibilityLabel ?? (typeof children === 'string' ? children : undefined)
+        }
+        accessibilityHint={accessibilityHint}
         {...rest}
       >
-        <View
-          style={[
-            styles.checkboxBase,
-            size === 'md' ? styles.checkboxMd : styles.checkboxSm,
-            checkboxDynamicStyles,
-            disabled && styles.checkboxDisabled,
-            checkboxStyle,
-          ]}
+        <Flex
+          align="center"
+          justify="center"
+          css={StyleSheet.flatten([styles.checkboxBase, checkboxDynamicStyles, checkboxStyle])}
         >
           <AnimatedView style={[styles.iconContainer, iconStyle]}>
             {isIndeterminate ? (
@@ -88,8 +96,10 @@ export const Checkbox = React.forwardRef<View, CheckboxProps>(
               <TickIcon color={theme.colors.white900} />
             )}
           </AnimatedView>
-        </View>
-        {children && <View style={[styles.labelContainer, labelStyle]}>{children}</View>}
+        </Flex>
+        {children && (
+          <Box css={StyleSheet.flatten([styles.labelContainer, labelStyle])}>{children}</Box>
+        )}
       </Pressable>
     );
   }

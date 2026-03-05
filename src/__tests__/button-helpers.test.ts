@@ -2,6 +2,7 @@ import { defaultTheme } from '../theme';
 import {
   getSizeStyles,
   getButtonTextStyles,
+  getIconSize,
   getLoaderColorFromButton,
   getLineLoaderSizeFromButton,
   getCircleLoaderSizeFromButton,
@@ -30,8 +31,14 @@ describe('Button helpers', () => {
 
     it('returns correct values for 2xl size', () => {
       const styles = getSizeStyles('2xl', false);
-      expect(styles.height).toBe(64);
+      expect(styles.height).toBe(56);
       expect(styles.borderRadius).toBe(16);
+    });
+
+    it('returns correct height for xl size', () => {
+      const styles = getSizeStyles('xl', false);
+      expect(styles.height).toBe(48);
+      expect(styles.borderRadius).toBe(12);
     });
   });
 
@@ -64,6 +71,50 @@ describe('Button helpers', () => {
         theme,
       });
       expect(textStyles.color).toBe(theme.colors.primary500);
+    });
+
+    it('uses bold typography for xxs size', () => {
+      const textStyles = getButtonTextStyles({
+        size: 'xxs',
+        color: 'default',
+        variant: 'solid',
+        theme,
+      });
+      expect(textStyles.fontSize).toBe(theme.fontSizes.xxs);
+      expect(textStyles.fontWeight).toBe('700');
+    });
+
+    it('uses lg fontSize token for xl and 2xl', () => {
+      const xl = getButtonTextStyles({
+        size: 'xl',
+        color: 'default',
+        variant: 'solid',
+        theme,
+      });
+      const twoXl = getButtonTextStyles({
+        size: '2xl',
+        color: 'default',
+        variant: 'solid',
+        theme,
+      });
+
+      expect(xl.fontSize).toBe(theme.fontSizes.lg);
+      expect(twoXl.fontSize).toBe(theme.fontSizes.lg);
+    });
+  });
+
+  describe('getIconSize', () => {
+    it('returns side icon sizes for left/right positions', () => {
+      expect(getIconSize('sm', 'left')).toBe(16);
+      expect(getIconSize('md', 'right')).toBe(20);
+      expect(getIconSize('xl', 'left')).toBe(24);
+    });
+
+    it('returns icon-only sizes for center position', () => {
+      expect(getIconSize('xs', 'center')).toBe(12);
+      expect(getIconSize('sm', 'center')).toBe(20);
+      expect(getIconSize('xl', 'center')).toBe(32);
+      expect(getIconSize('2xl', 'center')).toBe(32);
     });
   });
 

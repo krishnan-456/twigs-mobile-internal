@@ -2,7 +2,10 @@ import React from 'react';
 import { render, fireEvent } from '@testing-library/react-native';
 import { Text } from 'react-native';
 import { Button } from '../button';
+import { getPressedStyle } from '../button/helpers';
 import { TwigsProvider } from '../context';
+import { defaultTheme } from '../theme';
+import { colorOpacity } from '../utils';
 
 const wrap = (ui: React.ReactElement) => render(<TwigsProvider>{ui}</TwigsProvider>);
 
@@ -264,6 +267,25 @@ describe('Button', () => {
       ? Object.assign({}, ...btn.props.style.filter(Boolean))
       : btn.props.style;
     expect(flatStyle.opacity).toBe(0.4);
+  });
+
+  // ── Shade mapping ──
+
+  describe('shade mapping', () => {
+    it('uses colorOpacity for default outline pressed background', () => {
+      const pressedStyle = getPressedStyle('default', 'outline', defaultTheme);
+      expect(pressedStyle.backgroundColor).toBe(colorOpacity(defaultTheme.colors.black900, 0.04));
+    });
+
+    it('uses colorOpacity for bright solid pressed background', () => {
+      const pressedStyle = getPressedStyle('bright', 'solid', defaultTheme);
+      expect(pressedStyle.backgroundColor).toBe(colorOpacity(defaultTheme.colors.black900, 0.08));
+    });
+
+    it('uses colorOpacity for light solid pressed background', () => {
+      const pressedStyle = getPressedStyle('light', 'solid', defaultTheme);
+      expect(pressedStyle.backgroundColor).toBe(colorOpacity(defaultTheme.colors.white900, 0.2));
+    });
   });
 
   // ── Style overrides ──

@@ -38,15 +38,15 @@ export const Radio = React.forwardRef<View, RadioProps>(
     };
 
     const sizeConfig = getRadioSizeConfig(size);
-    const outerCircleWidth = width || sizeConfig.outer.width;
-    const outerCircleHeight = height || sizeConfig.outer.height;
-    const innerCircleWidth = innerWidth || sizeConfig.inner.width;
-    const innerCircleHeight = innerHeight || sizeConfig.inner.height;
+    const outerCircleWidth = width ?? sizeConfig.outer.width;
+    const outerCircleHeight = height ?? sizeConfig.outer.height;
+    const innerCircleWidth = innerWidth ?? sizeConfig.inner.width;
+    const innerCircleHeight = innerHeight ?? sizeConfig.inner.height;
 
     const outerCircleDynamicStyles: ViewStyle = {
       height: outerCircleHeight,
       width: outerCircleWidth,
-      borderColor: selected ? theme.colors.secondary500 : theme.colors.neutral400,
+      borderColor: selected ? theme.colors.secondary500 : theme.colors.neutral700,
     };
 
     const innerCircleDynamicStyles: ViewStyle = {
@@ -73,12 +73,7 @@ export const Radio = React.forwardRef<View, RadioProps>(
         <Flex
           align="center"
           justify="center"
-          css={StyleSheet.flatten([
-            styles.outerCircle,
-            outerCircleDynamicStyles,
-            disabled && styles.outerCircleDisabled,
-            radioStyle,
-          ])}
+          css={StyleSheet.flatten([styles.outerCircle, outerCircleDynamicStyles, radioStyle])}
         >
           {selected && (
             <Box css={StyleSheet.flatten([styles.innerCircle, innerCircleDynamicStyles])} />

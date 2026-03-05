@@ -136,5 +136,8 @@
             ],
             "typescript"
         ]
+    },
+    "dependencies": {
+        "@floating-ui/react-native": "^0.10.9"
     }
 }

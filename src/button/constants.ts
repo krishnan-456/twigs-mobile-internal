@@ -62,8 +62,9 @@ const SIZE_DATA = {
   sm: buildSizeConfig(2, 8, 24, 24, 4, 14, 16),
   md: buildSizeConfig(6, 12, 32, 32, 8, 14, 20),
   lg: buildSizeConfig(8, 16, 40, 40, 8, 16, 20),
-  xl: buildSizeConfig(10, 20, 44, 48, 12, 16, 24),
-  '2xl': buildSizeConfig(18, 28, 64, 64, 16, 16, 24),
+  xl: buildSizeConfig(10, 20, 48, 48, 12, 19.2, 24),
+  // Figma XXL maps to mobile 2xl and uses 56dp height.
+  '2xl': buildSizeConfig(14, 28, 56, 56, 16, 19.2, 24),
 } as const;
 
 /** Resolved size config for a given button size + icon mode. */
@@ -75,10 +76,21 @@ export const ICON_SIZES: Record<ButtonSize, number> = {
   xxs: 14,
   xs: 14,
   sm: 16,
-  md: 24,
-  lg: 24,
+  md: 20,
+  lg: 20,
   xl: 24,
   '2xl': 24,
+};
+
+/** Icon-only pixel size per button size. */
+export const ICON_ONLY_SIZES: Record<ButtonSize, number> = {
+  xxs: 14,
+  xs: 12,
+  sm: 20,
+  md: 20,
+  lg: 24,
+  xl: 32,
+  '2xl': 32,
 };
 
 /** Spacing (margin) between icon/loader and text per button size. */
@@ -88,7 +100,7 @@ export const ICON_SPACING: Record<ButtonSize, number> = {
   sm: 2,
   md: 4,
   lg: 4,
-  xl: 6,
+  xl: 4,
   '2xl': 8,
 };
 

@@ -164,11 +164,7 @@ export const Interactive: Story = {
     const [value, setValue] = useState('');
     return (
       <View style={{ gap: 16 }}>
-        <TextInput
-          placeholder="Type here..."
-          value={value}
-          onChangeText={setValue}
-        />
+        <TextInput placeholder="Type here..." value={value} onChangeText={setValue} />
       </View>
     );
   },

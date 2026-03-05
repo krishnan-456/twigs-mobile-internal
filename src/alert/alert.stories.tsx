@@ -1,4 +1,5 @@
 import React from 'react';
+import { View } from 'react-native';
 import type { Meta, StoryObj } from '@storybook/react-native';
 import { Alert } from './alert';
 import type { AlertProps } from './types';
@@ -9,7 +10,7 @@ const meta = {
   argTypes: {
     status: {
       control: 'select',
-      options: ['info', 'success', 'warning', 'error'],
+      options: ['default', 'info', 'success', 'warning', 'error'],
       description: 'Visual status variant',
     },
     size: {
@@ -38,33 +39,38 @@ export default meta;
 
 type Story = StoryObj<typeof meta>;
 
-export const Default: Story = {};
+export const Default: Story = {
+  args: {
+    status: 'default',
+    children: 'A FYI message here.',
+  },
+};
 
 export const Info: Story = {
   args: {
     status: 'info',
-    children: 'Here is some useful information.',
+    children: 'An info message here.',
   },
 };
 
 export const Success: Story = {
   args: {
     status: 'success',
-    children: 'Operation completed successfully.',
+    children: 'A success message here.',
   },
 };
 
 export const Warning: Story = {
   args: {
     status: 'warning',
-    children: 'Please review your input.',
+    children: 'A cautionary message here.',
   },
 };
 
 export const Error: Story = {
   args: {
     status: 'error',
-    children: 'Something went wrong.',
+    children: 'A warning message here.',
   },
 };
 
@@ -82,4 +88,38 @@ export const Small: Story = {
     size: 'sm',
     children: 'A small alert.',
   },
+};
+
+export const AllStatuses: Story = {
+  render: () => (
+    <View style={{ gap: 12 }}>
+      <Alert status="default">A FYI message here</Alert>
+      <Alert status="info">An info message here</Alert>
+      <Alert status="success">A success message here</Alert>
+      <Alert status="warning">A cautionary message here</Alert>
+      <Alert status="error">A warning message here</Alert>
+    </View>
+  ),
+};
+
+export const AllStatusesClosable: Story = {
+  render: () => (
+    <View style={{ gap: 12 }}>
+      <Alert status="default" closable>
+        A FYI message here
+      </Alert>
+      <Alert status="info" closable>
+        An info message here
+      </Alert>
+      <Alert status="success" closable>
+        A success message here
+      </Alert>
+      <Alert status="warning" closable>
+        A cautionary message here
+      </Alert>
+      <Alert status="error" closable>
+        A warning message here
+      </Alert>
+    </View>
+  ),
 };

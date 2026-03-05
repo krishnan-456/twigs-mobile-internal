@@ -4,19 +4,16 @@ import type { TwigsTheme } from '../theme';
 export const createRadioStyles = (theme: TwigsTheme) =>
   StyleSheet.create({
     outerCircle: {
-      borderRadius: 100,
-      borderWidth: 1,
+      borderRadius: theme.radii.round,
+      borderWidth: theme.borderWidths.xs,
       backgroundColor: theme.colors.white900,
-    },
-    outerCircleDisabled: {
-      opacity: 0.5,
     },
     innerCircle: {
       backgroundColor: theme.colors.secondary500,
-      borderRadius: 100,
+      borderRadius: theme.radii.round,
     },
     labelContainer: {
-      marginLeft: 8,
+      marginLeft: theme.space['4'],
     },
     container: {
       flexDirection: 'row',
@@ -24,6 +21,6 @@ export const createRadioStyles = (theme: TwigsTheme) =>
       alignSelf: 'flex-start',
     },
     containerDisabled: {
-      opacity: 0.4,
+      opacity: 0.5,
     },
   });

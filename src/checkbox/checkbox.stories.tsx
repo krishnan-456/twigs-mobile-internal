@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import type { Meta, StoryObj } from '@storybook/react-native';
-import { Text, View } from 'react-native';
+import { StyleSheet, Text, View } from 'react-native';
 import { Checkbox } from './checkbox';
 import type { CheckboxProps } from './types';
 
@@ -9,8 +9,9 @@ const meta = {
   component: Checkbox,
   argTypes: {
     checked: {
-      control: 'boolean',
-      description: 'Checked state (true/false)',
+      control: 'radio',
+      options: [false, true, 'indeterminate'],
+      description: 'Checked state (false/true/indeterminate)',
     },
     disabled: {
       control: 'boolean',
@@ -32,6 +33,15 @@ const meta = {
 export default meta;
 
 type Story = StoryObj<typeof meta>;
+
+const styles = StyleSheet.create({
+  stack: { gap: 16 },
+  row: {
+    flexDirection: 'row',
+    gap: 16,
+    alignItems: 'center',
+  },
+});
 
 export const Default: Story = {
   args: {
@@ -95,7 +105,7 @@ export const Indeterminate: Story = {
 
 export const AllStates: Story = {
   render: () => (
-    <View style={{ gap: 16 }}>
+    <View style={styles.stack}>
       <Checkbox checked={false}>
         <Text>Unchecked</Text>
       </Checkbox>
@@ -111,6 +121,32 @@ export const AllStates: Story = {
       <Checkbox checked={true} disabled>
         <Text>Disabled checked</Text>
       </Checkbox>
+      <Checkbox checked="indeterminate" disabled>
+        <Text>Disabled indeterminate</Text>
+      </Checkbox>
+    </View>
+  ),
+};
+
+export const FigmaStateMatrix: Story = {
+  render: () => (
+    <View style={styles.stack}>
+      <View style={styles.row}>
+        <Checkbox size="sm" checked={false} />
+        <Checkbox size="sm" checked={true} />
+        <Checkbox size="sm" checked="indeterminate" />
+        <Checkbox size="sm" checked={false} disabled />
+        <Checkbox size="sm" checked={true} disabled />
+        <Checkbox size="sm" checked="indeterminate" disabled />
+      </View>
+      <View style={styles.row}>
+        <Checkbox size="md" checked={false} />
+        <Checkbox size="md" checked={true} />
+        <Checkbox size="md" checked="indeterminate" />
+        <Checkbox size="md" checked={false} disabled />
+        <Checkbox size="md" checked={true} disabled />
+        <Checkbox size="md" checked="indeterminate" disabled />
+      </View>
     </View>
   ),
 };

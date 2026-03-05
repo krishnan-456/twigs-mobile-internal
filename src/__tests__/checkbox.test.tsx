@@ -1,10 +1,16 @@
 import React from 'react';
 import { render, fireEvent } from '@testing-library/react-native';
-import { Text } from 'react-native';
+import { StyleSheet, Text } from 'react-native';
 import { Checkbox } from '../checkbox';
 import { TwigsProvider } from '../context';
+import { defaultTheme } from '../theme';
 
 const wrap = (ui: React.ReactElement) => render(<TwigsProvider>{ui}</TwigsProvider>);
+
+const getCheckboxBoxStyle = (tree: any) => {
+  const checkboxBox = tree?.children?.[0];
+  return StyleSheet.flatten(checkboxBox?.props?.style);
+};
 
 describe('Checkbox', () => {
   // ── Render ──
@@ -41,6 +47,19 @@ describe('Checkbox', () => {
     expect(getByRole('checkbox')).toBeTruthy();
   });
 
+  it('uses figma-aligned size configs for sm and md', () => {
+    const smTree = wrap(<Checkbox size="sm" />).toJSON() as any;
+    const mdTree = wrap(<Checkbox size="md" />).toJSON() as any;
+
+    const smStyle = getCheckboxBoxStyle(smTree);
+    const mdStyle = getCheckboxBoxStyle(mdTree);
+
+    expect(smStyle.width).toBe(16);
+    expect(smStyle.height).toBe(16);
+    expect(mdStyle.width).toBe(20);
+    expect(mdStyle.height).toBe(20);
+  });
+
   // ── Accessibility ──
 
   it('has accessible=true and accessibilityRole="checkbox"', () => {
@@ -75,6 +94,12 @@ describe('Checkbox', () => {
     expect(getByRole('checkbox').props.accessibilityState).toEqual(
       expect.objectContaining({ disabled: true })
     );
+  });
+
+  it('applies disabled opacity style to the container', () => {
+    const { getByRole } = wrap(<Checkbox disabled />);
+    const containerStyle = StyleSheet.flatten(getByRole('checkbox').props.style);
+    expect(containerStyle.opacity).toBe(0.5);
   });
 
   it('derives accessibilityLabel from string children', () => {
@@ -160,5 +185,22 @@ describe('Checkbox', () => {
       </TwigsProvider>
     );
     expect(getByRole('checkbox').props.accessibilityState.checked).toBe('mixed');
+  });
+
+  it('uses figma token colors for unchecked and checked states', () => {
+    const uncheckedTree = wrap(<Checkbox checked={false} />).toJSON() as any;
+    const checkedTree = wrap(<Checkbox checked />).toJSON() as any;
+    const indeterminateTree = wrap(<Checkbox checked="indeterminate" />).toJSON() as any;
+
+    const uncheckedStyle = getCheckboxBoxStyle(uncheckedTree);
+    const checkedStyle = getCheckboxBoxStyle(checkedTree);
+    const indeterminateStyle = getCheckboxBoxStyle(indeterminateTree);
+
+    expect(uncheckedStyle.backgroundColor).toBe(defaultTheme.colors.white900);
+    expect(uncheckedStyle.borderColor).toBe(defaultTheme.colors.neutral400);
+    expect(checkedStyle.backgroundColor).toBe(defaultTheme.colors.secondary600);
+    expect(checkedStyle.borderColor).toBe('transparent');
+    expect(indeterminateStyle.backgroundColor).toBe(defaultTheme.colors.secondary600);
+    expect(indeterminateStyle.borderColor).toBe('transparent');
   });
 });

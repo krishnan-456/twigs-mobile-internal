@@ -1,9 +1,11 @@
-import { CommonStyleProps, BaseAccessibilityProps } from '../utils';
+import type { ViewProps } from 'react-native';
+import type { CommonStyleProps, BaseAccessibilityProps } from '../utils';
 
 export type AvatarSize = 'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl' | '3xl' | 'full';
 export type AvatarSizeProp = 'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl' | '3xl' | '4xl' | '5xl';
 
-export interface AvatarProps extends CommonStyleProps, BaseAccessibilityProps {
+export interface AvatarProps
+  extends Omit<ViewProps, 'style'>, CommonStyleProps, BaseAccessibilityProps {
   imageSrc?: string;
   name?: string;
   textColor?: string;
@@ -13,4 +15,6 @@ export interface AvatarProps extends CommonStyleProps, BaseAccessibilityProps {
   height?: number;
   rounded?: AvatarSize;
   size?: AvatarSizeProp;
+  /** Render anonymous avatar fallback style and "?" content */
+  isAnonymous?: boolean;
 }

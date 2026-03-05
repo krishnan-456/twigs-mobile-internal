@@ -4,23 +4,41 @@ import { resolveMargin, resolvePadding } from '../utils';
 import type { BoxProps } from './types';
 
 export const Box = forwardRef<View, BoxProps>(({ css, style, children, ...rest }, ref) => {
+  const {
+    margin,
+    marginHorizontal,
+    marginVertical,
+    marginTop,
+    marginBottom,
+    marginLeft,
+    marginRight,
+    padding,
+    paddingHorizontal,
+    paddingVertical,
+    paddingTop,
+    paddingBottom,
+    paddingLeft,
+    paddingRight,
+    ...viewProps
+  } = rest;
+
   const marginProps = {
-    margin: rest.margin,
-    marginHorizontal: rest.marginHorizontal,
-    marginVertical: rest.marginVertical,
-    marginTop: rest.marginTop,
-    marginBottom: rest.marginBottom,
-    marginLeft: rest.marginLeft,
-    marginRight: rest.marginRight,
+    margin,
+    marginHorizontal,
+    marginVertical,
+    marginTop,
+    marginBottom,
+    marginLeft,
+    marginRight,
   };
   const paddingProps = {
-    padding: rest.padding,
-    paddingHorizontal: rest.paddingHorizontal,
-    paddingVertical: rest.paddingVertical,
-    paddingTop: rest.paddingTop,
-    paddingBottom: rest.paddingBottom,
-    paddingLeft: rest.paddingLeft,
-    paddingRight: rest.paddingRight,
+    padding,
+    paddingHorizontal,
+    paddingVertical,
+    paddingTop,
+    paddingBottom,
+    paddingLeft,
+    paddingRight,
   };
 
   const resolvedMargin = resolveMargin(marginProps);
@@ -38,20 +56,7 @@ export const Box = forwardRef<View, BoxProps>(({ css, style, children, ...rest }
   };
 
   return (
-    <View
-      ref={ref}
-      style={[dynamicStyles, css, style]}
-      accessible={rest.accessible}
-      accessibilityRole={rest.accessibilityRole}
-      accessibilityLabel={rest.accessibilityLabel}
-      accessibilityHint={rest.accessibilityHint}
-      accessibilityState={rest.accessibilityState}
-      accessibilityValue={rest.accessibilityValue}
-      accessibilityViewIsModal={rest.accessibilityViewIsModal}
-      accessibilityElementsHidden={rest.accessibilityElementsHidden}
-      accessibilityLiveRegion={rest.accessibilityLiveRegion}
-      importantForAccessibility={rest.importantForAccessibility}
-    >
+    <View ref={ref} style={[dynamicStyles, css, style]} {...viewProps}>
       {children}
     </View>
   );

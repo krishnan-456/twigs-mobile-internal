@@ -1,10 +1,22 @@
 import React from 'react';
 import { render, fireEvent } from '@testing-library/react-native';
-import { Text } from 'react-native';
+import { StyleSheet, Text } from 'react-native';
 import { Radio } from '../radio';
 import { TwigsProvider } from '../context';
+import { defaultTheme } from '../theme';
 
 const wrap = (ui: React.ReactElement) => render(<TwigsProvider>{ui}</TwigsProvider>);
+
+const getOuterCircleStyle = (tree: any) => {
+  const outerCircle = tree?.children?.[0];
+  return StyleSheet.flatten(outerCircle?.props?.style);
+};
+
+const getInnerCircleStyle = (tree: any) => {
+  const outerCircle = tree?.children?.[0];
+  const innerCircle = outerCircle?.children?.[0];
+  return StyleSheet.flatten(innerCircle?.props?.style);
+};
 
 describe('Radio', () => {
   // ── Render ──
@@ -41,6 +53,19 @@ describe('Radio', () => {
     expect(getByRole('radio')).toBeTruthy();
   });
 
+  it('uses figma-aligned size configs for sm and md', () => {
+    const smTree = wrap(<Radio size="sm" />).toJSON() as any;
+    const mdTree = wrap(<Radio size="md" />).toJSON() as any;
+
+    const smStyle = getOuterCircleStyle(smTree);
+    const mdStyle = getOuterCircleStyle(mdTree);
+
+    expect(smStyle.width).toBe(16);
+    expect(smStyle.height).toBe(16);
+    expect(mdStyle.width).toBe(20);
+    expect(mdStyle.height).toBe(20);
+  });
+
   it('supports custom width/height overrides', () => {
     const { getByRole } = wrap(<Radio width={30} height={30} innerWidth={14} innerHeight={14} />);
     expect(getByRole('radio')).toBeTruthy();
@@ -73,6 +98,12 @@ describe('Radio', () => {
     expect(getByRole('radio').props.accessibilityState).toEqual(
       expect.objectContaining({ disabled: true })
     );
+  });
+
+  it('applies a single disabled opacity style to the container', () => {
+    const { getByRole } = wrap(<Radio disabled />);
+    const containerStyle = StyleSheet.flatten(getByRole('radio').props.style);
+    expect(containerStyle.opacity).toBe(0.5);
   });
 
   it('derives accessibilityLabel from string children', () => {
@@ -156,5 +187,31 @@ describe('Radio', () => {
     const pressable = tree;
     const outerCircle = pressable.children[0];
     expect(outerCircle.children).toBeNull();
+  });
+
+  it('uses web-parity colors for checked and unchecked states', () => {
+    const uncheckedTree = wrap(<Radio selected={false} />).toJSON() as any;
+    const checkedTree = wrap(<Radio selected />).toJSON() as any;
+
+    const uncheckedOuterStyle = getOuterCircleStyle(uncheckedTree);
+    const checkedOuterStyle = getOuterCircleStyle(checkedTree);
+    const checkedInnerStyle = getInnerCircleStyle(checkedTree);
+
+    expect(uncheckedOuterStyle.borderColor).toBe(defaultTheme.colors.neutral700);
+    expect(checkedOuterStyle.borderColor).toBe(defaultTheme.colors.secondary500);
+    expect(checkedInnerStyle.backgroundColor).toBe(defaultTheme.colors.secondary500);
+  });
+
+  it('uses size-specific inner dot dimensions for selected state', () => {
+    const smTree = wrap(<Radio size="sm" selected />).toJSON() as any;
+    const mdTree = wrap(<Radio size="md" selected />).toJSON() as any;
+
+    const smInnerStyle = getInnerCircleStyle(smTree);
+    const mdInnerStyle = getInnerCircleStyle(mdTree);
+
+    expect(smInnerStyle.width).toBe(8);
+    expect(smInnerStyle.height).toBe(8);
+    expect(mdInnerStyle.width).toBe(12);
+    expect(mdInnerStyle.height).toBe(12);
   });
 });

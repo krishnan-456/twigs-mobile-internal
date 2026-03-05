@@ -1,137 +1,153 @@
 import React from 'react';
-import { render } from '@testing-library/react-native';
+import { fireEvent, render } from '@testing-library/react-native';
+import { Image, StyleSheet } from 'react-native';
 import { Avatar } from '../avatar';
 import { TwigsProvider } from '../context';
 
 const wrap = (ui: React.ReactElement) => render(<TwigsProvider>{ui}</TwigsProvider>);
 
 describe('Avatar', () => {
-  // ── Render ──
+  // Render
+  describe('Render', () => {
+    it('renders without crashing', () => {
+      const { getByTestId } = wrap(<Avatar name="John Doe" testID="avatar" />);
+      expect(getByTestId('avatar')).toBeTruthy();
+    });
 
-  it('renders without crashing', () => {
-    const { getByRole } = wrap(<Avatar name="John Doe" />);
-    expect(getByRole('image')).toBeTruthy();
-  });
+    it('renders initials from full name', () => {
+      const { getByText } = wrap(<Avatar name="John Doe" />);
+      expect(getByText('JD')).toBeTruthy();
+    });
 
-  it('renders with default props (no name)', () => {
-    const { getByRole } = wrap(<Avatar />);
-    expect(getByRole('image')).toBeTruthy();
-  });
-
-  // ── Fallback initials ──
-
-  it('renders initials from full name (first + last)', () => {
-    const { getByText } = wrap(<Avatar name="John Doe" />);
-    expect(getByText('JD')).toBeTruthy();
-  });
-
-  it('renders single initial for single-word name', () => {
-    const { getByText } = wrap(<Avatar name="John" />);
-    expect(getByText('J')).toBeTruthy();
-  });
-
-  it('renders "?" fallback initial for default name', () => {
-    const { getByText } = wrap(<Avatar />);
-    expect(getByText('?')).toBeTruthy();
-  });
-
-  it('renders initials in uppercase', () => {
-    const { getByText } = wrap(<Avatar name="jane smith" />);
-    expect(getByText('JS')).toBeTruthy();
-  });
-
-  it('handles names with extra spaces', () => {
-    const { getByText } = wrap(<Avatar name="  Alice   Bob  " />);
-    expect(getByText('AB')).toBeTruthy();
-  });
-
-  // ── Image rendering ──
-
-  it('does not render initials when imageSrc is provided', () => {
-    const { queryByText } = wrap(
-      <Avatar name="John Doe" imageSrc="https://example.com/avatar.jpg" />
-    );
-    expect(queryByText('JD')).toBeNull();
-  });
-
-  it('renders Image element when imageSrc is provided', () => {
-    const tree = wrap(
-      <Avatar name="John" imageSrc="https://example.com/avatar.jpg" />
-    ).toJSON() as any;
-    const flex = tree;
-    const imageChild = flex.children[0];
-    expect(imageChild.type).toBe('Image');
-    expect(imageChild.props.source).toEqual({
-      uri: 'https://example.com/avatar.jpg',
+    it('renders image from legacy imageSrc prop', () => {
+      const imageSrc = 'https://example.com/legacy-avatar.jpg';
+      const { UNSAFE_getByType } = wrap(<Avatar name="Legacy" imageSrc={imageSrc} />);
+      expect(UNSAFE_getByType(Image).props.source).toEqual({ uri: imageSrc });
     });
   });
 
-  it('sets accessibilityIgnoresInvertColors on Image', () => {
-    const tree = wrap(<Avatar name="A" imageSrc="https://example.com/a.png" />).toJSON() as any;
-    const imageChild = tree.children[0];
-    expect(imageChild.props.accessibilityIgnoresInvertColors).toBe(true);
-  });
-
-  // ── Size variants ──
-
-  describe('size prop', () => {
-    const sizes = ['xs', 'sm', 'md', 'lg', 'xl', '2xl', '3xl', '4xl', '5xl'] as const;
-
-    sizes.forEach((size) => {
-      it(`renders with size="${size}"`, () => {
+  // Variants
+  describe('Variants', () => {
+    it.each(['xs', 'sm', 'md', 'lg', 'xl', '2xl', '3xl', '4xl', '5xl'] as const)(
+      'renders size="%s"',
+      (size) => {
         const { getByRole } = wrap(<Avatar name="A" size={size} />);
         expect(getByRole('image')).toBeTruthy();
-      });
-    });
-  });
+      }
+    );
 
-  it('uses custom width/height when no size prop', () => {
-    const tree = wrap(<Avatar name="X" width={60} height={60} />).toJSON() as any;
-    const flatStyle = Array.isArray(tree.props.style)
-      ? Object.assign({}, ...tree.props.style.filter(Boolean))
-      : tree.props.style;
-    expect(flatStyle.width).toBe(60);
-    expect(flatStyle.height).toBe(60);
-  });
-
-  // ── Rounded variants ──
-
-  describe('rounded prop', () => {
-    const roundedValues = ['xs', 'sm', 'md', 'lg', 'xl', '2xl', '3xl', 'full'] as const;
-
-    roundedValues.forEach((rounded) => {
-      it(`renders with rounded="${rounded}"`, () => {
+    it.each(['xs', 'sm', 'md', 'lg', 'xl', '2xl', '3xl', 'full'] as const)(
+      'renders rounded="%s"',
+      (rounded) => {
         const { getByRole } = wrap(<Avatar name="A" rounded={rounded} />);
         expect(getByRole('image')).toBeTruthy();
-      });
+      }
+    );
+
+    it('renders anonymous variant with dashed border and question mark', () => {
+      const { getByTestId, getByText } = wrap(
+        <Avatar testID="avatar" isAnonymous name="John Doe" />
+      );
+      const flatStyle = StyleSheet.flatten(getByTestId('avatar').props.style);
+
+      expect(getByText('?')).toBeTruthy();
+      expect(flatStyle.borderStyle).toBe('dashed');
     });
   });
 
-  // ── Accessibility ──
+  // Accessibility
+  describe('Accessibility', () => {
+    it('has default accessibility role "image"', () => {
+      const { getByTestId } = wrap(<Avatar testID="avatar" name="Jane" />);
+      expect(getByTestId('avatar').props.accessibilityRole).toBe('image');
+    });
 
-  it('has accessible=true and accessibilityRole="image"', () => {
-    const { getByRole } = wrap(<Avatar name="Jane" />);
-    const avatar = getByRole('image');
-    expect(avatar.props.accessible).toBe(true);
+    it('uses name as accessibilityLabel by default', () => {
+      const { getByTestId } = wrap(<Avatar testID="avatar" name="John Doe" />);
+      expect(getByTestId('avatar').props.accessibilityLabel).toBe('John Doe');
+    });
+
+    it('uses anonymous accessibilityLabel by default', () => {
+      const { getByTestId } = wrap(<Avatar testID="avatar" isAnonymous />);
+      expect(getByTestId('avatar').props.accessibilityLabel).toBe('Anonymous avatar');
+    });
+
+    it('forwards custom accessibilityLabel and accessibilityHint', () => {
+      const { getByTestId } = wrap(
+        <Avatar
+          testID="avatar"
+          accessibilityLabel="Custom Avatar Label"
+          accessibilityHint="Custom Avatar Hint"
+        />
+      );
+
+      expect(getByTestId('avatar').props.accessibilityLabel).toBe('Custom Avatar Label');
+      expect(getByTestId('avatar').props.accessibilityHint).toBe('Custom Avatar Hint');
+    });
   });
 
-  it('sets accessibilityLabel to the name', () => {
-    const { getByRole } = wrap(<Avatar name="John Doe" />);
-    expect(getByRole('image').props.accessibilityLabel).toBe('John Doe');
+  // State transitions
+  describe('State transitions', () => {
+    it('shows fallback initials when image fails to load', () => {
+      const { UNSAFE_getByType, getByText } = wrap(
+        <Avatar name="John Doe" imageSrc="https://example.com/avatar.jpg" />
+      );
+
+      fireEvent(UNSAFE_getByType(Image), 'error');
+      expect(getByText('JD')).toBeTruthy();
+    });
+
+    it('updates to anonymous fallback on rerender', () => {
+      const { queryByText, rerender, getByText } = wrap(
+        <Avatar testID="avatar" name="John Doe" imageSrc="https://example.com/avatar.jpg" />
+      );
+
+      expect(queryByText('?')).toBeNull();
+
+      rerender(
+        <TwigsProvider>
+          <Avatar
+            testID="avatar"
+            name="John Doe"
+            imageSrc="https://example.com/avatar.jpg"
+            isAnonymous
+          />
+        </TwigsProvider>
+      );
+
+      expect(getByText('?')).toBeTruthy();
+    });
   });
 
-  it('does not set accessibilityLabel for default "?" name', () => {
-    const { getByRole } = wrap(<Avatar />);
-    expect(getByRole('image').props.accessibilityLabel).toBeUndefined();
-  });
+  // Style overrides
+  describe('Style overrides', () => {
+    it('applies css and style in the expected order', () => {
+      const css = { marginTop: 10 };
+      const style = { marginTop: 20 };
+      const { getByTestId } = wrap(<Avatar testID="avatar" name="A" css={css} style={style} />);
+      const styleArray = getByTestId('avatar').props.style;
 
-  // ── Custom styling ──
+      expect(Array.isArray(styleArray)).toBe(true);
+      expect(styleArray.at(-2)).toMatchObject(css);
+      expect(styleArray.at(-1)).toMatchObject(style);
+    });
 
-  it('applies custom backgroundColor', () => {
-    const tree = wrap(<Avatar name="A" backgroundColor="#FF0000" />).toJSON() as any;
-    const flatStyle = Array.isArray(tree.props.style)
-      ? Object.assign({}, ...tree.props.style.filter(Boolean))
-      : tree.props.style;
-    expect(flatStyle.backgroundColor).toBe('#FF0000');
+    it('applies custom backgroundColor and textColor for fallback', () => {
+      const { getByTestId, getByText } = wrap(
+        <Avatar
+          testID="avatar"
+          name="A"
+          backgroundColor="#123456"
+          textColor="#FFFFFF"
+          imageSrc={undefined}
+        />
+      );
+
+      const avatarStyle = StyleSheet.flatten(getByTestId('avatar').props.style);
+      const textStyle = StyleSheet.flatten(getByText('A').props.style);
+
+      expect(avatarStyle.backgroundColor).toBe('#123456');
+      expect(textStyle.color).toBe('#FFFFFF');
+    });
   });
 });

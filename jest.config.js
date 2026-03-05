@@ -21,7 +21,7 @@ module.exports = {
     ],
   },
   transformIgnorePatterns: [
-    'node_modules/(?!(react-native|@react-native|react-native-reanimated|react-native-svg|@gorhom|@testing-library)/)',
+    'node_modules/(?!(react-native|@react-native|react-native-reanimated|react-native-svg|@gorhom|@testing-library|@floating-ui)/)',
   ],
   moduleNameMapper: {
     'react-native-reanimated': '<rootDir>/src/__tests__/__mocks__/react-native-reanimated.ts',

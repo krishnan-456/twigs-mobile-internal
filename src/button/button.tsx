@@ -39,7 +39,7 @@ const ButtonSideElement: React.FC<ButtonSideElementProps> = ({
   loaderColor,
   containerStyle,
 }) => {
-  const iconSize = getIconSize(size);
+  const iconSize = getIconSize(size, position);
   const iconContainerStyle = getIconContainerStyles({ position, size });
 
   if (loading) {
