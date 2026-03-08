@@ -48,6 +48,10 @@ export const ToastProvider = ({
     return () => clearTimeout(timer);
   }, [toasts.length]);
 
+  const remove = useCallback((id: string) => {
+    setToasts((prev) => prev.filter((t) => t.id !== id));
+  }, []);
+
   const add = useCallback(
     (options: ToastOptions) => {
       const id = options.id ?? generateId();
@@ -60,8 +64,8 @@ export const ToastProvider = ({
           title: options.title,
           description: options.description ?? '',
           variant: options.variant ?? 'default',
-          icon: options.icon ?? null as any,
-          action: options.action ?? null as any,
+          icon: options.icon ?? null,
+          action: options.action ?? null,
           position: options.position ?? defaultPosition,
           duration: options.duration ?? defaultDuration,
           onPress: options.onPress,
@@ -88,12 +92,8 @@ export const ToastProvider = ({
 
       return { id, dismiss: () => remove(id) };
     },
-    [defaultPosition, defaultDuration, maxToasts],
+    [defaultPosition, defaultDuration, maxToasts, remove],
   );
-
-  const remove = useCallback((id: string) => {
-    setToasts((prev) => prev.filter((t) => t.id !== id));
-  }, []);
 
   const dismiss = useCallback(
     (id?: string) => {

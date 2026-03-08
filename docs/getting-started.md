@@ -13,7 +13,7 @@ npm install testing-twigs
 Ensure these peer dependencies are installed in your React Native project:
 
 ```bash
-npm install react-native-reanimated react-native-gesture-handler react-native-svg @gorhom/bottom-sheet
+npm install react-native-reanimated react-native-gesture-handler react-native-svg @gorhom/bottom-sheet react-native-safe-area-context react-native-screens
 ```
 
 ## Setup
@@ -24,11 +24,7 @@ Wrap your app with `TwigsProvider` to enable theming:
 import { TwigsProvider } from 'testing-twigs';
 
 export default function App() {
-  return (
-    <TwigsProvider>
-      {/* Your app content */}
-    </TwigsProvider>
-  );
+  return <TwigsProvider>{/* Your app content */}</TwigsProvider>;
 }
 ```
 
@@ -52,31 +48,36 @@ const customTheme = {
 };
 
 export default function App() {
-  return (
-    <TwigsProvider theme={customTheme}>
-      {/* Your app content */}
-    </TwigsProvider>
-  );
+  return <TwigsProvider theme={customTheme}>{/* Your app content */}</TwigsProvider>;
 }
 ```
 
 ## Components
 
-| Component | Description |
-|---|---|
-| `Button` | Pressable button with variants (solid, ghost, outline), sizes, loading state |
-| `TextInput` | Text field with icons, elements, error states, password toggle |
-| `Checkbox` | Animated checkbox with indeterminate state |
-| `Radio` | Radio button with size variants |
-| `Separator` | Visual divider with horizontal and vertical orientations |
-| `Switch` | Animated toggle switch |
-| `Alert` | Contextual feedback messages with status variants and optional close |
-| `Avatar` | User avatar with image or initials fallback |
-| `Box` | Basic layout container |
-| `Flex` | Flexbox layout container |
-| `Text` | Themed text component |
-| `BottomSheet` | Gorhom bottom sheet wrapper with themed header |
-| `BottomSheetModal` | Modal variant of bottom sheet |
+| Component          | Description                                                                  |
+| ------------------ | ---------------------------------------------------------------------------- |
+| `Button`           | Pressable button with variants (solid, ghost, outline), sizes, loading state |
+| `TextInput`        | Text field with icons, elements, error states, password toggle               |
+| `Checkbox`         | Animated checkbox with indeterminate state                                   |
+| `Chip`             | Compact interactive element for tags, filters, and selectable items          |
+| `Radio`            | Radio button with size variants                                              |
+| `SegmentedButton`  | Single-select toggle button group                                           |
+| `Separator`        | Visual divider with horizontal and vertical orientations                     |
+| `Switch`           | Toggle switch for binary on/off with size variants (sm, md)                  |
+| `Alert`            | Contextual feedback messages with status variants and optional close         |
+| `Avatar`           | User avatar with image or initials fallback                                  |
+| `AvatarGroup`      | Overlapping avatar stack with optional overflow indicator                    |
+| `Badge`            | Compact pill-shaped element for labels, tags, and status indicators          |
+| `Box`              | Basic layout container                                                       |
+| `Flex`             | Flexbox layout container                                                     |
+| `IconButton`       | Icon-only button with rounded variant, sizes, and loading state              |
+| `LinkButton`       | Text-only pressable with link styling                                        |
+| `Modal`            | Composable modal dialog with customizable sub-components (title, description, body, footer) |
+| `Text`             | Themed text component                                                        |
+| `Toast`            | Imperative toast notifications with variant-based styling and action support  |
+| `Tooltip`          | Floating content bubble anchored to a trigger element                        |
+| `BottomSheet`      | Gorhom bottom sheet wrapper with themed header                               |
+| `BottomSheetModal` | Modal variant of bottom sheet                                                |
 
 ## Usage Example
 
@@ -89,12 +90,7 @@ function LoginForm() {
 
   return (
     <Flex gap={16} css={{ padding: 24 }}>
-      <TextInput
-        placeholder="Email"
-        value={email}
-        onChangeText={setEmail}
-        size="lg"
-      />
+      <TextInput placeholder="Email" value={email} onChangeText={setEmail} size="lg" />
       <Switch value={remember} onValueChange={setRemember} />
       <Button color="primary" size="lg" onPress={handleLogin}>
         Sign In
@@ -108,17 +104,17 @@ function LoginForm() {
 
 All dimension tokens use React Native dp (density-independent pixels), not CSS strings:
 
-| Token | Type | Example |
-|---|---|---|
-| `colors` | `string` (hex) | `'#00828D'` |
-| `space` | `number` (dp) | `8` |
-| `fontSizes` | `number` (dp) | `14` |
-| `lineHeights` | `number` (dp) | `20` |
-| `radii` | `number` (dp) | `8` |
-| `borderWidths` | `number` (dp) | `1` |
-| `transitions` | `number` (ms) | `200` |
-| `fontWeights` | `string` | `'400'` |
-| `fonts` | `string` | `'System'` |
+| Token          | Type           | Example     |
+| -------------- | -------------- | ----------- |
+| `colors`       | `string` (hex) | `'#00828D'` |
+| `space`        | `number` (dp)  | `8`         |
+| `fontSizes`    | `number` (dp)  | `14`        |
+| `lineHeights`  | `number` (dp)  | `20`        |
+| `radii`        | `number` (dp)  | `8`         |
+| `borderWidths` | `number` (dp)  | `1`         |
+| `transitions`  | `number` (ms)  | `200`       |
+| `fontWeights`  | `string`       | `'400'`     |
+| `fonts`        | `string`       | `'System'`  |
 
 ## Accessibility
 
@@ -138,8 +134,8 @@ Pass `accessibilityLabel` and `accessibilityHint` via props for custom labels.
 import { colorOpacity } from 'testing-twigs';
 
 // Apply alpha to any hex color
-colorOpacity('#00828D', 0.1);  // '#00828D1A'
-colorOpacity('#64748B', 0.8);  // '#64748BCC'
+colorOpacity('#00828D', 0.1); // '#00828D1A'
+colorOpacity('#64748B', 0.8); // '#64748BCC'
 ```
 
 ## Web Library Reference

@@ -9,7 +9,7 @@ export const withTiming = (value: number, _config?: object, callback?: (finished
 };
 export const withSpring = (value: number) => value;
 export const withRepeat = (value: number) => value;
-export const runOnJS = (fn: Function) => fn;
+export const runOnJS = (fn: (...args: unknown[]) => unknown) => fn;
 export const interpolate = (
   value: number,
   inputRange: number[],

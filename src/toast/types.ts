@@ -39,8 +39,13 @@ export interface ToastOptions {
 }
 
 /** Internal toast state tracked by the provider */
-export interface ToastState extends Required<Omit<ToastOptions, 'onPress' | 'onShow' | 'onDismiss'>> {
+export interface ToastState
+  extends Required<
+    Omit<ToastOptions, 'icon' | 'action' | 'onPress' | 'onShow' | 'onDismiss'>
+  > {
   id: string;
+  icon: ReactElement | null;
+  action: ReactElement | null;
   createdAt: number;
   onPress?: () => void;
   onShow?: () => void;

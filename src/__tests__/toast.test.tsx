@@ -391,14 +391,14 @@ describe('Toast', () => {
 
   describe('useToast()', () => {
     it('throws when used outside ToastProvider', () => {
-      const TestComponent = () => {
-        expect(() => useToast()).toThrow(
-          'useToastContext must be used within a ToastProvider',
-        );
+      const ThrowingComponent = () => {
+        useToast();
         return null;
       };
 
-      wrap(<TestComponent />);
+      expect(() => wrap(<ThrowingComponent />)).toThrow(
+        'useToastContext must be used within a ToastProvider',
+      );
     });
 
     it('returns toast methods when inside ToastProvider', () => {

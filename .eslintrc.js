@@ -35,7 +35,7 @@ module.exports = {
   },
   overrides: [
     {
-      files: ['src/__tests__/**/*.{ts,tsx}', 'src/__tests__/__mocks__/**/*.{ts,tsx}'],
+      files: ['src/__tests__/**/*.{ts,tsx}'],
       env: { jest: true },
       rules: {
         'react-native/no-raw-text': 'off',

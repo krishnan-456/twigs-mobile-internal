@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, Text as RNText, StyleSheet } from 'react-native';
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react-native';
 import { Svg, Line } from 'react-native-svg';
 import { IconButton } from './icon-button';
 
