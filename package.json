@@ -24,7 +24,8 @@
     "!**/__tests__",
     "!**/__fixtures__",
     "!**/__mocks__",
-    "!**/*.stories.*"
+    "!**/*.stories.*",
+    "!**/*.map"
   ],
   "scripts": {
     "build": "bob build",
@@ -129,13 +130,15 @@
       [
         "commonjs",
         {
-          "configFile": true
+          "configFile": true,
+          "sourceMaps": false
         }
       ],
       [
         "module",
         {
-          "configFile": true
+          "configFile": true,
+          "sourceMaps": false
         }
       ],
       "typescript"
