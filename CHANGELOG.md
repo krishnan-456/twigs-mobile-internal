@@ -1,5 +1,19 @@
 # Changelog
 
+## [0.4.0](https://github.com/krishnan-456/twigs-mobile-internal/compare/v0.3.1...v0.4.0) (2026-03-08)
+
+### Features
+
+* enhance component library with new AvatarGroup, Badge, Chip, and IconButton components, and update existing Avatar and Alert components with additional features and tests ([1b8e4f9](https://github.com/krishnan-456/twigs-mobile-internal/commit/1b8e4f955d83adb23ce8c8339ce3da8e6d0fb890))
+
+### Bug Fixes
+
+* lock ([e217464](https://github.com/krishnan-456/twigs-mobile-internal/commit/e2174649de99a26d684ef60e892c2bf63e24598d))
+
+### Refactoring
+
+* bottomsheet, radio & checkbox ([83e898a](https://github.com/krishnan-456/twigs-mobile-internal/commit/83e898ad02febed577579812b66a1ee531cbd95a))
+
 ## [0.3.1](https://github.com/krishnan-456/twigs-mobile-internal/compare/v0.3.0...v0.3.1) (2026-02-23)
 
 ## 0.3.0 (2026-02-23)
