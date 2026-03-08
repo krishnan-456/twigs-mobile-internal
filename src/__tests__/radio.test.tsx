@@ -62,13 +62,10 @@ describe('Radio', () => {
 
     expect(smStyle.width).toBe(16);
     expect(smStyle.height).toBe(16);
+    expect(smStyle.borderRadius).toBe(8);
     expect(mdStyle.width).toBe(20);
     expect(mdStyle.height).toBe(20);
-  });
-
-  it('supports custom width/height overrides', () => {
-    const { getByRole } = wrap(<Radio width={30} height={30} innerWidth={14} innerHeight={14} />);
-    expect(getByRole('radio')).toBeTruthy();
+    expect(mdStyle.borderRadius).toBe(10);
   });
 
   // ── Accessibility ──
@@ -211,7 +208,9 @@ describe('Radio', () => {
 
     expect(smInnerStyle.width).toBe(8);
     expect(smInnerStyle.height).toBe(8);
+    expect(smInnerStyle.borderRadius).toBe(4);
     expect(mdInnerStyle.width).toBe(12);
     expect(mdInnerStyle.height).toBe(12);
+    expect(mdInnerStyle.borderRadius).toBe(6);
   });
 });

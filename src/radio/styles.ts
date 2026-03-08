@@ -4,13 +4,13 @@ import type { TwigsTheme } from '../theme';
 export const createRadioStyles = (theme: TwigsTheme) =>
   StyleSheet.create({
     outerCircle: {
-      borderRadius: theme.radii.round,
       borderWidth: theme.borderWidths.xs,
       backgroundColor: theme.colors.white900,
+      alignItems: 'center',
+      justifyContent: 'center',
     },
     innerCircle: {
       backgroundColor: theme.colors.secondary500,
-      borderRadius: theme.radii.round,
     },
     labelContainer: {
       marginLeft: theme.space['4'],

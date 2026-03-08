@@ -1,20 +1,8 @@
 import React, { useState } from 'react';
+import { View, Text as RNText, StyleSheet, Text } from 'react-native';
 import type { Meta, StoryObj } from '@storybook/react-native';
-import { StyleSheet, Text, View } from 'react-native';
 import { SegmentedButton } from './segmented-button';
 import type { SegmentedButtonProps } from './types';
-
-const storyStyles = StyleSheet.create({
-  wrapper: {
-    padding: 16,
-    gap: 16,
-  },
-  label: {
-    fontSize: 14,
-    marginBottom: 8,
-    color: '#64748B',
-  },
-});
 
 const DEFAULT_OPTIONS = [
   { value: 'option1', label: 'Option 1' },
@@ -26,6 +14,15 @@ const THREE_OPTIONS = [
   { value: 'weekly', label: 'Weekly' },
   { value: 'monthly', label: 'Monthly' },
 ];
+
+const docsStyles = StyleSheet.create({
+  container: { gap: 16 },
+  title: { fontSize: 24, fontWeight: '700' },
+  description: { fontSize: 14, color: '#666', lineHeight: 20 },
+  section: { gap: 8 },
+  sectionTitle: { fontSize: 16, fontWeight: '600' },
+  prop: { fontSize: 13, color: '#444', lineHeight: 18 },
+});
 
 const meta = {
   title: 'Components/SegmentedButton',
@@ -66,68 +63,55 @@ export default meta;
 
 type Story = StoryObj<typeof meta>;
 
+export const Docs: Story = {
+  render: () => (
+    <View style={docsStyles.container}>
+      <RNText style={docsStyles.title}>SegmentedButton</RNText>
+      <RNText style={docsStyles.description}>
+        A segmented control for switching between 2-3 options. Supports controlled and uncontrolled
+        modes, rounded variants, and per-option disabled state.
+      </RNText>
+      <View style={docsStyles.section}>
+        <RNText style={docsStyles.sectionTitle}>Props</RNText>
+        <RNText style={docsStyles.prop}>
+          • options — array of {'{ value, label, disabled? }'}
+        </RNText>
+        <RNText style={docsStyles.prop}>• value / defaultValue — controlled or uncontrolled</RNText>
+        <RNText style={docsStyles.prop}>• onChange — (value: string) callback</RNText>
+        <RNText style={docsStyles.prop}>
+          • rounded — 'xs' ... '3xl' | 'full' (default: 'full')
+        </RNText>
+        <RNText style={docsStyles.prop}>• fullWidth — boolean (default: true)</RNText>
+        <RNText style={docsStyles.prop}>• disabled — boolean (default: false)</RNText>
+      </View>
+      <View style={docsStyles.section}>
+        <RNText style={docsStyles.sectionTitle}>Usage</RNText>
+        <SegmentedButton options={DEFAULT_OPTIONS} defaultValue="option1" />
+      </View>
+    </View>
+  ),
+};
+
 export const Default: Story = {};
 
-export const MediumRounded: Story = {
-  args: {
-    rounded: 'md',
-  },
-};
-
-export const ThreeOptions: Story = {
-  args: {
-    options: THREE_OPTIONS,
-    defaultValue: 'weekly',
-  },
-};
-
-export const Disabled: Story = {
-  args: {
-    disabled: true,
-    defaultValue: 'option1',
-  },
-};
-
-export const DisabledOption: Story = {
-  args: {
-    options: [
-      { value: 'option1', label: 'Enabled' },
-      { value: 'option2', label: 'Disabled', disabled: true },
-    ],
-    defaultValue: 'option1',
-  },
-};
-
-export const Interactive: Story = {
+export const AllVariants: Story = {
   render: () => {
     const [value, setValue] = useState('option1');
+    const [threeValue, setThreeValue] = useState('daily');
     return (
-      <View style={storyStyles.wrapper}>
-        <Text style={storyStyles.label}>Selected: {value}</Text>
+      <View style={{ gap: 16 }}>
+        <RNText style={{ fontSize: 13, color: '#64748B' }}>Selected: {value}</RNText>
         <SegmentedButton options={DEFAULT_OPTIONS} value={value} onChange={setValue} />
+        <SegmentedButton options={DEFAULT_OPTIONS} value={value} onChange={setValue} rounded="md" />
+        <RNText style={{ fontSize: 13, color: '#64748B' }}>Three options: {threeValue}</RNText>
+        <SegmentedButton options={THREE_OPTIONS} value={threeValue} onChange={setThreeValue} />
+        <SegmentedButton options={DEFAULT_OPTIONS} defaultValue="option1" disabled />
         <SegmentedButton
-          options={DEFAULT_OPTIONS}
-          value={value}
-          onChange={setValue}
-          rounded="md"
-        />
-      </View>
-    );
-  },
-};
-
-export const InteractiveThreeOptions: Story = {
-  render: () => {
-    const [value, setValue] = useState('daily');
-    return (
-      <View style={storyStyles.wrapper}>
-        <Text style={storyStyles.label}>Selected: {value}</Text>
-        <SegmentedButton options={THREE_OPTIONS} value={value} onChange={setValue} />
-        <SegmentedButton
-          options={THREE_OPTIONS}
-          value={value}
-          onChange={setValue}
-          rounded="md"
+          options={[
+            { value: 'option1', label: 'Enabled' },
+            { value: 'option2', label: 'Disabled', disabled: true },
+          ]}
+          defaultValue="option1"
         />
       </View>
     );

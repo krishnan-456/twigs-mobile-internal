@@ -1,8 +1,17 @@
 import React from 'react';
+import { View, Text as RNText, StyleSheet } from 'react-native';
 import type { Meta, StoryObj } from '@storybook/react-native';
-import { View } from 'react-native';
 import { Button } from './button';
 import type { ButtonProps } from './types';
+
+const docsStyles = StyleSheet.create({
+  container: { gap: 16 },
+  title: { fontSize: 24, fontWeight: '700' },
+  description: { fontSize: 14, color: '#666', lineHeight: 20 },
+  section: { gap: 8 },
+  sectionTitle: { fontSize: 16, fontWeight: '600' },
+  prop: { fontSize: 13, color: '#444', lineHeight: 18 },
+});
 
 const meta = {
   title: 'Components/Button',
@@ -56,95 +65,69 @@ export default meta;
 
 type Story = StoryObj<typeof meta>;
 
-export const Default: Story = {};
-
-export const Outline: Story = {
-  args: {
-    variant: 'outline',
-    children: 'Outline',
-  },
-};
-
-export const Ghost: Story = {
-  args: {
-    variant: 'ghost',
-    children: 'Ghost',
-  },
-};
-
-export const Disabled: Story = {
-  args: {
-    disabled: true,
-    children: 'Disabled',
-  },
-};
-
-export const Loading: Story = {
-  args: {
-    loading: true,
-    children: 'Loading',
-  },
-};
-
-export const CircleLoading: Story = {
-  args: {
-    loading: true,
-    loader: 'circle',
-    children: 'Loading',
-  },
-};
-
-export const Sizes: Story = {
+export const Docs: Story = {
   render: () => (
-    <View style={{ flexDirection: 'row', gap: 8, alignItems: 'center', flexWrap: 'wrap' }}>
-      <Button size="xxs">XXS</Button>
-      <Button size="xs">XS</Button>
-      <Button size="sm">SM</Button>
-      <Button size="md">MD</Button>
-      <Button size="lg">LG</Button>
-      <Button size="xl">XL</Button>
-      <Button size="2xl">2XL</Button>
-    </View>
-  ),
-};
-
-export const Colors: Story = {
-  render: () => (
-    <View style={{ flexDirection: 'row', gap: 8, flexWrap: 'wrap' }}>
-      <Button color="default">Default</Button>
-      <Button color="primary">Primary</Button>
-      <Button color="secondary">Secondary</Button>
-      <Button color="bright">Bright</Button>
-      <Button color="light">Light</Button>
-      <Button color="error">Error</Button>
-    </View>
-  ),
-};
-
-export const DisabledStates: Story = {
-  render: () => (
-    <View style={{ gap: 10 }}>
-      <View style={{ flexDirection: 'row', gap: 8, flexWrap: 'wrap' }}>
-        <Button variant="solid" color="primary" disabled>
-          Solid
-        </Button>
-        <Button variant="ghost" color="primary" disabled>
-          Ghost
-        </Button>
-        <Button variant="outline" color="primary" disabled>
-          Outline
+    <View style={docsStyles.container}>
+      <RNText style={docsStyles.title}>Button</RNText>
+      <RNText style={docsStyles.description}>
+        Primary action component with multiple variants, sizes, colors, and loading states.
+      </RNText>
+      <View style={docsStyles.section}>
+        <RNText style={docsStyles.sectionTitle}>Props</RNText>
+        <RNText style={docsStyles.prop}>
+          • size — 'xxs' | 'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl' (default: 'sm')
+        </RNText>
+        <RNText style={docsStyles.prop}>
+          • variant — 'solid' | 'outline' | 'ghost' (default: 'solid')
+        </RNText>
+        <RNText style={docsStyles.prop}>
+          • color — 'default' | 'primary' | 'secondary' | 'bright' | 'light' | 'error'
+        </RNText>
+        <RNText style={docsStyles.prop}>• disabled — boolean (default: false)</RNText>
+        <RNText style={docsStyles.prop}>• loading — boolean (default: false)</RNText>
+        <RNText style={docsStyles.prop}>• loader — 'line' | 'circle' (default: 'line')</RNText>
+      </View>
+      <View style={docsStyles.section}>
+        <RNText style={docsStyles.sectionTitle}>Usage</RNText>
+        <Button size="sm" color="primary">
+          Button
         </Button>
       </View>
+    </View>
+  ),
+};
+
+export const Default: Story = {};
+
+export const AllVariants: Story = {
+  render: () => (
+    <View style={{ gap: 16 }}>
+      <View style={{ flexDirection: 'row', gap: 8, alignItems: 'center', flexWrap: 'wrap' }}>
+        <Button size="xxs">XXS</Button>
+        <Button size="xs">XS</Button>
+        <Button size="sm">SM</Button>
+        <Button size="md">MD</Button>
+        <Button size="lg">LG</Button>
+        <Button size="xl">XL</Button>
+        <Button size="2xl">2XL</Button>
+      </View>
       <View style={{ flexDirection: 'row', gap: 8, flexWrap: 'wrap' }}>
-        <Button variant="solid" color="default" disabled>
-          Default
-        </Button>
-        <Button variant="solid" color="secondary" disabled>
-          Secondary
-        </Button>
-        <Button variant="solid" color="error" disabled>
-          Error
-        </Button>
+        <Button color="default">Default</Button>
+        <Button color="primary">Primary</Button>
+        <Button color="secondary">Secondary</Button>
+        <Button color="bright">Bright</Button>
+        <Button color="light">Light</Button>
+        <Button color="error">Error</Button>
+      </View>
+      <View style={{ flexDirection: 'row', gap: 8, flexWrap: 'wrap' }}>
+        <Button variant="solid" color="primary">Solid</Button>
+        <Button variant="outline" color="primary">Outline</Button>
+        <Button variant="ghost" color="primary">Ghost</Button>
+      </View>
+      <View style={{ flexDirection: 'row', gap: 8, flexWrap: 'wrap' }}>
+        <Button disabled>Disabled</Button>
+        <Button loading>Loading</Button>
+        <Button loading loader="circle">Circle</Button>
       </View>
     </View>
   ),

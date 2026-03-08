@@ -1,8 +1,17 @@
-import React, { useState } from 'react';
+import React from 'react';
+import { View, Text as RNText, StyleSheet } from 'react-native';
 import type { Meta, StoryObj } from '@storybook/react-native';
-import { View } from 'react-native';
 import { TextInput } from './text-input';
 import type { TextInputProps } from './types';
+
+const docsStyles = StyleSheet.create({
+  container: { gap: 16 },
+  title: { fontSize: 24, fontWeight: '700' },
+  description: { fontSize: 14, color: '#666', lineHeight: 20 },
+  section: { gap: 8 },
+  sectionTitle: { fontSize: 16, fontWeight: '600' },
+  prop: { fontSize: 13, color: '#444', lineHeight: 18 },
+});
 
 const meta = {
   title: 'Components/TextInput',
@@ -22,21 +31,13 @@ const meta = {
       control: 'text',
       description: 'Placeholder text',
     },
-    defaultValue: {
-      control: 'text',
-      description: 'Default value',
-    },
     disabled: {
       control: 'boolean',
-      description: 'Disabled state (visual only, also set editable=false)',
+      description: 'Disabled state',
     },
     editable: {
       control: 'boolean',
       description: 'Whether the input is editable',
-    },
-    readOnly: {
-      control: 'boolean',
-      description: 'Read-only mode',
     },
     secureTextEntry: {
       control: 'boolean',
@@ -54,36 +55,9 @@ const meta = {
       control: 'boolean',
       description: 'Multi-line text input',
     },
-    numberOfLines: {
-      control: 'number',
-      description: 'Number of visible lines (when multiline)',
-    },
     maxLength: {
       control: 'number',
       description: 'Maximum character length',
-    },
-    keyboardType: {
-      control: 'select',
-      options: ['default', 'email-address', 'numeric', 'phone-pad', 'decimal-pad', 'url'],
-      description: 'Keyboard type',
-    },
-    autoCapitalize: {
-      control: 'select',
-      options: ['none', 'sentences', 'words', 'characters'],
-      description: 'Auto-capitalize behavior',
-    },
-    autoCorrect: {
-      control: 'boolean',
-      description: 'Auto-correct enabled',
-    },
-    autoFocus: {
-      control: 'boolean',
-      description: 'Auto-focus on mount',
-    },
-    returnKeyType: {
-      control: 'select',
-      options: ['done', 'go', 'next', 'search', 'send', 'default'],
-      description: 'Return key label',
     },
   },
   args: {
@@ -92,12 +66,9 @@ const meta = {
     variant: 'default',
     disabled: false,
     editable: true,
-    readOnly: false,
     secureTextEntry: false,
     errorBorder: false,
     multiline: false,
-    autoCorrect: true,
-    autoFocus: false,
   },
 } satisfies Meta<TextInputProps>;
 
@@ -105,78 +76,47 @@ export default meta;
 
 type Story = StoryObj<typeof meta>;
 
+export const Docs: Story = {
+  render: () => (
+    <View style={docsStyles.container}>
+      <RNText style={docsStyles.title}>TextInput</RNText>
+      <RNText style={docsStyles.description}>
+        A styled text input with size and variant presets, error states, password toggle, and
+        multiline support.
+      </RNText>
+      <View style={docsStyles.section}>
+        <RNText style={docsStyles.sectionTitle}>Props</RNText>
+        <RNText style={docsStyles.prop}>
+          • size — 'sm' | 'md' | 'lg' | 'xl' | '2xl' (default: 'md')
+        </RNText>
+        <RNText style={docsStyles.prop}>• variant — 'default' | 'filled' (default: 'default')</RNText>
+        <RNText style={docsStyles.prop}>• errorBorder / errorMessage — error state</RNText>
+        <RNText style={docsStyles.prop}>• secureTextEntry — password mode</RNText>
+        <RNText style={docsStyles.prop}>• multiline / numberOfLines — multiline support</RNText>
+        <RNText style={docsStyles.prop}>• disabled — boolean (default: false)</RNText>
+      </View>
+      <View style={docsStyles.section}>
+        <RNText style={docsStyles.sectionTitle}>Usage</RNText>
+        <TextInput placeholder="Type something..." />
+      </View>
+    </View>
+  ),
+};
+
 export const Default: Story = {};
 
-export const Filled: Story = {
-  args: {
-    variant: 'filled',
-    placeholder: 'Filled variant',
-  },
-};
-
-export const WithError: Story = {
-  args: {
-    errorBorder: true,
-    errorMessage: 'This field is required',
-    placeholder: 'Error state',
-  },
-};
-
-export const Password: Story = {
-  args: {
-    secureTextEntry: true,
-    placeholder: 'Enter password',
-  },
-};
-
-export const Multiline: Story = {
-  args: {
-    multiline: true,
-    numberOfLines: 4,
-    placeholder: 'Enter multiple lines...',
-  },
-};
-
-export const WithMaxLength: Story = {
-  args: {
-    maxLength: 20,
-    placeholder: 'Max 20 characters',
-  },
-};
-
-export const NumericKeyboard: Story = {
-  args: {
-    keyboardType: 'numeric',
-    placeholder: 'Numbers only',
-  },
-};
-
-export const Disabled: Story = {
-  args: {
-    disabled: true,
-    editable: false,
-    placeholder: 'Cannot edit',
-  },
-};
-
-export const Interactive: Story = {
-  render: () => {
-    const [value, setValue] = useState('');
-    return (
-      <View style={{ gap: 16 }}>
-        <TextInput placeholder="Type here..." value={value} onChangeText={setValue} />
-      </View>
-    );
-  },
-};
-
-export const Sizes: Story = {
+export const AllVariants: Story = {
   render: () => (
     <View style={{ gap: 12 }}>
       <TextInput size="sm" placeholder="Small" />
-      <TextInput size="md" placeholder="Medium" />
+      <TextInput size="md" placeholder="Medium (default)" />
       <TextInput size="lg" placeholder="Large" />
       <TextInput size="xl" placeholder="Extra Large" />
+      <TextInput variant="filled" placeholder="Filled variant" />
+      <TextInput errorBorder errorMessage="This field is required" placeholder="Error state" />
+      <TextInput secureTextEntry placeholder="Password" />
+      <TextInput multiline numberOfLines={3} placeholder="Multiline..." />
+      <TextInput disabled editable={false} placeholder="Disabled" />
     </View>
   ),
 };

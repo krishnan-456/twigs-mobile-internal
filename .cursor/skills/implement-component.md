@@ -3,7 +3,7 @@ name: implement-component
 description: >
   Create all component source files following project conventions.
   Runs on main agent due to file dependencies.
-  Called by master-orchestrator during Phase 3.
+  Called by master-orchestrator during Phase 4.
 ---
 
 # Implement Component
@@ -15,15 +15,47 @@ because files have dependencies (types.ts must exist before component.tsx).
 
 From master orchestrator context:
 - `componentName`, `dirName`, `workspacePath`
-- `webApiSummary`: props, variants, tokens, accessibility
+- `webApiSummary`: props, variants, tokens, accessibility, interaction behavior
+- `figmaDesignSummary`: layout/spacing/sizing/visual structure
 - `rnPatternRecommendation`: file structure, similar component
 - `classification`, `deviations`: from feasibility check
+- `resolvedImplementationSpec`: output of Design Reconciliation phase
+- `reusePlan`: twigs-mobile primitive mapping decisions
+- `conflictLog`: conflict entries from reconciliation
 
 ## Output
 
 Return to master orchestrator:
 - `filesCreated`: list of file paths
 - `propsInterface`: the full props interface (for test skill)
+
+## Mandatory Web Cross-Check
+
+Before implementing or modifying any component internals, read the matching web
+source directly from local workspace:
+
+`/Users/krishnank/surveysparrow/twigs/packages/react-components/src/<dir-name>/`
+
+Do not rely on memory or remote fetch when this local source is available.
+
+## Mandatory Reconciliation Contract
+
+Implementation must follow the Design Reconciliation output:
+
+1. API/props/variants/accessibility/interaction behavior must match `webApiSummary`
+2. Layout/spacing/sizing/visual structure must follow `figmaDesignSummary` unless
+   it conflicts with web behavior intent
+3. Composition must follow `reusePlan` and reuse existing twigs-mobile primitives first
+
+If `conflictLog` still has unresolved items, stop and ask the user before
+writing or modifying component files.
+
+### Reuse-first examples
+
+- Alert dismiss action should reuse `Button` icon mode (`<Button icon={...} />`)
+  rather than introducing a raw close primitive.
+- If the web counterpart uses a Twigs primitive, map to the closest twigs-mobile
+  primitive first; use raw RN primitives only when no equivalent exists.
 
 ---
 
@@ -248,6 +280,12 @@ export const <ComponentName> = React.forwardRef<View, <ComponentName>Props>(
 - `accessibilityState` with disabled, checked (not selected), busy
 - `css` then `style` LAST in style array
 - `...rest` spread for consumer overrides
+- Reuse existing Twigs mobile primitives when web uses Twigs primitives
+  (example: web `IconButton` should map to mobile `Button` icon mode, not raw `Pressable`)
+- Alert close/dismiss controls specifically must use mobile `Button` icon mode
+  instead of creating raw close button primitives
+- For optional event handlers, render by feature flag/state and attach callbacks
+  via conditional prop spread (RN example: `...(onClose && { onPress: onClose })`)
 - `// Mobile deviation: <reason>` comments for any web differences
 
 ### <dir-name>.stories.tsx
@@ -356,6 +394,9 @@ Return to master orchestrator:
   variants: {
     size: ['sm', 'md', 'lg'],
     // ...
-  }
+  },
+  reusedPrimitives: [
+    { web: 'IconButton', mobile: 'Button(icon mode)' }
+  ]
 }
 ```

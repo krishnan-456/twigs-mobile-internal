@@ -110,8 +110,17 @@ export { Text } from './text';
 export type { TextProps } from './text';
 
 // Toast
-export { ToastProvider, toast } from './toast';
-export type { ToastOptions, ToastProviderProps, ToastVariant, ToastPosition } from './toast';
+export { ToastProvider, toast, useToast } from './toast';
+export type {
+  ToastOptions,
+  ToastProviderProps,
+  ToastVariant,
+  ToastPosition,
+  ToastState,
+  ToastContextType,
+  ToastItemProps,
+  UseToastReturn,
+} from './toast';
 
 // TextInput
 export { TextInput } from './text-input';

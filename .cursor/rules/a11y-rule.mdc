@@ -1,0 +1,8 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+- Every button must have an aria-label.
+- Every clickable element must have an id or data-testid.
+- Any non-semantic elements (div, Flex, Box) with onClick logic must include a tabIndex.

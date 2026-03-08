@@ -2,31 +2,30 @@ import React from 'react';
 import { Svg, Path } from 'react-native-svg';
 
 interface IconProps {
+  size?: number;
   color?: string;
 }
 
-export const TickIcon: React.FC<IconProps> = ({ color }) => (
-  <Svg width="10" height="8" viewBox="0 0 10 8">
+export const TickIcon: React.FC<IconProps> = ({ size = 16, color = 'white' }) => (
+  <Svg width={size} height={size} viewBox="0 0 16 16" fill="none">
     <Path
-      d="M9 1.25L3.5 6.75L1 4.25"
+      d="M13.3333 4.33334L6.00001 11.6667L2.66667 8.33334"
       stroke={color}
-      strokeWidth="1.8"
+      strokeWidth="1.5"
       strokeLinecap="round"
       strokeLinejoin="round"
-      fill="none"
     />
   </Svg>
 );
 
-export const HorizontalLineIcon: React.FC<IconProps> = ({ color }) => (
-  <Svg width="10" height="2" viewBox="0 0 10 2">
+export const HorizontalLineIcon: React.FC<IconProps> = ({ size = 16, color = 'white' }) => (
+  <Svg width={size} height={size} viewBox="0 0 16 16" fill="none">
     <Path
-      d="M9 1H1"
+      d="M12 8H4"
       stroke={color}
-      strokeWidth="1.8"
+      strokeWidth="1.5"
       strokeLinecap="round"
       strokeLinejoin="round"
-      fill="none"
     />
   </Svg>
 );

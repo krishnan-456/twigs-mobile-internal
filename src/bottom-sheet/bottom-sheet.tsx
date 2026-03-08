@@ -4,6 +4,7 @@ import GorhomBottomSheet, {
 } from '@gorhom/bottom-sheet';
 import React, { forwardRef, useCallback, useMemo } from 'react';
 import { Keyboard, StatusBar } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useTheme } from '../context';
 import { BottomSheetHeader } from './bottom-sheet-header';
 import type { BottomSheetProps, BottomSheetHeaderProps } from './types';
@@ -12,6 +13,7 @@ import { getDefaultSheetStyle } from './styles';
 export const BottomSheet = forwardRef<GorhomBottomSheet, BottomSheetProps>(
   ({ title, children, style, handleStyle, handleIndicatorStyle, headerStyle, ...props }, ref) => {
     const theme = useTheme();
+    const insets = useSafeAreaInsets();
 
     const renderBackdrop = useCallback((backdropProps: BottomSheetBackdropProps) => {
       return (
@@ -43,16 +45,14 @@ export const BottomSheet = forwardRef<GorhomBottomSheet, BottomSheetProps>(
     );
 
     const mergedBottomSheetStyle = useMemo(
-      () => getDefaultSheetStyle(theme, style),
-      [style, theme]
+      () => getDefaultSheetStyle(theme, insets.bottom, style),
+      [insets.bottom, style, theme]
     );
 
     return (
       <GorhomBottomSheet
         ref={ref}
-        detached
         enablePanDownToClose
-        bottomInset={16}
         index={-1}
         backdropComponent={renderBackdrop}
         keyboardBlurBehavior="restore"

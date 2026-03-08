@@ -16,14 +16,19 @@ export type AnimatedViewStyle = StyleProp<
 >;
 
 /** Default container style shared by BottomSheet and BottomSheetModal. */
-export const getDefaultSheetStyle = (theme: TwigsTheme, overrides?: ViewStyle): AnimatedViewStyle =>
+export const getDefaultSheetStyle = (
+  theme: TwigsTheme,
+  safeAreaBottomInset: number,
+  overrides?: ViewStyle
+): AnimatedViewStyle =>
   StyleSheet.flatten([
     {
-      borderRadius: 16,
+      borderTopLeftRadius: 16,
+      borderTopRightRadius: 16,
       backgroundColor: theme.colors.white900,
-      marginHorizontal: 8,
       borderWidth: 1,
       borderColor: theme.colors.neutral100,
+      paddingBottom: safeAreaBottomInset + 8,
       overflow: 'hidden' as const,
     },
     overrides,

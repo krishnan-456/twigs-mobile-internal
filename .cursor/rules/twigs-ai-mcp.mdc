@@ -1,0 +1,52 @@
+---
+description: Apply when converting Figma designs into Twigs code using the Twigs AI MCP flow or when implementing Figma-driven UI with Twigs components.
+alwaysApply: false
+---
+
+## Twigs AI MCP Integration Rules
+
+These rules define how to translate Figma inputs into twigs code for this project and must be followed for every Figma-driven change.
+
+**Environment:** Figma MCP and Cursor Figma plugin are pre-enabled.
+
+### Required flow (do not skip)
+
+1. Run get_figma_json first to fetch the structured representation for the exact node(s).
+2. If the response is too large or truncated, run get_figma_screenshot to get a visual reference and/or use node IDs to re-fetch only the required node(s) with get_figma_json.
+3. Run get_figma_screenshot for a visual reference of the node variant being implemented.
+4. Run get_twigs_component_list to see which Twigs components are available for reuse.
+5. Run get_twigs_guidelines and get_twigs_component_docs to understand proper usage, props, and design-system tokens for those components.
+6. Cross-check the matching Twigs Web component source for API/props/variants/accessibility/interaction behavior.
+7. Produce a reconciliation artifact with: Figma vs Web comparison table, conflict log, resolved spec, and reuse plan.
+8. Run download_figma_images to get images and also icons that are not available in twigs-icons.
+9. Only after JSON + screenshot + web cross-check + reconciliation are complete, begin implementing the UI.
+10. Translate the JSON into Twigs adhering to Twigs guidelines and this project's conventions, styles and framework. Reuse Twigs theme tokens, components, and typography wherever possible.
+11. Validate against Figma for visual parity and against Twigs Web for behavior/API parity before marking complete.
+
+### Source of truth policy
+
+When Figma and Twigs Web differ:
+
+- API/props/variants/accessibility/interaction behavior -> Twigs Web wins
+- Layout/spacing/sizing/visual structure -> Figma wins unless it breaks web behavior intent
+- Composition decisions -> reuse existing twigs-mobile components first
+
+### Stop-and-ask rule
+
+If any reconciliation conflict remains unresolved, stop and ask the maintainer
+before implementation.
+
+### Implementation rules
+
+- Treat the Twigs MCP JSON output as a design + behavior spec, not final code style.
+- Reuse existing Twigs components (e.g., Buttons, Inputs, Text, Heading) instead of duplicating functionality.
+- Use Twigs color tokens, spacing scale, typography scale consistently.
+- Respect existing routing, state management, and data‑fetch patterns already adopted in the repo.
+- Strive for 1:1 visual parity with the Figma design. When conflicts arise, prefer design‑system tokens and adjust spacing or sizes minimally to match visuals. If design-system tokens are not available go with exact values.
+- Validate the final UI against the Figma screenshot for both look and behavior.
+
+## Notes
+
+- Assets: Download any assets referenced in the Figma file only after JSON + screenshot are obtained.
+- Component Mapping: When no direct Twigs component exists, create a new Twigs-compatible wrapper rather than hard-coding styles.
+- Props & Variants: Use component props and variants defined in Twigs before resorting to custom CSS.

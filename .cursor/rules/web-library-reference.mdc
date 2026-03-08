@@ -1,5 +1,5 @@
 ---
-description: Cross-reference guide for Twigs Web library - fetch URLs, component inventory, token mapping
+description: Cross-reference guide for Twigs Web library - local source access, component inventory, token mapping
 globs:
   - "src/**/*.tsx"
   - "src/**/*.ts"
@@ -10,8 +10,8 @@ globs:
 The React Native `twigs-mobile` library is the mobile counterpart of the web
 **@sparrowengg/twigs-react** library.
 
+**Local path:** `/Users/krishnank/surveysparrow/twigs/packages/react-components/`
 **Repository:** https://github.com/surveysparrow/twigs
-**Packages path:** `packages/react-components/`
 **Live docs:** https://twigs.surveysparrow.com/
 
 ## Validation Rule
@@ -29,14 +29,39 @@ twigs library to ensure:
    adapted for mobile (e.g. `pressed` instead of `hover`).
 4. **API surface** — new props or components should align with the web library's
    API where possible. If mobile-specific props are needed, document the deviation.
+5. **Primitive parity** — when web uses a Twigs primitive (`Button`, `IconButton`,
+   `Box`, etc.), prefer the equivalent mobile Twigs primitive instead of raw
+   React Native primitives (`Pressable`, `View`) unless there is a documented
+   mobile-only reason.
+
+## Source of Truth Resolution (Web + Figma)
+
+When implementing from both Twigs Web and Figma:
+
+1. API/props/variants/accessibility/interaction behavior -> **Twigs Web wins**
+2. Layout/spacing/sizing/visual structure -> **Figma wins** unless it breaks web behavior intent
+3. Reuse and composition -> map web primitives to existing twigs-mobile primitives first
+
+If conflicts cannot be resolved with these rules, stop and ask the maintainer
+before implementation.
 
 ## How to Cross-Reference
 
-1. Check the web component source at:
-   `https://github.com/surveysparrow/twigs/tree/master/packages/react-components/src`
+1. Read the web component source from the local workspace at:
+   `/Users/krishnank/surveysparrow/twigs/packages/react-components/src/`
 2. Look for the component under its name folder (e.g. `button/`, `input/`, `switch/`).
 3. Compare props interface, variants, color mappings, and size configs.
-4. Note any intentional deviations in a code comment: `// Mobile deviation: <reason>`.
+4. Compare internal interactive structure too (for example, close actions in
+   alerts should use Twigs `Button` icon mode when web uses `IconButton`).
+5. Note any intentional deviations in a code comment: `// Mobile deviation: <reason>`.
+
+## Reuse Rule Examples
+
+- Alert dismiss action should reuse mobile `Button` icon mode (`<Button icon={...} />`)
+  rather than creating a raw close primitive.
+- If web uses a Twigs primitive (`IconButton`, `Button`, `Box`, `Text`, etc.),
+  first map to the closest existing twigs-mobile primitive before considering raw
+  React Native primitives.
 
 ## When to Apply
 
@@ -47,23 +72,28 @@ twigs library to ensure:
 
 ---
 
-## How to Fetch Web Source Programmatically
+## How to Read Web Source
 
-When the `create` command is triggered, use these exact URLs to fetch web source:
+The twigs web library is available locally in the workspace. Use filesystem tools
+(`Glob`, `Read`, `Grep`) instead of network requests.
+
+**Base path:**
+```
+/Users/krishnank/surveysparrow/twigs/packages/react-components/src/
+```
 
 ### Step 1 — List the component directory
 
 ```
-WebFetch: https://api.github.com/repos/surveysparrow/twigs/contents/packages/react-components/src/<component-name>
+Glob: /Users/krishnank/surveysparrow/twigs/packages/react-components/src/<component-name>/**/*.{ts,tsx}
 ```
 
-Returns a JSON array of files. Look for `.tsx` and `.ts` files.
-If the response is a 404, the component does **not** exist in the web library.
+If no files are found, the component does **not** exist in the web library.
 
 ### Step 2 — Read individual source files
 
 ```
-WebFetch: https://raw.githubusercontent.com/surveysparrow/twigs/master/packages/react-components/src/<component-name>/<filename>
+Read: /Users/krishnank/surveysparrow/twigs/packages/react-components/src/<component-name>/<filename>
 ```
 
 ### Step 3 — Required files to read (in priority order)
@@ -75,7 +105,7 @@ WebFetch: https://raw.githubusercontent.com/surveysparrow/twigs/master/packages/
 
 ### Step 4 — If the component does NOT exist
 
-If the GitHub API returns 404 or the directory listing is empty:
+If the directory has no files:
 
 Ask the user:
 > "The component `<NAME>` doesn't exist in twigs-web.

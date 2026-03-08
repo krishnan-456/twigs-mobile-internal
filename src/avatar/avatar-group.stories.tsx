@@ -1,6 +1,6 @@
 import React from 'react';
+import { View, Text as RNText, StyleSheet } from 'react-native';
 import type { Meta, StoryObj } from '@storybook/react-native';
-import { StyleSheet, View } from 'react-native';
 import { Avatar } from './avatar';
 import { AvatarGroup } from './avatar-group';
 import type { AvatarGroupProps } from './avatar-group.types';
@@ -15,12 +15,6 @@ const SAMPLE_AVATARS = [
   { name: 'Zoe Clark', imageSrc: 'https://i.pravatar.cc/150?img=7' },
 ];
 
-const styles = StyleSheet.create({
-  stack: {
-    gap: 16,
-  },
-});
-
 const DEFAULT_STORY_CHILDREN = SAMPLE_AVATARS.slice(0, 4).map((avatar) => (
   <Avatar key={`default-${avatar.name}`} name={avatar.name} imageSrc={avatar.imageSrc} />
 ));
@@ -32,6 +26,15 @@ const renderGroup = (args: AvatarGroupProps, count = SAMPLE_AVATARS.length) => (
     ))}
   </AvatarGroup>
 );
+
+const docsStyles = StyleSheet.create({
+  container: { gap: 16 },
+  title: { fontSize: 24, fontWeight: '700' },
+  description: { fontSize: 14, color: '#666', lineHeight: 20 },
+  section: { gap: 8 },
+  sectionTitle: { fontSize: 16, fontWeight: '600' },
+  prop: { fontSize: 13, color: '#444', lineHeight: 18 },
+});
 
 const meta = {
   title: 'Components/AvatarGroup',
@@ -72,37 +75,40 @@ export default meta;
 
 type Story = StoryObj<typeof meta>;
 
+export const Docs: Story = {
+  render: () => (
+    <View style={docsStyles.container}>
+      <RNText style={docsStyles.title}>AvatarGroup</RNText>
+      <RNText style={docsStyles.description}>
+        Renders a stack of overlapping avatars with an overflow counter when the limit is exceeded.
+      </RNText>
+      <View style={docsStyles.section}>
+        <RNText style={docsStyles.sectionTitle}>Props</RNText>
+        <RNText style={docsStyles.prop}>• size — avatar size applied to all children</RNText>
+        <RNText style={docsStyles.prop}>• limit — max visible before overflow (default: none)</RNText>
+        <RNText style={docsStyles.prop}>• limitExceededLabel — custom overflow text</RNText>
+        <RNText style={docsStyles.prop}>• rounded — border radius variant</RNText>
+        <RNText style={docsStyles.prop}>• children — Avatar components</RNText>
+      </View>
+      <View style={docsStyles.section}>
+        <RNText style={docsStyles.sectionTitle}>Usage</RNText>
+        <AvatarGroup size="sm" limit={3}>
+          {SAMPLE_AVATARS.slice(0, 5).map((a) => (
+            <Avatar key={a.name} name={a.name} imageSrc={a.imageSrc} />
+          ))}
+        </AvatarGroup>
+      </View>
+    </View>
+  ),
+};
+
 export const Default: Story = {
   render: (args) => renderGroup(args),
 };
 
-export const NoLimit: Story = {
-  args: {
-    limit: 0,
-  },
-  render: (args) => renderGroup(args, 5),
-};
-
-export const CustomOverflowLabel: Story = {
-  args: {
-    limit: 3,
-    limitExceededLabel: 'Team',
-  },
-  render: (args) => renderGroup(args),
-};
-
-export const RoundedLarge: Story = {
-  args: {
-    size: 'lg',
-    rounded: 'lg',
-    limit: 4,
-  },
-  render: (args) => renderGroup(args),
-};
-
-export const AllSizes: Story = {
+export const AllVariants: Story = {
   render: () => (
-    <View style={styles.stack}>
+    <View style={{ gap: 16 }}>
       {(['xs', 'sm', 'md', 'lg', 'xl'] as const).map((size) => (
         <AvatarGroup key={size} size={size} limit={4}>
           {SAMPLE_AVATARS.slice(0, 6).map((avatar) => (
