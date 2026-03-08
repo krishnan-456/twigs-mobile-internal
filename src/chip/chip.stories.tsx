@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
+import { View, Text as RNText, StyleSheet, Alert } from 'react-native';
 import type { Meta, StoryObj } from '@storybook/react-native';
-import { View, Alert } from 'react-native';
 import { Svg, Path } from 'react-native-svg';
 import { Chip } from './chip';
 import type { ChipProps } from './types';
@@ -17,17 +17,14 @@ const PlusIcon = ({ size = 16, color = '#111' }: { size?: number; color?: string
   </Svg>
 );
 
-const ChevronDownIcon = ({ size = 16, color = '#111' }: { size?: number; color?: string }) => (
-  <Svg width={size} height={size} viewBox="0 0 24 24" fill="none">
-    <Path
-      d="M6 9L12 15L18 9"
-      stroke={color}
-      strokeWidth={2}
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    />
-  </Svg>
-);
+const docsStyles = StyleSheet.create({
+  container: { gap: 16 },
+  title: { fontSize: 24, fontWeight: '700' },
+  description: { fontSize: 14, color: '#666', lineHeight: 20 },
+  section: { gap: 8 },
+  sectionTitle: { fontSize: 16, fontWeight: '600' },
+  prop: { fontSize: 13, color: '#444', lineHeight: 18 },
+});
 
 const meta = {
   title: 'Components/Chip',
@@ -86,230 +83,62 @@ export default meta;
 
 type Story = StoryObj<typeof meta>;
 
-export const Default: Story = {};
-
-export const Medium: Story = {
-  args: {
-    size: 'md',
-    children: 'Medium Chip',
-  },
-};
-
-export const Outline: Story = {
-  args: {
-    variant: 'outline',
-    children: 'Outline',
-  },
-};
-
-export const Pill: Story = {
-  args: {
-    rounded: 'full',
-    children: 'Pill Shape',
-  },
-};
-
-export const Closable: Story = {
-  args: {
-    closable: true,
-    children: 'Closable',
-  },
-  render: (args) => <Chip {...args} onClose={() => Alert.alert('Closed')} />,
-};
-
-export const WithIcons: Story = {
-  render: (args) => (
-    <Chip {...args} leftElement={<PlusIcon />} rightElement={<ChevronDownIcon />}>
-      Content
-    </Chip>
+export const Docs: Story = {
+  render: () => (
+    <View style={docsStyles.container}>
+      <RNText style={docsStyles.title}>Chip</RNText>
+      <RNText style={docsStyles.description}>
+        Compact element for tags, filters, or selections. Supports solid/outline variants, closable
+        state, selectable toggle, and icon elements.
+      </RNText>
+      <View style={docsStyles.section}>
+        <RNText style={docsStyles.sectionTitle}>Props</RNText>
+        <RNText style={docsStyles.prop}>• size — 'sm' | 'md' (default: 'sm')</RNText>
+        <RNText style={docsStyles.prop}>
+          • color — 'default' | 'primary' | 'secondary' | 'error' | 'warning' | 'success' |
+          'accent'
+        </RNText>
+        <RNText style={docsStyles.prop}>• variant — 'solid' | 'outline' (default: 'solid')</RNText>
+        <RNText style={docsStyles.prop}>• closable — show close button (default: false)</RNText>
+        <RNText style={docsStyles.prop}>• selectable — enable toggle (default: false)</RNText>
+        <RNText style={docsStyles.prop}>• disabled — boolean (default: false)</RNText>
+      </View>
+      <View style={docsStyles.section}>
+        <RNText style={docsStyles.sectionTitle}>Usage</RNText>
+        <Chip color="primary">Chip</Chip>
+      </View>
+    </View>
   ),
 };
 
-export const Selectable: Story = {
-  render: () => {
-    const SelectableChip = () => {
-      const [active, setActive] = useState(false);
-      return (
-        <Chip
-          selectable
-          active={active}
-          onActiveStateChange={setActive}
-          color="primary"
-          variant="solid"
-        >
-          {active ? 'Active' : 'Tap to select'}
-        </Chip>
-      );
-    };
-    return <SelectableChip />;
-  },
-};
+export const Default: Story = {};
 
-export const SelectableOutline: Story = {
-  render: () => {
-    const SelectableOutlineChip = () => {
-      const [active, setActive] = useState(false);
-      return (
-        <Chip
-          selectable
-          active={active}
-          onActiveStateChange={setActive}
-          color="primary"
-          variant="outline"
-        >
-          {active ? 'Selected' : 'Outline selectable'}
-        </Chip>
-      );
-    };
-    return <SelectableOutlineChip />;
-  },
-};
-
-export const Disabled: Story = {
-  args: {
-    disabled: true,
-    selectable: true,
-    children: 'Disabled',
-  },
-};
-
-export const AllColors: Story = {
+export const AllVariants: Story = {
   render: () => (
-    <View style={{ gap: 12 }}>
+    <View style={{ gap: 16 }}>
       <View style={{ flexDirection: 'row', gap: 8, flexWrap: 'wrap' }}>
         <Chip color="default">Default</Chip>
         <Chip color="primary">Primary</Chip>
         <Chip color="secondary">Secondary</Chip>
-      </View>
-      <View style={{ flexDirection: 'row', gap: 8, flexWrap: 'wrap' }}>
         <Chip color="error">Error</Chip>
         <Chip color="warning">Warning</Chip>
         <Chip color="success">Success</Chip>
         <Chip color="accent">Accent</Chip>
       </View>
-    </View>
-  ),
-};
-
-export const AllOutlineColors: Story = {
-  render: () => (
-    <View style={{ gap: 12 }}>
       <View style={{ flexDirection: 'row', gap: 8, flexWrap: 'wrap' }}>
-        <Chip variant="outline" color="default">
-          Default
-        </Chip>
-        <Chip variant="outline" color="primary">
-          Primary
-        </Chip>
-        <Chip variant="outline" color="secondary">
-          Secondary
-        </Chip>
-      </View>
-      <View style={{ flexDirection: 'row', gap: 8, flexWrap: 'wrap' }}>
-        <Chip variant="outline" color="error">
-          Error
-        </Chip>
-        <Chip variant="outline" color="warning">
-          Warning
-        </Chip>
-        <Chip variant="outline" color="success">
-          Success
-        </Chip>
-        <Chip variant="outline" color="accent">
-          Accent
-        </Chip>
-      </View>
-    </View>
-  ),
-};
-
-export const AllSizesAndShapes: Story = {
-  render: () => (
-    <View style={{ gap: 12 }}>
-      <View style={{ flexDirection: 'row', gap: 8, alignItems: 'center' }}>
-        <Chip size="sm" rounded="full">
-          SM Pill
-        </Chip>
-        <Chip size="sm" rounded="sm">
-          SM Squircle
-        </Chip>
+        <Chip variant="outline" color="default">Outline</Chip>
+        <Chip variant="outline" color="primary">Primary</Chip>
+        <Chip variant="outline" color="secondary">Secondary</Chip>
       </View>
       <View style={{ flexDirection: 'row', gap: 8, alignItems: 'center' }}>
-        <Chip size="md" rounded="full">
-          MD Pill
-        </Chip>
-        <Chip size="md" rounded="sm">
-          MD Squircle
-        </Chip>
+        <Chip size="sm">SM</Chip>
+        <Chip size="md">MD</Chip>
+        <Chip rounded="full">Pill</Chip>
+        <Chip closable onClose={() => Alert.alert('Closed')}>Closable</Chip>
       </View>
-    </View>
-  ),
-};
-
-export const FigmaReference: Story = {
-  name: 'Figma: Selected Pill',
-  render: () => (
-    <View style={{ gap: 16 }}>
-      <View style={{ flexDirection: 'row', gap: 8, flexWrap: 'wrap' }}>
-        <Chip
-          size="sm"
-          variant="outline"
-          color="default"
-          leftElement={<PlusIcon />}
-          rightElement={<ChevronDownIcon />}
-        >
-          Content
-        </Chip>
-        <Chip
-          size="sm"
-          variant="solid"
-          color="primary"
-          leftElement={<PlusIcon />}
-          rightElement={<ChevronDownIcon />}
-        >
-          Content
-        </Chip>
-        <Chip
-          size="sm"
-          variant="outline"
-          color="primary"
-          leftElement={<PlusIcon />}
-          rightElement={<ChevronDownIcon />}
-        >
-          Content
-        </Chip>
-      </View>
-      <View style={{ flexDirection: 'row', gap: 8, flexWrap: 'wrap' }}>
-        <Chip
-          size="md"
-          rounded="full"
-          variant="outline"
-          color="default"
-          leftElement={<PlusIcon />}
-          rightElement={<ChevronDownIcon />}
-        >
-          Content
-        </Chip>
-        <Chip
-          size="md"
-          rounded="full"
-          variant="solid"
-          color="primary"
-          leftElement={<PlusIcon />}
-          rightElement={<ChevronDownIcon />}
-        >
-          Content
-        </Chip>
-        <Chip
-          size="md"
-          rounded="full"
-          variant="solid"
-          color="secondary"
-          leftElement={<PlusIcon />}
-          rightElement={<ChevronDownIcon />}
-        >
-          Content
-        </Chip>
+      <View style={{ flexDirection: 'row', gap: 8 }}>
+        <Chip leftElement={<PlusIcon />} rightElement={<PlusIcon />}>With Icons</Chip>
+        <Chip disabled>Disabled</Chip>
       </View>
     </View>
   ),

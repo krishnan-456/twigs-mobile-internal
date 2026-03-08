@@ -1,8 +1,17 @@
-import React, { useState } from 'react';
+import React from 'react';
+import { View, Text as RNText, StyleSheet, Text } from 'react-native';
 import type { Meta, StoryObj } from '@storybook/react-native';
-import { StyleSheet, Text, View } from 'react-native';
 import { Checkbox } from './checkbox';
 import type { CheckboxProps } from './types';
+
+const docsStyles = StyleSheet.create({
+  container: { gap: 16 },
+  title: { fontSize: 24, fontWeight: '700' },
+  description: { fontSize: 14, color: '#666', lineHeight: 20 },
+  section: { gap: 8 },
+  sectionTitle: { fontSize: 16, fontWeight: '600' },
+  prop: { fontSize: 13, color: '#444', lineHeight: 18 },
+});
 
 const meta = {
   title: 'Components/Checkbox',
@@ -34,14 +43,33 @@ export default meta;
 
 type Story = StoryObj<typeof meta>;
 
-const styles = StyleSheet.create({
-  stack: { gap: 16 },
-  row: {
-    flexDirection: 'row',
-    gap: 16,
-    alignItems: 'center',
-  },
-});
+export const Docs: Story = {
+  render: () => (
+    <View style={docsStyles.container}>
+      <RNText style={docsStyles.title}>Checkbox</RNText>
+      <RNText style={docsStyles.description}>
+        A toggleable checkbox supporting checked, unchecked, and indeterminate states. Can be
+        controlled or uncontrolled.
+      </RNText>
+      <View style={docsStyles.section}>
+        <RNText style={docsStyles.sectionTitle}>Props</RNText>
+        <RNText style={docsStyles.prop}>
+          • checked — false | true | 'indeterminate' (default: false)
+        </RNText>
+        <RNText style={docsStyles.prop}>• size — 'sm' | 'md' (default: 'sm')</RNText>
+        <RNText style={docsStyles.prop}>• disabled — boolean (default: false)</RNText>
+        <RNText style={docsStyles.prop}>• onChange — (checked: boolean) callback</RNText>
+        <RNText style={docsStyles.prop}>• children — label content</RNText>
+      </View>
+      <View style={docsStyles.section}>
+        <RNText style={docsStyles.sectionTitle}>Usage</RNText>
+        <Checkbox checked={true}>
+          <Text>Accept terms</Text>
+        </Checkbox>
+      </View>
+    </View>
+  ),
+};
 
 export const Default: Story = {
   args: {
@@ -49,103 +77,34 @@ export const Default: Story = {
   },
 };
 
-export const Checked: Story = {
-  args: {
-    checked: true,
-    children: <Text>Checked by default</Text>,
-  },
-};
-
-export const MediumSize: Story = {
-  args: {
-    size: 'md',
-    children: <Text>Medium checkbox</Text>,
-  },
-};
-
-export const Disabled: Story = {
-  args: {
-    disabled: true,
-    children: <Text>Disabled checkbox</Text>,
-  },
-};
-
-export const DisabledChecked: Story = {
-  args: {
-    checked: true,
-    disabled: true,
-    children: <Text>Disabled checked</Text>,
-  },
-};
-
-export const Interactive: Story = {
-  render: () => {
-    const [checked, setChecked] = useState(false);
-    return (
-      <Checkbox checked={checked} onChange={setChecked}>
-        <Text>Tap to toggle</Text>
-      </Checkbox>
-    );
-  },
-};
-
-export const Indeterminate: Story = {
-  render: () => {
-    const [state, setState] = useState<boolean | 'indeterminate'>('indeterminate');
-    return (
-      <Checkbox
-        checked={state}
-        onChange={() => setState((prev) => (prev === 'indeterminate' ? true : !prev))}
-      >
-        <Text>Indeterminate state</Text>
-      </Checkbox>
-    );
-  },
-};
-
-export const AllStates: Story = {
+export const AllVariants: Story = {
   render: () => (
-    <View style={styles.stack}>
-      <Checkbox checked={false}>
-        <Text>Unchecked</Text>
-      </Checkbox>
-      <Checkbox checked={true}>
-        <Text>Checked</Text>
-      </Checkbox>
-      <Checkbox checked="indeterminate">
-        <Text>Indeterminate</Text>
-      </Checkbox>
-      <Checkbox checked={false} disabled>
-        <Text>Disabled unchecked</Text>
-      </Checkbox>
-      <Checkbox checked={true} disabled>
-        <Text>Disabled checked</Text>
-      </Checkbox>
-      <Checkbox checked="indeterminate" disabled>
-        <Text>Disabled indeterminate</Text>
-      </Checkbox>
-    </View>
-  ),
-};
-
-export const FigmaStateMatrix: Story = {
-  render: () => (
-    <View style={styles.stack}>
-      <View style={styles.row}>
-        <Checkbox size="sm" checked={false} />
-        <Checkbox size="sm" checked={true} />
-        <Checkbox size="sm" checked="indeterminate" />
-        <Checkbox size="sm" checked={false} disabled />
-        <Checkbox size="sm" checked={true} disabled />
-        <Checkbox size="sm" checked="indeterminate" disabled />
+    <View style={{ gap: 16 }}>
+      <View style={{ gap: 12 }}>
+        <Checkbox checked={false}>
+          <Text>Unchecked</Text>
+        </Checkbox>
+        <Checkbox checked={true}>
+          <Text>Checked</Text>
+        </Checkbox>
+        <Checkbox checked="indeterminate">
+          <Text>Indeterminate</Text>
+        </Checkbox>
+        <Checkbox checked={false} disabled>
+          <Text>Disabled unchecked</Text>
+        </Checkbox>
+        <Checkbox checked={true} disabled>
+          <Text>Disabled checked</Text>
+        </Checkbox>
+        <Checkbox checked="indeterminate" disabled>
+          <Text>Disabled indeterminate</Text>
+        </Checkbox>
       </View>
-      <View style={styles.row}>
-        <Checkbox size="md" checked={false} />
+      <View style={{ flexDirection: 'row', gap: 16, alignItems: 'center' }}>
+        <Checkbox size="sm" checked={true} />
         <Checkbox size="md" checked={true} />
+        <Checkbox size="sm" checked="indeterminate" />
         <Checkbox size="md" checked="indeterminate" />
-        <Checkbox size="md" checked={false} disabled />
-        <Checkbox size="md" checked={true} disabled />
-        <Checkbox size="md" checked="indeterminate" disabled />
       </View>
     </View>
   ),

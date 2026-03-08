@@ -1,65 +1,29 @@
-import React, { useState } from 'react';
-import { View } from 'react-native';
+import React from 'react';
+import { View, Text as RNText, StyleSheet } from 'react-native';
 import type { Meta, StoryObj } from '@storybook/react-native';
 import { Tooltip } from './tooltip';
 import { Button } from '../button';
 import { Text } from '../text';
 import type { TooltipProps } from './types';
 
-const TooltipDemo = (args: TooltipProps) => {
-  return (
-    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', padding: 80 }}>
-      <Tooltip {...args}>
-        <Button size="md" variant="outline">
-          Hover me
-        </Button>
-      </Tooltip>
-    </View>
-  );
-};
+const TooltipDemo = (args: TooltipProps) => (
+  <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', padding: 80 }}>
+    <Tooltip {...args}>
+      <Button size="md" variant="outline">
+        Hover me
+      </Button>
+    </Tooltip>
+  </View>
+);
 
-const ControlledDemo = (args: TooltipProps) => {
-  const [open, setOpen] = useState(false);
-
-  return (
-    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', padding: 80 }}>
-      <Tooltip {...args} open={open} onOpenChange={setOpen}>
-        <Button size="md" variant="outline">
-          Controlled
-        </Button>
-      </Tooltip>
-    </View>
-  );
-};
-
-const AllPlacementsDemo = () => {
-  return (
-    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', gap: 40, padding: 80 }}>
-      <Tooltip content="Top tooltip" side="top">
-        <Button size="sm" variant="outline">
-          Top
-        </Button>
-      </Tooltip>
-      <Tooltip content="Bottom tooltip" side="bottom">
-        <Button size="sm" variant="outline">
-          Bottom
-        </Button>
-      </Tooltip>
-      <View style={{ flexDirection: 'row', gap: 60 }}>
-        <Tooltip content="Left tooltip" side="left">
-          <Button size="sm" variant="outline">
-            Left
-          </Button>
-        </Tooltip>
-        <Tooltip content="Right tooltip" side="right">
-          <Button size="sm" variant="outline">
-            Right
-          </Button>
-        </Tooltip>
-      </View>
-    </View>
-  );
-};
+const docsStyles = StyleSheet.create({
+  container: { gap: 16 },
+  title: { fontSize: 24, fontWeight: '700' },
+  description: { fontSize: 14, color: '#666', lineHeight: 20 },
+  section: { gap: 8 },
+  sectionTitle: { fontSize: 16, fontWeight: '600' },
+  prop: { fontSize: 13, color: '#444', lineHeight: 18 },
+});
 
 const meta = {
   title: 'Components/Tooltip',
@@ -118,113 +82,77 @@ export default meta;
 
 type Story = StoryObj<typeof meta>;
 
-export const Default: Story = {
-  render: (args) => <TooltipDemo {...args} />,
-};
-
-export const Small: Story = {
-  render: (args) => <TooltipDemo {...args} />,
-  args: {
-    size: 'sm',
-    content: 'Small tooltip',
-  },
-};
-
-export const Medium: Story = {
-  render: (args) => <TooltipDemo {...args} />,
-  args: {
-    size: 'md',
-    content: 'Medium tooltip with more content',
-  },
-};
-
-export const Large: Story = {
-  render: (args) => <TooltipDemo {...args} />,
-  args: {
-    size: 'lg',
-    content: 'Large tooltip with even more detailed content for the user',
-  },
-};
-
-export const BottomPlacement: Story = {
-  render: (args) => <TooltipDemo {...args} />,
-  args: {
-    side: 'bottom',
-    content: 'Bottom placement',
-  },
-};
-
-export const LeftPlacement: Story = {
-  render: (args) => <TooltipDemo {...args} />,
-  args: {
-    side: 'left',
-    content: 'Left placement',
-  },
-};
-
-export const RightPlacement: Story = {
-  render: (args) => <TooltipDemo {...args} />,
-  args: {
-    side: 'right',
-    content: 'Right placement',
-  },
-};
-
-export const NoArrow: Story = {
-  render: (args) => <TooltipDemo {...args} />,
-  args: {
-    hasArrow: false,
-    content: 'Tooltip without arrow',
-  },
-};
-
-export const AutoHide: Story = {
-  render: (args) => <TooltipDemo {...args} />,
-  args: {
-    autoHideDuration: 3000,
-    content: 'I disappear after 3 seconds',
-  },
-};
-
-export const LongPress: Story = {
-  render: (args) => <TooltipDemo {...args} />,
-  args: {
-    triggerAction: 'longPress',
-    content: 'Long press triggered',
-  },
-};
-
-export const Controlled: Story = {
-  render: (args) => <ControlledDemo {...args} />,
-  args: {
-    content: 'Controlled tooltip',
-  },
-};
-
-export const CustomContent: Story = {
-  render: (args) => (
-    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', padding: 80 }}>
-      <Tooltip
-        {...args}
-        content={
-          <View style={{ padding: 4 }}>
-            <Text fontSize={14} fontWeight="700" color="#FFFFFF">
-              Custom Title
-            </Text>
-            <Text fontSize={12} color="#FFFFFFCC">
-              With rich content support
-            </Text>
-          </View>
-        }
-      >
-        <Button size="md" variant="outline">
-          Rich Content
-        </Button>
-      </Tooltip>
+export const Docs: Story = {
+  render: () => (
+    <View style={docsStyles.container}>
+      <RNText style={docsStyles.title}>Tooltip</RNText>
+      <RNText style={docsStyles.description}>
+        A floating label that appears on press or long press. Supports all four sides, arrow
+        pointers, auto-dismiss, and custom rich content.
+      </RNText>
+      <View style={docsStyles.section}>
+        <RNText style={docsStyles.sectionTitle}>Props</RNText>
+        <RNText style={docsStyles.prop}>• content — string or ReactNode</RNText>
+        <RNText style={docsStyles.prop}>• size — 'sm' | 'md' | 'lg' (default: 'sm')</RNText>
+        <RNText style={docsStyles.prop}>
+          • side — 'top' | 'right' | 'bottom' | 'left' (default: 'top')
+        </RNText>
+        <RNText style={docsStyles.prop}>
+          • align — 'start' | 'center' | 'end' (default: 'center')
+        </RNText>
+        <RNText style={docsStyles.prop}>• hasArrow — boolean (default: true)</RNText>
+        <RNText style={docsStyles.prop}>• triggerAction — 'press' | 'longPress'</RNText>
+        <RNText style={docsStyles.prop}>• autoHideDuration — ms (0 = never)</RNText>
+      </View>
+      <View style={docsStyles.section}>
+        <RNText style={docsStyles.sectionTitle}>Usage</RNText>
+        <RNText style={docsStyles.prop}>Tap the button to see the tooltip.</RNText>
+        <View style={{ alignItems: 'center', paddingVertical: 40 }}>
+          <Tooltip content="Hello!" side="top">
+            <Button size="sm" variant="outline">Tap me</Button>
+          </Tooltip>
+        </View>
+      </View>
     </View>
   ),
 };
 
-export const AllPlacements: Story = {
-  render: () => <AllPlacementsDemo />,
+export const Default: Story = {
+  render: (args) => <TooltipDemo {...args} />,
+};
+
+export const AllVariants: Story = {
+  render: () => (
+    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', gap: 40, padding: 80 }}>
+      <Tooltip content="Top tooltip" side="top">
+        <Button size="sm" variant="outline">Top</Button>
+      </Tooltip>
+      <Tooltip content="Bottom tooltip" side="bottom">
+        <Button size="sm" variant="outline">Bottom</Button>
+      </Tooltip>
+      <View style={{ flexDirection: 'row', gap: 60 }}>
+        <Tooltip content="Left tooltip" side="left">
+          <Button size="sm" variant="outline">Left</Button>
+        </Tooltip>
+        <Tooltip content="Right tooltip" side="right">
+          <Button size="sm" variant="outline">Right</Button>
+        </Tooltip>
+      </View>
+      <View style={{ gap: 16, alignItems: 'center' }}>
+        <Tooltip content="No arrow" hasArrow={false}>
+          <Button size="sm" variant="outline">No Arrow</Button>
+        </Tooltip>
+        <Tooltip
+          content={
+            <View style={{ padding: 4 }}>
+              <Text fontSize={14} fontWeight="700" color="#FFFFFF">Custom Title</Text>
+              <Text fontSize={12} color="#FFFFFFCC">With rich content</Text>
+            </View>
+          }
+        >
+          <Button size="sm" variant="outline">Rich Content</Button>
+        </Tooltip>
+      </View>
+    </View>
+  ),
 };

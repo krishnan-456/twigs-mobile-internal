@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View } from 'react-native';
+import { View, Text as RNText, StyleSheet } from 'react-native';
 import type { Meta, StoryObj } from '@storybook/react-native';
 import { Modal } from './modal';
 import { ModalContent } from './modal-content';
@@ -23,8 +23,8 @@ const ModalDemo = (args: ModalProps) => {
           <ModalHeader>
             <ModalTitle>Delete?</ModalTitle>
             <ModalDescription>
-              This action cannot be undone. This will permanently delete your account and remove
-              your data from our servers.
+              This action cannot be undone. This will permanently delete your account and remove your
+              data from our servers.
             </ModalDescription>
           </ModalHeader>
           <ModalFooter>
@@ -40,6 +40,15 @@ const ModalDemo = (args: ModalProps) => {
     </View>
   );
 };
+
+const docsStyles = StyleSheet.create({
+  container: { gap: 16 },
+  title: { fontSize: 24, fontWeight: '700' },
+  description: { fontSize: 14, color: '#666', lineHeight: 20 },
+  section: { gap: 8 },
+  sectionTitle: { fontSize: 16, fontWeight: '600' },
+  prop: { fontSize: 13, color: '#444', lineHeight: 18 },
+});
 
 const meta = {
   title: 'Components/Modal',
@@ -65,58 +74,70 @@ export default meta;
 
 type Story = StoryObj<typeof meta>;
 
+export const Docs: Story = {
+  render: () => (
+    <View style={docsStyles.container}>
+      <RNText style={docsStyles.title}>Modal</RNText>
+      <RNText style={docsStyles.description}>
+        A dialog overlay with backdrop. Composed of ModalContent, ModalHeader, ModalTitle,
+        ModalDescription, ModalBody, and ModalFooter sub-components.
+      </RNText>
+      <View style={docsStyles.section}>
+        <RNText style={docsStyles.sectionTitle}>Props</RNText>
+        <RNText style={docsStyles.prop}>• visible — boolean (controlled)</RNText>
+        <RNText style={docsStyles.prop}>• onClose — callback when dismissed</RNText>
+        <RNText style={docsStyles.prop}>
+          • closeOnBackdropPress — boolean (default: true)
+        </RNText>
+        <RNText style={docsStyles.prop}>
+          • animationType — 'none' | 'fade' | 'slide' (default: 'fade')
+        </RNText>
+      </View>
+      <View style={docsStyles.section}>
+        <RNText style={docsStyles.sectionTitle}>Usage</RNText>
+        <RNText style={docsStyles.prop}>Tap the button below to open a modal.</RNText>
+        <ModalDemo closeOnBackdropPress animationType="fade" />
+      </View>
+    </View>
+  ),
+};
+
 export const Default: Story = {
   render: (args) => <ModalDemo {...args} />,
 };
 
-export const NoBackdropDismiss: Story = {
-  render: (args) => <ModalDemo {...args} />,
-  args: {
-    closeOnBackdropPress: false,
-  },
-};
+export const AllVariants: Story = {
+  render: () => {
+    const [activeModal, setActiveModal] = useState<string | null>(null);
 
-export const SlideAnimation: Story = {
-  render: (args) => <ModalDemo {...args} />,
-  args: {
-    animationType: 'slide',
-  },
-};
-
-export const SmallSize: Story = {
-  render: (args) => {
-    const [visible, setVisible] = useState(false);
     return (
-      <View>
-        <Button onPress={() => setVisible(true)}>Small Modal</Button>
-        <Modal {...args} visible={visible} onClose={() => setVisible(false)}>
+      <View style={{ gap: 12 }}>
+        <Button onPress={() => setActiveModal('confirm')}>Confirmation Modal</Button>
+        <Button onPress={() => setActiveModal('body')}>Modal with Body</Button>
+        <Button onPress={() => setActiveModal('slide')}>Slide Animation</Button>
+
+        <Modal
+          visible={activeModal === 'confirm'}
+          onClose={() => setActiveModal(null)}
+          animationType="fade"
+        >
           <ModalContent size="sm">
             <ModalHeader>
               <ModalTitle>Confirm</ModalTitle>
               <ModalDescription>Are you sure?</ModalDescription>
             </ModalHeader>
             <ModalFooter>
-              <Button size="xl" color="default" variant="solid" onPress={() => setVisible(false)}>
-                No
-              </Button>
-              <Button size="xl" color="primary" variant="solid" onPress={() => setVisible(false)}>
-                Yes
-              </Button>
+              <Button size="xl" color="default" onPress={() => setActiveModal(null)}>No</Button>
+              <Button size="xl" color="primary" onPress={() => setActiveModal(null)}>Yes</Button>
             </ModalFooter>
           </ModalContent>
         </Modal>
-      </View>
-    );
-  },
-};
 
-export const WithBody: Story = {
-  render: (args) => {
-    const [visible, setVisible] = useState(false);
-    return (
-      <View>
-        <Button onPress={() => setVisible(true)}>Dialog Modal</Button>
-        <Modal {...args} visible={visible} onClose={() => setVisible(false)}>
+        <Modal
+          visible={activeModal === 'body'}
+          onClose={() => setActiveModal(null)}
+          animationType="fade"
+        >
           <ModalContent>
             <ModalHeader>
               <ModalTitle>Edit Profile</ModalTitle>
@@ -126,39 +147,27 @@ export const WithBody: Story = {
               <Text>Form fields would go here.</Text>
             </ModalBody>
             <ModalFooter>
-              <Button size="lg" color="default" variant="solid" onPress={() => setVisible(false)}>
-                Cancel
-              </Button>
-              <Button size="lg" color="primary" variant="solid" onPress={() => setVisible(false)}>
-                Save
-              </Button>
+              <Button size="lg" color="default" onPress={() => setActiveModal(null)}>Cancel</Button>
+              <Button size="lg" color="primary" onPress={() => setActiveModal(null)}>Save</Button>
             </ModalFooter>
           </ModalContent>
         </Modal>
-      </View>
-    );
-  },
-};
 
-export const CustomChildren: Story = {
-  render: (args) => {
-    const [visible, setVisible] = useState(false);
-    return (
-      <View>
-        <Button onPress={() => setVisible(true)}>Custom Modal</Button>
-        <Modal {...args} visible={visible} onClose={() => setVisible(false)}>
+        <Modal
+          visible={activeModal === 'slide'}
+          onClose={() => setActiveModal(null)}
+          animationType="slide"
+        >
           <ModalContent>
-            <View style={{ padding: 24, alignItems: 'center', gap: 16 }}>
-              <Text fontSize={20} fontWeight="700">
-                Fully Custom Content
-              </Text>
-              <Text textAlign="center">
-                You can put any content here without using sub-components.
-              </Text>
-              <Button color="primary" variant="solid" onPress={() => setVisible(false)}>
+            <ModalHeader>
+              <ModalTitle>Slide In</ModalTitle>
+              <ModalDescription>This modal slides up from the bottom.</ModalDescription>
+            </ModalHeader>
+            <ModalFooter>
+              <Button size="lg" color="primary" onPress={() => setActiveModal(null)}>
                 Got it
               </Button>
-            </View>
+            </ModalFooter>
           </ModalContent>
         </Modal>
       </View>

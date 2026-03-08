@@ -1,11 +1,20 @@
 import React from 'react';
+import { View, Text as RNText, StyleSheet } from 'react-native';
 import type { Meta, StoryObj } from '@storybook/react-native';
-import { View } from 'react-native';
 import { Avatar } from './avatar';
 import type { AvatarProps } from './types';
 
 const SAMPLE_AVATAR_URL =
   'https://images.unsplash.com/photo-1511485977113-f34c92461ad9?ixlib=rb-1.2.1&w=512&h=512&dpr=2&q=80';
+
+const docsStyles = StyleSheet.create({
+  container: { gap: 16 },
+  title: { fontSize: 24, fontWeight: '700' },
+  description: { fontSize: 14, color: '#666', lineHeight: 20 },
+  section: { gap: 8 },
+  sectionTitle: { fontSize: 16, fontWeight: '600' },
+  prop: { fontSize: 13, color: '#444', lineHeight: 18 },
+});
 
 const meta = {
   title: 'Components/Avatar',
@@ -41,18 +50,6 @@ const meta = {
       control: 'color',
       description: 'Custom text/initials color',
     },
-    textSize: {
-      control: 'number',
-      description: 'Custom font size for initials',
-    },
-    width: {
-      control: 'number',
-      description: 'Custom width (overrides size)',
-    },
-    height: {
-      control: 'number',
-      description: 'Custom height (overrides size)',
-    },
   },
   args: {
     name: 'John Doe',
@@ -67,51 +64,53 @@ export default meta;
 
 type Story = StoryObj<typeof meta>;
 
+export const Docs: Story = {
+  render: () => (
+    <View style={docsStyles.container}>
+      <RNText style={docsStyles.title}>Avatar</RNText>
+      <RNText style={docsStyles.description}>
+        Displays a user avatar with image, initials fallback, or anonymous placeholder. Supports
+        multiple sizes and rounded shapes.
+      </RNText>
+      <View style={docsStyles.section}>
+        <RNText style={docsStyles.sectionTitle}>Props</RNText>
+        <RNText style={docsStyles.prop}>
+          • size — 'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl' ... '5xl' (default: 'md')
+        </RNText>
+        <RNText style={docsStyles.prop}>• name — name for initials fallback</RNText>
+        <RNText style={docsStyles.prop}>• imageSrc — image URL</RNText>
+        <RNText style={docsStyles.prop}>• isAnonymous — anonymous placeholder (default: false)</RNText>
+        <RNText style={docsStyles.prop}>
+          • rounded — 'xs' ... '3xl' | 'full' (default: 'full')
+        </RNText>
+        <RNText style={docsStyles.prop}>• backgroundColor / textColor — custom colors</RNText>
+      </View>
+      <View style={docsStyles.section}>
+        <RNText style={docsStyles.sectionTitle}>Usage</RNText>
+        <Avatar name="John Doe" size="lg" imageSrc={SAMPLE_AVATAR_URL} />
+      </View>
+    </View>
+  ),
+};
+
 export const Default: Story = {};
 
-export const InitialsFallback: Story = {
-  args: {
-    imageSrc: undefined,
-    name: 'Jane Smith',
-    size: 'lg',
-  },
-};
-
-export const Anonymous: Story = {
-  args: {
-    isAnonymous: true,
-    name: 'Anonymous User',
-    imageSrc: undefined,
-    size: '2xl',
-  },
-};
-
-export const Squircle: Story = {
-  args: {
-    name: 'Squircle',
-    size: 'lg',
-    rounded: 'lg',
-  },
-};
-
-export const CustomColors: Story = {
-  args: {
-    imageSrc: undefined,
-    name: 'Custom',
-    size: 'lg',
-    backgroundColor: '#EAE9FE',
-    textColor: '#4622B5',
-  },
-};
-
-export const AllSizes: Story = {
+export const AllVariants: Story = {
   render: () => (
-    <View style={{ flexDirection: 'row', gap: 12, alignItems: 'center' }}>
-      <Avatar name="A" size="xs" />
-      <Avatar name="B" size="sm" />
-      <Avatar name="C" size="md" />
-      <Avatar name="D" size="lg" />
-      <Avatar name="E" size="xl" />
+    <View style={{ gap: 16 }}>
+      <View style={{ flexDirection: 'row', gap: 12, alignItems: 'center' }}>
+        <Avatar name="A" size="xs" />
+        <Avatar name="B" size="sm" />
+        <Avatar name="C" size="md" />
+        <Avatar name="D" size="lg" />
+        <Avatar name="E" size="xl" />
+      </View>
+      <View style={{ flexDirection: 'row', gap: 12, alignItems: 'center' }}>
+        <Avatar name="Image" size="lg" imageSrc={SAMPLE_AVATAR_URL} />
+        <Avatar name="Initials" size="lg" />
+        <Avatar name="Anonymous" size="lg" isAnonymous />
+        <Avatar name="Squircle" size="lg" rounded="lg" imageSrc={SAMPLE_AVATAR_URL} />
+      </View>
     </View>
   ),
 };
