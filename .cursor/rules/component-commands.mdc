@@ -1,8 +1,8 @@
 ---
 description: >
-  Reference document for the component creation and publishing workflows.
+  Reference document for the component creation, enhancement, and publishing workflows.
   Provides sub-agent strategy, feasibility decision tree, and quality gate checklist.
-  The /create and /publish slash commands in .cursor/commands/ are the entry points.
+  The /create, /enhance, and /publish slash commands in .cursor/commands/ are the entry points.
 globs:
   - ".cursor/skills/*.md"
   - ".cursor/commands/*.md"
@@ -10,7 +10,7 @@ globs:
 
 # Component Workflow Reference
 
-Reference document for the `/create` and `/publish` workflows. The slash commands
+Reference document for the `/create`, `/enhance`, and `/publish` workflows. The slash commands
 in `.cursor/commands/` are the entry points; this rule provides the sub-agent
 strategy, feasibility decision tree, and quality gate checklist that those
 commands and their skills rely on.
@@ -20,6 +20,7 @@ commands and their skills rely on.
 | Command | File | Skill |
 |---------|------|-------|
 | `/create <component>` | `.cursor/commands/create.md` | `.cursor/skills/master-orchestrator.md` |
+| `/enhance <component>` | `.cursor/commands/enhance.md` | Phase skills listed in command |
 | `/publish` | `.cursor/commands/publish.md` | `.cursor/skills/publish.md` |
 
 ## Available Agents
@@ -27,20 +28,36 @@ commands and their skills rely on.
 | Agent | File | Purpose |
 |-------|------|---------|
 | `code-reviewer` | `.cursor/agents/code-reviewer.md` | Read-only quality audit against conventions and pitfalls |
-| `web-source-analyzer` | `.cursor/agents/web-source-analyzer.md` | Extract web component API from twigs-react GitHub source |
+| `web-source-analyzer` | `.cursor/agents/web-source-analyzer.md` | Extract web component API from local twigs-react source |
+
+## Environment Notes
+
+- **Figma MCP and Cursor Figma plugin are pre-enabled.**
+- `/create` must use those existing integrations for design extraction when
+  Figma references are provided.
+- Do not add or evaluate external MCP integrations for this workflow.
+
+## .cursor-Only Modification Mode
+
+When the request is workflow maintenance (commands/skills/rules/agents):
+
+- Modify `.cursor/` files only
+- Do not edit `src/`, `docs/`, `lib/`, or runtime component code
+- Keep quality gates and release standards intact
 
 ---
 
 ## Sub-Agent Strategy
 
-When executing `create` or `publish`, use the **Task tool** to parallelize work
+When executing `/create`, `/enhance`, or `/publish`, use the **Task tool** to parallelize work
 across sub-agents. This is the single most important optimization.
 
 ### Agent type selection guide
 
 | Task | Agent Type | Model | Why |
 |------|-----------|-------|-----|
-| Fetch web source from GitHub | `explore` | default | Fast readonly web fetch |
+| Extract design data from Figma MCP | main agent | — | Needs direct MCP calls + orchestration context |
+| Read web source from local twigs folder | `explore` | default | Fast readonly local file access |
 | Analyze existing RN component patterns | `explore` | default | Fast readonly code search |
 | Implement component source files | main agent | — | Needs full conversation context and user interaction |
 | Write test file | `generalPurpose` | `fast` | Independent file creation, well-defined template |
@@ -53,18 +70,20 @@ across sub-agents. This is the single most important optimization.
 ```
 create <component> execution:
 
-  Phase 1   ─── [explore A] + [explore B]  ← parallel (2 agents)
+  Phase 1   ─── [main: figma extraction] + [explore A] + [explore B]
                       │
   Phase 2   ─── [main agent]               ← sequential (user interaction)
                       │
-  Phase 3   ─── [main agent]               ← sequential (file dependencies)
-  Phase 3.5 ─── [main agent]               ← sequential (story file, needs component)
+  Phase 3   ─── [main agent]               ← sequential (design reconciliation)
                       │
-  Phase 4   ─── [general C] + [general D]  ← parallel (2 agents)
+  Phase 4   ─── [main agent]               ← sequential (file dependencies)
+  Phase 4.5 ─── [main agent]               ← sequential (story file, needs component)
                       │
-  Phase 5   ─── [shell E]                  ← sequential (commands)
+  Phase 5+6 ─── [general C] + [general D]  ← parallel (tests + docs)
                       │
-  Phase 6   ─── [main agent]               ← sequential (finalize)
+  Phase 7   ─── [shell E]                  ← sequential (commands)
+                      │
+  Phase 8   ─── [main agent]               ← sequential (finalize)
 ```
 
 ### Concurrency rules
@@ -84,6 +103,37 @@ Sub-agents have **NO access** to the conversation. When launching a sub-agent, a
 - **File paths**: exact paths to read from or write to
 - **Pattern references**: name of existing component to use as reference
 - **Conventions**: any non-obvious rules (e.g., "use TwigsProvider wrapper in tests")
+
+### Source of Truth Policy
+
+During `/create` and `/enhance`, apply this order when sources conflict:
+
+1. API/props/variants/accessibility/interaction behavior -> **Twigs Web source wins**
+2. Layout/spacing/sizing/visual structure -> **Figma data wins** unless it breaks web behavior intent
+3. Composition -> **reuse existing twigs-mobile primitives first**
+
+### Phase 3 — Design Reconciliation (required)
+
+Before implementation begins, produce:
+
+- Figma vs Twigs Web comparison table
+- Conflict log (resolved + unresolved)
+- Resolved implementation spec
+- Reuse plan for existing twigs-mobile components
+
+Use this output template:
+
+1. **Discovery Summary**
+2. **Figma vs Web Comparison**
+3. **Reconciliation Notes**
+4. **Reuse Plan**
+5. **Implementation Plan**
+6. **Validation Plan**
+
+### Stop-And-Ask Rule
+
+If any reconciliation conflict remains unresolved after Phase 3, stop and ask
+the user before proceeding to implementation.
 
 ---
 
@@ -119,10 +169,11 @@ Sub-agents have **NO access** to the conversation. When launching a sub-agent, a
 
 ---
 
-## Quality Gate (applies to both commands)
+## Quality Gate (applies to component commands)
 
 For detailed Web-to-RN translation rules, see `web-library-reference.mdc`.
 For dependency vetting criteria, see the `feasibility-check.md` skill.
+These quality gates are mandatory and must not be weakened during workflow changes.
 
 Every component must satisfy before the command is considered done:
 

@@ -494,3 +494,116 @@ const circumference = 2 * Math.PI * radius;
 ```
 
 Always prefer SVG-based arcs for circular loaders / spinners.
+
+---
+
+## 22. Using SvgComponent / PathComponent Wrappers
+
+`SvgComponent` and `PathComponent` in `../utils` are **deprecated** wrappers
+around `Svg` and `Path` from `react-native-svg`. They exist only for backward
+compatibility with external consumers and will be removed in the next major
+version.
+
+All internal code must import SVG primitives directly from `react-native-svg`.
+
+```tsx
+// WRONG — deprecated wrappers
+import { SvgComponent, PathComponent } from '../utils';
+
+<SvgComponent width={24} height={24} viewBox="0 0 24 24" fill="none">
+  <PathComponent d="M12 8H12.01" stroke={color} strokeWidth={2} />
+</SvgComponent>
+
+// CORRECT — direct react-native-svg imports
+import { Svg, Path, Circle } from 'react-native-svg';
+
+<Svg width={24} height={24} viewBox="0 0 24 24" fill="none">
+  <Path d="M12 8H12.01" stroke={color} strokeWidth={2} />
+</Svg>
+```
+
+Import whichever SVG primitives you need (`Svg`, `Path`, `Circle`, `Rect`,
+`G`, `Line`, etc.) directly from the package.
+
+---
+
+## 23. Skipping Design Reconciliation (Figma vs Web)
+
+When implementing from both Figma and Twigs Web, do not start coding until
+reconciliation is complete.
+
+```md
+WRONG
+- Implement directly from Figma screenshot
+- Ignore web API/interaction behavior
+- Use raw RN primitives without checking reusable twigs-mobile primitives
+
+CORRECT
+- Build a Figma vs Web comparison table
+- Resolve conflicts using source-of-truth policy:
+  - behavior/API/a11y -> web wins
+  - layout/spacing/sizing -> figma wins unless behavior breaks
+- Create and follow a reuse plan (map web primitives to twigs-mobile primitives first)
+- Stop and ask the maintainer if conflicts remain unresolved
+```
+
+---
+
+## 24. Not Verifying Figma Icons Against Existing Icons
+
+When a Figma design includes icons, **always fetch and compare** each icon node
+against the existing SVG icons in the codebase. Figma icons often use a
+different icon set (filled vs stroked, different shapes) than what's already
+implemented. Assuming they match because they serve the same purpose (e.g.
+"info icon" in both) leads to visual inconsistency.
+
+```md
+WRONG
+- See Figma has an "info" icon → assume existing InfoIcon matches
+- See Figma has a "warning" icon → assume existing WarningIcon matches
+- Skip fetching individual icon nodes from Figma
+- Only compare layout, colors, and spacing — treat icons as interchangeable
+
+CORRECT
+- Fetch each icon node from Figma individually using get_design_context
+- Compare the Figma icon screenshot against the existing SVG
+- Check for style differences: filled vs stroked, rounded vs sharp, shape differences
+- If icons differ, flag it to the user before proceeding
+- Extract and replace SVG paths if the Figma icons should be adopted
+```
+
+Common mismatches to watch for:
+- **Filled vs stroke**: Figma design system icons are often filled/solid while
+  existing code uses Feather/Lucide stroke icons
+- **Shape differences**: e.g. Figma uses a diamond for "caution" but code has a
+  triangle for "warning"
+- **ViewBox / sizing**: Figma icons may use different viewBox dimensions
+- **Close button styling**: Figma may show an overlay background
+  (`rgba(...)`) on dismiss buttons that isn't present in the current
+  implementation
+
+---
+
+## 25. Using `React.useX` Instead of Destructured Imports
+
+Always destructure hooks (`useMemo`, `useCallback`, `useState`, `useEffect`,
+etc.) from the `React` import. Do not access them via the `React` namespace.
+
+```tsx
+// WRONG — accessing hooks via React namespace
+import React from 'react';
+
+const memoized = React.useMemo(() => compute(), [dep]);
+const handler = React.useCallback(() => {}, []);
+React.useEffect(() => { ... }, []);
+
+// CORRECT — destructure hooks from React
+import React, { useMemo, useCallback, useEffect } from 'react';
+
+const memoized = useMemo(() => compute(), [dep]);
+const handler = useCallback(() => {}, []);
+useEffect(() => { ... }, []);
+```
+
+Keep `React` as a default import (it's still needed for `React.forwardRef`,
+JSX, and `React.isValidElement`), but always destructure hooks for direct use.

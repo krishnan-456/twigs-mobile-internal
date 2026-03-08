@@ -7,7 +7,8 @@ alwaysApply: true
 
 React Native component library for SurveySparrow.
 
-**Web counterpart:** [@sparrowengg/twigs-react](https://github.com/surveysparrow/twigs) — always validate component implementations against the web library (see `web-library-reference.mdc`).
+**Web counterpart:** @sparrowengg/twigs-react — always validate component implementations against the web library (see `web-library-reference.mdc`).
+**Web source (local):** `/Users/krishnank/surveysparrow/twigs/packages/react-components/src/` — read directly from the workspace, no GitHub fetching needed.
 
 ## Repo Structure
 
@@ -93,6 +94,19 @@ The barrel `index.ts` is the **single source of truth** for what is publicly exp
 - Consumers must never import from files other than `index.ts`.
 
 ## Component Implementation Rules
+
+### Web Primitive Parity (required)
+
+- Always inspect the matching web component source in local workspace first:
+  `/Users/krishnank/surveysparrow/twigs/packages/react-components/src/<component>/`.
+- If web uses a Twigs primitive (`IconButton`, `Button`, `Box`, etc.), use the
+  equivalent Twigs mobile primitive instead of raw RN primitives when possible.
+- **Alert-specific parity:** close action should use mobile `Button` in icon mode
+  (web uses `IconButton`), not a raw `Pressable`.
+- For optional callbacks on rendered controls, prefer conditional prop spread
+  instead of conditional rendering by handler presence (RN example:
+  `...(onClose && { onPress: onClose })`).
+- Any unavoidable deviation must include: `// Mobile deviation: <reason>`.
 
 ### forwardRef + displayName (required for all public components)
 
