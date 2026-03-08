@@ -1,9 +1,7 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { Pressable, StyleSheet, View, ViewStyle } from 'react-native';
-import { useAnimatedStyle, useSharedValue, withSpring } from 'react-native-reanimated';
 import { Box } from '../box';
 import { Flex } from '../flex';
-import { AnimatedView } from '../utils';
 import { useTheme } from '../context';
 import type { CheckboxProps } from './types';
 import { getCheckboxSizeConfig } from './constants';
@@ -34,14 +32,6 @@ export const Checkbox = React.forwardRef<View, CheckboxProps>(
   ) => {
     const theme = useTheme();
     const styles = createCheckboxStyles(theme);
-    const opacity = useSharedValue(checked ? 1 : 0);
-
-    useEffect(() => {
-      opacity.value = withSpring(checked ? 1 : 0, {
-        damping: 15,
-        stiffness: 80,
-      });
-    }, [checked, opacity]);
 
     const handlePress = () => {
       if (disabled) return;
@@ -49,10 +39,6 @@ export const Checkbox = React.forwardRef<View, CheckboxProps>(
       // Mobile deviation: keep boolean callback payload for backward compatibility.
       onChange?.(nextChecked);
     };
-
-    const iconStyle = useAnimatedStyle(() => ({
-      opacity: opacity.value,
-    }));
 
     const isIndeterminate = checked === 'indeterminate';
     const isChecked = checked !== false;
@@ -89,13 +75,15 @@ export const Checkbox = React.forwardRef<View, CheckboxProps>(
           justify="center"
           css={StyleSheet.flatten([styles.checkboxBase, checkboxDynamicStyles, checkboxStyle])}
         >
-          <AnimatedView style={[styles.iconContainer, iconStyle]}>
-            {isIndeterminate ? (
-              <HorizontalLineIcon color={theme.colors.white900} />
-            ) : (
-              <TickIcon color={theme.colors.white900} />
-            )}
-          </AnimatedView>
+          {isChecked && (
+            <View style={styles.iconContainer}>
+              {isIndeterminate ? (
+                <HorizontalLineIcon size={sizeConfig.iconSize} color={theme.colors.white900} />
+              ) : (
+                <TickIcon size={sizeConfig.iconSize} color={theme.colors.white900} />
+              )}
+            </View>
+          )}
         </Flex>
         {children && (
           <Box css={StyleSheet.flatten([styles.labelContainer, labelStyle])}>{children}</Box>

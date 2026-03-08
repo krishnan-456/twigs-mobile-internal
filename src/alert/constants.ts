@@ -24,8 +24,8 @@ export const SIZE_CONFIG: Record<AlertSize, SizeConfig> = {
     borderRadius: 8,
   },
   md: {
-    paddingHorizontal: 16,
-    paddingVertical: 16,
+    paddingHorizontal: 12,
+    paddingVertical: 10,
     fontSize: 16,
     lineHeight: 24,
     statusIconSize: 24,

@@ -1,6 +1,5 @@
 import React from 'react';
 import { Pressable, StyleSheet, View, ViewStyle } from 'react-native';
-import { Box } from '../box';
 import { Flex } from '../flex';
 import { useTheme } from '../context';
 import type { RadioProps } from './types';
@@ -15,10 +14,6 @@ export const Radio = React.forwardRef<View, RadioProps>(
       disabled = false,
       children,
       size = 'sm',
-      width,
-      height,
-      innerWidth,
-      innerHeight,
       containerRef,
       labelStyle,
       radioStyle,
@@ -37,21 +32,13 @@ export const Radio = React.forwardRef<View, RadioProps>(
       }
     };
 
-    const sizeConfig = getRadioSizeConfig(size);
-    const outerCircleWidth = width ?? sizeConfig.outer.width;
-    const outerCircleHeight = height ?? sizeConfig.outer.height;
-    const innerCircleWidth = innerWidth ?? sizeConfig.inner.width;
-    const innerCircleHeight = innerHeight ?? sizeConfig.inner.height;
+    const { outerSize, innerSize } = getRadioSizeConfig(size);
 
     const outerCircleDynamicStyles: ViewStyle = {
-      height: outerCircleHeight,
-      width: outerCircleWidth,
+      width: outerSize,
+      height: outerSize,
+      borderRadius: outerSize / 2,
       borderColor: selected ? theme.colors.secondary500 : theme.colors.neutral700,
-    };
-
-    const innerCircleDynamicStyles: ViewStyle = {
-      height: innerCircleHeight,
-      width: innerCircleWidth,
     };
 
     return (
@@ -76,7 +63,16 @@ export const Radio = React.forwardRef<View, RadioProps>(
           css={StyleSheet.flatten([styles.outerCircle, outerCircleDynamicStyles, radioStyle])}
         >
           {selected && (
-            <Box css={StyleSheet.flatten([styles.innerCircle, innerCircleDynamicStyles])} />
+            <View
+              style={[
+                styles.innerCircle,
+                {
+                  width: innerSize,
+                  height: innerSize,
+                  borderRadius: innerSize / 2,
+                },
+              ]}
+            />
           )}
         </Flex>
         {children && <View style={[styles.labelContainer, labelStyle]}>{children}</View>}

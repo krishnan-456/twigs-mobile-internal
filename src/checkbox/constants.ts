@@ -3,16 +3,19 @@ import type { CheckboxSize } from './types';
 export interface CheckboxSizeConfig {
   width: number;
   height: number;
+  iconSize: number;
 }
 
 export const CHECKBOX_SIZE_CONFIGS: Record<CheckboxSize, CheckboxSizeConfig> = {
   sm: {
     width: 16,
     height: 16,
+    iconSize: 14,
   },
   md: {
     width: 20,
     height: 20,
+    iconSize: 16,
   },
 };
 

@@ -10,10 +10,6 @@ export interface RadioProps extends CommonStyleProps, BaseAccessibilityProps {
   disabled?: boolean;
   children?: ReactNode;
   size?: RadioSize;
-  width?: number;
-  height?: number;
-  innerWidth?: number;
-  innerHeight?: number;
   containerRef?: RefObject<View>;
   labelStyle?: ViewStyle;
   radioStyle?: ViewStyle;
