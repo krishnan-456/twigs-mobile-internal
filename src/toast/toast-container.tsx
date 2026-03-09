@@ -58,7 +58,7 @@ const PositionedStack = ({
       pointerEvents="box-none"
     >
       {orderedToasts.map((t) => (
-        <View key={t.id} style={{ marginBottom: gap }} pointerEvents="auto">
+        <View key={t.id} style={{ marginBottom: gap }} pointerEvents="box-none">
           <ToastItem
             {...t}
             onRemove={onRemove}
@@ -70,12 +70,6 @@ const PositionedStack = ({
 };
 
 export const ToastContainer = (props: ToastContainerProps) => {
-  const inner = (
-    <View style={styles.overlay} pointerEvents="box-none">
-      <PositionedStack {...props} />
-    </View>
-  );
-
   if (Platform.OS === 'ios' && FullWindowOverlay) {
     return (
       <FullWindowOverlay>
@@ -83,7 +77,9 @@ export const ToastContainer = (props: ToastContainerProps) => {
           style={styles.gestureRoot}
           pointerEvents="box-none"
         >
-          {inner}
+          <View style={styles.overlay} pointerEvents="box-none">
+            <PositionedStack {...props} />
+          </View>
         </GestureHandlerRootView>
       </FullWindowOverlay>
     );
@@ -91,12 +87,7 @@ export const ToastContainer = (props: ToastContainerProps) => {
 
   return (
     <View style={styles.overlay} pointerEvents="box-none">
-      <GestureHandlerRootView
-        style={styles.gestureRoot}
-        pointerEvents="box-none"
-      >
-        <PositionedStack {...props} />
-      </GestureHandlerRootView>
+      <PositionedStack {...props} />
     </View>
   );
 };

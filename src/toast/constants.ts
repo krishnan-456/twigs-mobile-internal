@@ -77,12 +77,8 @@ export const SWIPE_VELOCITY_THRESHOLD = 500;
 
 export const POSITION_STYLES: Record<
   ToastPosition,
-  { vertical: 'top' | 'bottom'; horizontal: 'left' | 'center' | 'right' }
+  { vertical: 'top' | 'bottom' }
 > = {
-  'top-left': { vertical: 'top', horizontal: 'left' },
-  'top-center': { vertical: 'top', horizontal: 'center' },
-  'top-right': { vertical: 'top', horizontal: 'right' },
-  'bottom-left': { vertical: 'bottom', horizontal: 'left' },
-  'bottom-center': { vertical: 'bottom', horizontal: 'center' },
-  'bottom-right': { vertical: 'bottom', horizontal: 'right' },
+  'top-center': { vertical: 'top' },
+  'bottom-center': { vertical: 'bottom' },
 };

@@ -67,7 +67,6 @@ export function getTitleStyles(
     color: theme.colors[colorKey],
     fontSize: TOAST_TITLE_FONT_SIZE,
     lineHeight: TOAST_TITLE_LINE_HEIGHT,
-    fontWeight: '700',
   };
 }
 
@@ -81,7 +80,6 @@ export function getDescriptionStyles(
     color: theme.colors[colorKey],
     fontSize: TOAST_DESCRIPTION_FONT_SIZE,
     lineHeight: TOAST_DESCRIPTION_LINE_HEIGHT,
-    fontWeight: '400',
   };
 }
 
@@ -90,25 +88,13 @@ export function getPositionContainerStyle(
   position: ToastPosition,
   offset: number,
 ): ViewStyle {
-  const { vertical, horizontal } = POSITION_STYLES[position];
+  const { vertical } = POSITION_STYLES[position];
 
-  const style: ViewStyle = {
+  return {
     position: 'absolute',
     width: '100%',
     paddingHorizontal: 16,
     [vertical]: offset,
-    alignItems:
-      horizontal === 'center'
-        ? 'center'
-        : horizontal === 'left'
-          ? 'flex-start'
-          : 'flex-end',
+    alignItems: 'center',
   };
-
-  return style;
-}
-
-/** Returns the initial translateY for toast entry based on position */
-export function getEntryTranslateY(position: ToastPosition): number {
-  return position.startsWith('top') ? -50 : 50;
 }

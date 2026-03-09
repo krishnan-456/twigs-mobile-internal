@@ -42,6 +42,5 @@ export function getSegmentTextStyles(theme: TwigsTheme, selected: boolean): Text
     textAlign: 'center',
     color: selected ? theme.colors.neutral800 : theme.colors.neutral600,
     fontFamily: selected ? theme.fonts.bold : theme.fonts.medium,
-    fontWeight: selected ? '700' : '500',
   };
 }
