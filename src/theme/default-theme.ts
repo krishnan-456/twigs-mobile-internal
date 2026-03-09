@@ -432,6 +432,7 @@ export const defaultTheme: TwigsTheme = {
     '4xl': 64,
   },
 
+  // Matches web twigs (empty by default, consumer-extensible)
   letterSpacings: {},
 
   // Component sizes in dp (web px = dp)
@@ -481,6 +482,7 @@ export const defaultTheme: TwigsTheme = {
     xl: 5,
   },
 
+  // Matches web twigs (empty by default, consumer-extensible)
   borderStyles: {},
 
   // Border radii in dp. round/pill use 9999 (RN equivalent of 50%/9999px)
@@ -502,6 +504,7 @@ export const defaultTheme: TwigsTheme = {
     sm: '0px 5px 15px rgba(0, 0, 0, 0.04)',
   },
 
+  // Matches web twigs (empty by default, consumer-extensible)
   zIndices: {},
 
   // Transition durations in milliseconds

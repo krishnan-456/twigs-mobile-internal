@@ -189,7 +189,7 @@ export const TextInput = forwardRef<RNTextInput, TextInputProps>(
 
     if (hasLeftIcon || hasRightIcon || hasLeftElement || hasRightElement) {
       return (
-        <Flex gap={4} css={{ width: '100%' }}>
+        <Flex gap={4} css={styles.fullWidth}>
           <Box
             css={StyleSheet.flatten([
               styles.container,
@@ -246,11 +246,7 @@ export const TextInput = forwardRef<RNTextInput, TextInputProps>(
                   style={StyleSheet.flatten([
                     styles.iconContainer,
                     styles.iconContainerRight,
-                    {
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                    },
+                    styles.iconButtonContainer,
                   ])}
                 >
                   {React.isValidElement(rightIcon)
@@ -286,7 +282,7 @@ export const TextInput = forwardRef<RNTextInput, TextInputProps>(
     }
 
     return (
-      <Flex gap={4} css={{ width: '100%' }}>
+      <Flex gap={4} css={styles.fullWidth}>
         <Box
           css={StyleSheet.flatten([
             styles.container,
