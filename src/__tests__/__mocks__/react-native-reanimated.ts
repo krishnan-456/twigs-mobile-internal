@@ -29,7 +29,11 @@ export const Extrapolation = {
 
 export const Easing = {
   out: (fn: (t: number) => number) => fn,
+  in: (fn: (t: number) => number) => fn,
+  inOut: (fn: (t: number) => number) => fn,
   cubic: (t: number) => t,
+  ease: (t: number) => t,
+  elastic: (_bounciness?: number) => (t: number) => t,
 };
 
 const Animated = {

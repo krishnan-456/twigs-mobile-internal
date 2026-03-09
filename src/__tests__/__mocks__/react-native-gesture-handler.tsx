@@ -9,21 +9,32 @@ export const GestureHandlerRootView = ({
   style?: any;
 }) => React.createElement(View, props, children);
 
+const makePan = (): any => {
+  const self: any = {};
+  const chain = () => self;
+  self.activeOffsetX = chain;
+  self.activeOffsetY = chain;
+  self.failOffsetX = chain;
+  self.failOffsetY = chain;
+  self.onBegin = chain;
+  self.onUpdate = chain;
+  self.onChange = chain;
+  self.onEnd = chain;
+  self.onFinalize = chain;
+  return self;
+};
+
+const makeTap = (): any => {
+  const self: any = {};
+  const chain = () => self;
+  self.maxDuration = chain;
+  self.onEnd = chain;
+  return self;
+};
+
 const NoopGesture = {
-  Pan: () => ({
-    activeOffsetX: () => NoopGesture.Pan(),
-    activeOffsetY: () => NoopGesture.Pan(),
-    failOffsetX: () => NoopGesture.Pan(),
-    failOffsetY: () => NoopGesture.Pan(),
-    onBegin: () => NoopGesture.Pan(),
-    onUpdate: () => NoopGesture.Pan(),
-    onEnd: () => NoopGesture.Pan(),
-    onFinalize: () => NoopGesture.Pan(),
-  }),
-  Tap: () => ({
-    maxDuration: () => NoopGesture.Tap(),
-    onEnd: () => NoopGesture.Tap(),
-  }),
+  Pan: () => makePan(),
+  Tap: () => makeTap(),
   Race: (..._args: any[]) => ({}),
 };
 
