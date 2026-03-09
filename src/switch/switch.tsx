@@ -1,5 +1,4 @@
-import React, { useEffect, useState } from 'react';
-import type { ViewStyle } from 'react-native';
+import React, { useEffect, useMemo, useState } from 'react';
 import { Pressable, View } from 'react-native';
 import { Easing, useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated';
 import { AnimatedView } from '../utils';
@@ -69,25 +68,34 @@ export const Switch = React.forwardRef<View, SwitchProps>(
       transform: [{ translateX: translateX.value }],
     }));
 
-    const switchSizeStyles: ViewStyle = {
-      width: sizeConfig.track.width,
-      height: sizeConfig.track.height,
-    };
+    const switchSizeStyles = useMemo(
+      () => ({
+        width: sizeConfig.track.width,
+        height: sizeConfig.track.height,
+      }),
+      [sizeConfig.track.width, sizeConfig.track.height]
+    );
 
-    const thumbSizeStyles: ViewStyle = {
-      width: sizeConfig.thumb.size,
-      height: sizeConfig.thumb.size,
-    };
+    const thumbSizeStyles = useMemo(
+      () => ({
+        width: sizeConfig.thumb.size,
+        height: sizeConfig.thumb.size,
+      }),
+      [sizeConfig.thumb.size]
+    );
 
-    const switchStateStyles: ViewStyle = {
-      backgroundColor: disabled
-        ? resolvedChecked
-          ? theme.colors.primary100
-          : theme.colors.neutral200
-        : resolvedChecked
-          ? theme.colors.primary500
-          : theme.colors.neutral400,
-    };
+    const switchStateStyles = useMemo(
+      () => ({
+        backgroundColor: disabled
+          ? resolvedChecked
+            ? theme.colors.primary100
+            : theme.colors.neutral200
+          : resolvedChecked
+            ? theme.colors.primary500
+            : theme.colors.neutral400,
+      }),
+      [disabled, resolvedChecked, theme]
+    );
 
     const resolvedAccessibilityState = {
       ...accessibilityState,
