@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, act } from '@testing-library/react-native';
+import { act } from '@testing-library/react-native';
 import { Text } from 'react-native';
 import { TwigsProvider } from '../context';
 import { ToastProvider } from '../toast/toast-provider';
@@ -8,8 +8,7 @@ import { ToastContent } from '../toast/toast-content';
 import { useToast } from '../toast/use-toast';
 import type { ToastVariant } from '../toast/types';
 import { VARIANT_COLORS } from '../toast/constants';
-
-const wrap = (ui: React.ReactElement) => render(<TwigsProvider>{ui}</TwigsProvider>);
+import { wrap } from './test-utils';
 
 describe('Toast', () => {
   beforeEach(() => {

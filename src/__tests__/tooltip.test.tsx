@@ -1,11 +1,10 @@
 import React from 'react';
 import { Pressable, Text } from 'react-native';
-import { render, fireEvent, act } from '@testing-library/react-native';
+import { fireEvent, act } from '@testing-library/react-native';
 import { Tooltip } from '../tooltip';
 import { Button } from '../button';
 import { TwigsProvider } from '../context';
-
-const wrap = (ui: React.ReactElement) => render(<TwigsProvider>{ui}</TwigsProvider>);
+import { wrap } from './test-utils';
 
 const renderTooltip = (props?: Partial<React.ComponentProps<typeof Tooltip>>) =>
   wrap(

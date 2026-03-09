@@ -1,11 +1,10 @@
 import React from 'react';
-import { render, fireEvent } from '@testing-library/react-native';
+import { fireEvent } from '@testing-library/react-native';
 import { Text } from 'react-native';
 import { IconButton } from '../icon-button';
 import { TwigsProvider } from '../context';
 import { defaultTheme } from '../theme';
-
-const wrap = (ui: React.ReactElement) => render(<TwigsProvider>{ui}</TwigsProvider>);
+import { wrap } from './test-utils';
 
 describe('IconButton', () => {
   it('has displayName "IconButton"', () => {

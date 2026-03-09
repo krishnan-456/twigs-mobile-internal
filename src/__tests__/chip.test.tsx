@@ -1,10 +1,9 @@
 import React from 'react';
 import { StyleSheet, View } from 'react-native';
-import { render, fireEvent } from '@testing-library/react-native';
+import { fireEvent } from '@testing-library/react-native';
 import { Chip } from '../chip';
 import { TwigsProvider } from '../context';
-
-const wrap = (ui: React.ReactElement) => render(<TwigsProvider>{ui}</TwigsProvider>);
+import { wrap } from './test-utils';
 
 function flattenStyle(props: { style?: unknown }) {
   const style = props.style;

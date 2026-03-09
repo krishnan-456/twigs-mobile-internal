@@ -1,11 +1,11 @@
-import { ReactElement, ReactNode } from 'react';
-import { TextInputProps as RNTextInputProps, TextStyle } from 'react-native';
-import { MarginProps, PaddingProps, CommonStyleProps } from '../utils';
+import type { ReactElement, ReactNode } from 'react';
+import type { TextInputProps as RNTextInputProps, TextStyle } from 'react-native';
+import type { MarginProps, PaddingProps, CommonStyleProps, BaseAccessibilityProps } from '../utils';
 
 export type TextInputSize = 'sm' | 'md' | 'lg' | 'xl' | '2xl';
 export type TextInputVariant = 'default' | 'filled';
 
-export interface TextInputProps extends MarginProps, PaddingProps, CommonStyleProps {
+export interface TextInputProps extends MarginProps, PaddingProps, CommonStyleProps, BaseAccessibilityProps {
   size?: TextInputSize;
   variant?: TextInputVariant;
   placeholder?: string;

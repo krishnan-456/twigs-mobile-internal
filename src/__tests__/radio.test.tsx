@@ -1,11 +1,10 @@
 import React from 'react';
-import { render, fireEvent } from '@testing-library/react-native';
+import { fireEvent } from '@testing-library/react-native';
 import { StyleSheet, Text } from 'react-native';
 import { Radio } from '../radio';
 import { TwigsProvider } from '../context';
 import { defaultTheme } from '../theme';
-
-const wrap = (ui: React.ReactElement) => render(<TwigsProvider>{ui}</TwigsProvider>);
+import { wrap } from './test-utils';
 
 const getOuterCircleStyle = (tree: any) => {
   const outerCircle = tree?.children?.[0];

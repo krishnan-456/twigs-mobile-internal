@@ -1,4 +1,4 @@
-import { CommonStyleProps } from '../utils';
+import type { CommonStyleProps, BaseAccessibilityProps } from '../utils';
 
 /**
  * Size variants for LineLoader.
@@ -18,14 +18,14 @@ export type CircleLoaderSize = 'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl' | '3xl';
  */
 export type LoaderColor = 'primary' | 'secondary' | 'bright' | 'negative' | 'accent';
 
-export interface LineLoaderProps extends CommonStyleProps {
+export interface LineLoaderProps extends CommonStyleProps, BaseAccessibilityProps {
   /** Size preset. @default 'sm' */
   size?: LineLoaderSize;
   /** Color preset. @default 'primary' */
   color?: LoaderColor;
 }
 
-export interface CircleLoaderProps extends CommonStyleProps {
+export interface CircleLoaderProps extends CommonStyleProps, BaseAccessibilityProps {
   /** Size preset. @default 'md' */
   size?: CircleLoaderSize;
   /** Color preset. @default 'primary' */

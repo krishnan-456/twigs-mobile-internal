@@ -1,10 +1,9 @@
 import React from 'react';
 import { StyleSheet } from 'react-native';
-import { render, fireEvent } from '@testing-library/react-native';
+import { fireEvent } from '@testing-library/react-native';
 import { Switch } from '../switch';
 import { TwigsProvider } from '../context';
-
-const wrap = (ui: React.ReactElement) => render(<TwigsProvider>{ui}</TwigsProvider>);
+import { wrap } from './test-utils';
 
 const getSwitchStyle = (switchElement: ReturnType<typeof render>['getByRole']) => {
   const el = switchElement('switch');

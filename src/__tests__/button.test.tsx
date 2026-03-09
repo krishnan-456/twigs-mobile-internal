@@ -1,13 +1,12 @@
 import React from 'react';
-import { render, fireEvent } from '@testing-library/react-native';
+import { fireEvent } from '@testing-library/react-native';
 import { Text } from 'react-native';
 import { Button } from '../button';
 import { getPressedStyle } from '../button/helpers';
 import { TwigsProvider } from '../context';
 import { defaultTheme } from '../theme';
 import { colorOpacity } from '../utils';
-
-const wrap = (ui: React.ReactElement) => render(<TwigsProvider>{ui}</TwigsProvider>);
+import { wrap } from './test-utils';
 
 describe('Button', () => {
   // ── Render ──

@@ -1,9 +1,8 @@
 import React, { useState } from 'react';
-import { render, fireEvent } from '@testing-library/react-native';
+import { fireEvent } from '@testing-library/react-native';
 import { SegmentedButton } from '../segmented-button';
 import { TwigsProvider } from '../context';
-
-const wrap = (ui: React.ReactElement) => render(<TwigsProvider>{ui}</TwigsProvider>);
+import { wrap } from './test-utils';
 
 const defaultOptions = [
   { value: 'a', label: 'Option A' },

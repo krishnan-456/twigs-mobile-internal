@@ -1,9 +1,8 @@
 import React from 'react';
-import { fireEvent, render } from '@testing-library/react-native';
+import { fireEvent } from '@testing-library/react-native';
 import { Avatar, AvatarGroup } from '../avatar';
 import { TwigsProvider } from '../context';
-
-const wrap = (ui: React.ReactElement) => render(<TwigsProvider>{ui}</TwigsProvider>);
+import { wrap } from './test-utils';
 
 const createAvatars = (count: number, withTouchHandler?: (index: number) => () => void) =>
   Array.from({ length: count }).map((_, index) => (

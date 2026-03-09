@@ -1,4 +1,5 @@
 import type { SegmentedButtonRounded } from './types';
+import { defaultTheme as theme } from '../theme';
 
 export const CONTAINER_HEIGHT = 48;
 export const SEGMENT_PADDING_HORIZONTAL = 20;
@@ -7,9 +8,8 @@ export const SEGMENT_LINE_HEIGHT = 20;
 export const SEGMENT_LETTER_SPACING = 0.2;
 export const SELECTED_BORDER_WIDTH = 1.5;
 
-/** Shadow applied to the selected segment (iOS). */
 export const SELECTED_SHADOW = {
-  shadowColor: '#000000',
+  shadowColor: theme.colors.black900,
   shadowOffset: { width: 1, height: 1 },
   shadowOpacity: 0.04,
   shadowRadius: 5,
