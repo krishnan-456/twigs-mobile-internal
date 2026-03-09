@@ -1,5 +1,19 @@
 # Changelog
 
+## [0.4.2](https://github.com/krishnan-456/twigs-mobile-internal/compare/v0.4.1...v0.4.2) (2026-03-09)
+
+### Features
+
+* enhance toast functionality with improved swipe gestures and animation configurations; introduce new constants for swipe behavior and update icon props ([d96ef36](https://github.com/krishnan-456/twigs-mobile-internal/commit/d96ef36aa0c040b2d6c1a7656a12050efd6d37e4))
+
+### Bug Fixes
+
+* update gesture handler and reanimated mocks for toast swipe gestures ([d0152d9](https://github.com/krishnan-456/twigs-mobile-internal/commit/d0152d9a38695a93750390a856570ee4c71142a6))
+
+### Refactoring
+
+* simplify Toast component positions and styles, reducing options to top-center and bottom-center; update documentation accordingly ([e34e3a0](https://github.com/krishnan-456/twigs-mobile-internal/commit/e34e3a073a5eaf630f115e41bd83003a668a956e))
+
 ## [0.4.1](https://github.com/krishnan-456/twigs-mobile-internal/compare/v0.4.0...v0.4.1) (2026-03-08)
 
 ## [0.4.0](https://github.com/krishnan-456/twigs-mobile-internal/compare/v0.3.1...v0.4.0) (2026-03-08)
