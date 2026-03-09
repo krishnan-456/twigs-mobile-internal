@@ -68,6 +68,7 @@ export function getTitleStyles(
     color: theme.colors[colorKey],
     fontSize: TOAST_TITLE_FONT_SIZE,
     lineHeight: TOAST_TITLE_LINE_HEIGHT,
+    fontFamily: theme.fonts.medium,
   };
 }
 
@@ -81,6 +82,7 @@ export function getDescriptionStyles(
     color: theme.colors[colorKey],
     fontSize: TOAST_DESCRIPTION_FONT_SIZE,
     lineHeight: TOAST_DESCRIPTION_LINE_HEIGHT,
+    fontFamily: theme.fonts.regular,
   };
 }
 

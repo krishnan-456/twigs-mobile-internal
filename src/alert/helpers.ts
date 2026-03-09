@@ -47,6 +47,7 @@ export function getTextStyles(theme: TwigsTheme, _status: AlertStatus, size: Ale
     color: theme.colors[colorKey],
     fontSize: config.fontSize,
     lineHeight: config.lineHeight,
+    fontFamily: theme.fonts[config.fontKey],
     flex: 1,
   };
 }

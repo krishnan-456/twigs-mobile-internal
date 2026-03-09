@@ -47,7 +47,6 @@ export function getTextStyles(theme: TwigsTheme, color: BadgeColor, size: BadgeS
     fontSize: config.fontSize,
     lineHeight: config.lineHeight,
     fontFamily: theme.fonts.medium,
-    fontWeight: '500',
   };
 }
 

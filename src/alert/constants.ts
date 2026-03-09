@@ -5,6 +5,7 @@ interface SizeConfig {
   paddingVertical: number;
   fontSize: number;
   lineHeight: number;
+  fontKey: 'regular' | 'medium' | 'bold';
   statusIconSize: number;
   closeIconSize: number;
   gap: number;
@@ -18,6 +19,7 @@ export const SIZE_CONFIG: Record<AlertSize, SizeConfig> = {
     paddingVertical: 6,
     fontSize: 14,
     lineHeight: 20,
+    fontKey: 'regular',
     statusIconSize: 20,
     closeIconSize: 14,
     gap: 8,
@@ -28,6 +30,7 @@ export const SIZE_CONFIG: Record<AlertSize, SizeConfig> = {
     paddingVertical: 10,
     fontSize: 16,
     lineHeight: 24,
+    fontKey: 'medium',
     statusIconSize: 24,
     closeIconSize: 16,
     gap: 12,
