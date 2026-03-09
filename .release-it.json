@@ -15,7 +15,7 @@
     "publishArgs": ["--access public"]
   },
   "hooks": {
-    "before:init": ["npm run lint", "npm test", "npm run build"],
+    "before:init": ["npm run lint", "npm run typecheck", "npm test", "npm run build"],
     "after:bump": ["npm run build"],
     "before:release": ["npm pack --dry-run"]
   },

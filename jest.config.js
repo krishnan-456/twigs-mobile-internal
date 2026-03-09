@@ -29,5 +29,14 @@ module.exports = {
     'react-native-screens': '<rootDir>/src/__tests__/__mocks__/react-native-screens.ts',
     'react-native-safe-area-context': '<rootDir>/src/__tests__/__mocks__/react-native-safe-area-context.ts',
     'react-native-gesture-handler': '<rootDir>/src/__tests__/__mocks__/react-native-gesture-handler.tsx',
+    '@gorhom/bottom-sheet': '<rootDir>/src/__tests__/__mocks__/@gorhom/bottom-sheet.tsx',
+  },
+  coverageThreshold: {
+    global: {
+      branches: 60,
+      functions: 70,
+      lines: 75,
+      statements: 75,
+    },
   },
 };

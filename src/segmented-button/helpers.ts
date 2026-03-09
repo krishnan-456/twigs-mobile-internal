@@ -10,6 +10,8 @@ import {
   SEGMENT_LINE_HEIGHT,
   SEGMENT_LETTER_SPACING,
   SELECTED_BORDER_WIDTH,
+  // SELECTED_SHADOW,
+  // SELECTED_ELEVATION,
 } from './constants';
 
 export function getContainerStyles(
@@ -31,6 +33,11 @@ export function getIndicatorStyles(theme: TwigsTheme, rounded: SegmentedButtonRo
     borderWidth: SELECTED_BORDER_WIDTH,
     borderColor: theme.colors.neutral200,
     borderRadius: ROUNDED_RADII[rounded],
+    shadowColor: theme.colors.black900,
+
+    // Shadows are currently omitted to maintain a minimal design
+    // ...SELECTED_SHADOW,
+    // elevation: SELECTED_ELEVATION,
   };
 }
 

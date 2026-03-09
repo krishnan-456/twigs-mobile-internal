@@ -26,6 +26,9 @@ Thumbs.db
 # IDE/Editors
 .vscode/
 
+# Test coverage
+coverage/
+
 # ESLint cache
 .eslintcache
 

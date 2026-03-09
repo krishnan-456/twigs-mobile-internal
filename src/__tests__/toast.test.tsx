@@ -390,6 +390,8 @@ describe('Toast', () => {
 
   describe('useToast()', () => {
     it('throws when used outside ToastProvider', () => {
+      const spy = jest.spyOn(console, 'error').mockImplementation(() => {});
+
       const ThrowingComponent = () => {
         useToast();
         return null;
@@ -398,6 +400,8 @@ describe('Toast', () => {
       expect(() => wrap(<ThrowingComponent />)).toThrow(
         'useToastContext must be used within a ToastProvider',
       );
+
+      spy.mockRestore();
     });
 
     it('returns toast methods when inside ToastProvider', () => {
