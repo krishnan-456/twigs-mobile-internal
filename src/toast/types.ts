@@ -74,6 +74,35 @@ export interface ToastItemProps extends ToastState {
   onRemove: (id: string) => void;
 }
 
+/** Props for the ToastContainer and PositionedStack */
+export interface ToastContainerProps {
+  toasts: ToastState[];
+  position: ToastPosition;
+  offset: number;
+  gap: number;
+  onRemove: (id: string) => void;
+}
+
+/** Props for the ToastContent visual renderer */
+export interface ToastContentProps {
+  title: string;
+  description?: string;
+  variant?: ToastVariant;
+  icon?: ReactElement | null;
+  action?: ReactElement | null;
+}
+
+/** Props for toast SVG icons */
+export interface ToastIconProps {
+  size: number;
+  color: string;
+}
+
+/** Props for the info-circle icon with inner cutout color */
+export interface ToastInfoIconProps extends ToastIconProps {
+  innerColor: string;
+}
+
 /** Return type of the useToast hook */
 export interface UseToastReturn {
   show: (options: ToastOptions) => { id: string; dismiss: () => void };

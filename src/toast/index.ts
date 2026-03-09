@@ -9,5 +9,9 @@ export type {
   ToastState,
   ToastContextType,
   ToastItemProps,
+  ToastContainerProps,
+  ToastContentProps,
+  ToastIconProps,
+  ToastInfoIconProps,
   UseToastReturn,
 } from './types';
