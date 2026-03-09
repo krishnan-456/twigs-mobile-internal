@@ -1,4 +1,5 @@
 import React, { useState, useCallback, useMemo, useEffect, useLayoutEffect } from 'react';
+import { StyleSheet, View } from 'react-native';
 import { ToastContext, setGlobalToastHandlers } from './use-toast';
 import { ToastContainer } from './toast-container';
 import type {
@@ -15,6 +16,10 @@ import {
   DEFAULT_OFFSET,
   ANIMATION_DURATION,
 } from './constants';
+
+const providerStyles = StyleSheet.create({
+  root: { flex: 1 },
+});
 
 let idCounter = 0;
 function generateId(): string {
@@ -137,18 +142,20 @@ export const ToastProvider = ({
 
   return (
     <ToastContext.Provider value={contextValue}>
-      {children}
-      {visible &&
-        Object.entries(toastsByPosition).map(([pos, posToasts]) => (
-          <ToastContainer
-            key={pos}
-            toasts={posToasts}
-            position={pos as ToastPosition}
-            offset={offset}
-            gap={gap}
-            onRemove={remove}
-          />
-        ))}
+      <View style={providerStyles.root}>
+        {children}
+        {visible &&
+          Object.entries(toastsByPosition).map(([pos, posToasts]) => (
+            <ToastContainer
+              key={pos}
+              toasts={posToasts}
+              position={pos as ToastPosition}
+              offset={offset}
+              gap={gap}
+              onRemove={remove}
+            />
+          ))}
+      </View>
     </ToastContext.Provider>
   );
 };

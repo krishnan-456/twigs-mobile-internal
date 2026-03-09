@@ -1,33 +1,28 @@
 import React, { useEffect, useCallback, useRef } from 'react';
 import { Gesture, GestureDetector } from 'react-native-gesture-handler';
-import {
+import Animated, {
+  Easing,
   useAnimatedStyle,
   useSharedValue,
   withSpring,
+  withTiming,
   interpolate,
   Extrapolation,
   runOnJS,
 } from 'react-native-reanimated';
-import { AnimatedView } from '../utils';
 import { ToastContent } from './toast-content';
 import type { ToastItemProps } from './types';
 import {
   ANIMATION_DURATION,
-  SWIPE_THRESHOLD,
-  SWIPE_VELOCITY_THRESHOLD,
   TOAST_MIN_HEIGHT,
+  SWIPE_THRESHOLD,
+  SWIPE_DISMISS_OFFSET,
+  ENTRY_SPRING_CONFIG,
+  PAN_ACTIVE_OFFSET_Y,
+  PAN_FAIL_OFFSET_X,
 } from './constants';
+import { elasticResistance } from './helpers';
 import { styles } from './styles';
-
-const ELASTIC_RESISTANCE = 0.4;
-
-const SPRING_CONFIG = { damping: 20, stiffness: 170, mass: 1 };
-
-function elasticResistance(distance: number): number {
-  'worklet';
-  const progressiveFactor = 1 / (1 + Math.abs(distance) * 0.02);
-  return distance * ELASTIC_RESISTANCE * progressiveFactor;
-}
 
 export const ToastItem = React.memo<ToastItemProps>(
   ({
@@ -45,6 +40,7 @@ export const ToastItem = React.memo<ToastItemProps>(
     onRemove,
   }) => {
     const isTopPosition = position.startsWith('top');
+    const isBottomPosition = !isTopPosition;
     const dismissDirection = isTopPosition ? -1 : 1;
     const hiddenY = dismissDirection * (TOAST_MIN_HEIGHT * 2);
     const progress = useSharedValue(0);
@@ -57,8 +53,16 @@ export const ToastItem = React.memo<ToastItemProps>(
       onRemove(id);
     }, [id, onRemove, onDismissCallback]);
 
+    const onSwipeBegin = useCallback(() => {
+      isDragging.current = true;
+    }, []);
+
+    const onSwipeFinalize = useCallback(() => {
+      isDragging.current = false;
+    }, []);
+
     useEffect(() => {
-      progress.value = withSpring(1, SPRING_CONFIG);
+      progress.value = withSpring(1, ENTRY_SPRING_CONFIG);
       onShow?.();
     }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
@@ -76,61 +80,62 @@ export const ToastItem = React.memo<ToastItemProps>(
       };
     }, [duration, dismiss]);
 
-    const panGesture = Gesture.Pan()
-      .activeOffsetY([-10, 10])
-      .failOffsetX([-5, 5])
+    const pan = Gesture.Pan()
+      .activeOffsetY(PAN_ACTIVE_OFFSET_Y)
+      .failOffsetX(PAN_FAIL_OFFSET_X)
       .onBegin(() => {
         'worklet';
-        runOnJS(() => {
-          isDragging.current = true;
-        })();
+        runOnJS(onSwipeBegin)();
       })
-      .onUpdate((event) => {
+      .onChange((event) => {
         'worklet';
-        const raw = event.translationY;
-        const isInDismissDirection = isTopPosition ? raw < 0 : raw > 0;
-        swipeY.value = isInDismissDirection
-          ? raw
-          : elasticResistance(raw);
-      })
-      .onEnd((event) => {
-        'worklet';
-        const { translationY: ty, velocityY: vy } = event;
-        const isInDismissDirection = isTopPosition ? ty < 0 : ty > 0;
-        const shouldDismiss =
-          isInDismissDirection &&
-          (Math.abs(ty) > SWIPE_THRESHOLD ||
-            Math.abs(vy) > SWIPE_VELOCITY_THRESHOLD);
+        const raw = event.translationY * (isBottomPosition ? -1 : 1);
+        const isCorrectDirection = raw < 0;
 
-        if (shouldDismiss) {
-          progress.value = withSpring(0, SPRING_CONFIG, (finished) => {
-            if (finished) runOnJS(dismiss)();
-          });
-          swipeY.value = withSpring(0, SPRING_CONFIG);
+        if (isCorrectDirection) {
+          swipeY.value = raw;
         } else {
-          swipeY.value = withSpring(0, SPRING_CONFIG);
+          swipeY.value = elasticResistance(raw);
         }
       })
       .onFinalize(() => {
         'worklet';
-        runOnJS(() => {
-          isDragging.current = false;
-        })();
-      });
+        const shouldDismiss = swipeY.value < -SWIPE_THRESHOLD;
+        const isWrongDirection = swipeY.value > 0;
 
-    const tapGesture = Gesture.Tap()
-      .maxDuration(250)
-      .onEnd(() => {
-        'worklet';
-        if (onPress) {
-          runOnJS(onPress)();
+        if (isWrongDirection) {
+          swipeY.value = withTiming(0, {
+            easing: Easing.elastic(0.8),
+            duration: 400,
+          });
+        } else if (shouldDismiss) {
+          swipeY.value = withTiming(
+            SWIPE_DISMISS_OFFSET,
+            { easing: Easing.inOut(Easing.ease) },
+            (isDone) => {
+              if (isDone) runOnJS(dismiss)();
+            },
+          );
+        } else {
+          swipeY.value = withTiming(0, {
+            easing: Easing.elastic(0.8),
+          });
         }
+
+        runOnJS(onSwipeFinalize)();
       });
 
-    const composedGesture = Gesture.Race(panGesture, tapGesture);
+    const tap = Gesture.Tap().onEnd(() => {
+      'worklet';
+      if (onPress) {
+        runOnJS(onPress)();
+      }
+    });
+
+    const composed = Gesture.Race(pan, tap);
 
     const animatedStyle = useAnimatedStyle(() => {
-      const translateY = interpolate(
+      const entryTranslateY = interpolate(
         progress.value,
         [0, 1],
         [hiddenY, 0],
@@ -144,15 +149,17 @@ export const ToastItem = React.memo<ToastItemProps>(
         Extrapolation.CLAMP,
       );
 
+      const swipeTranslateY = swipeY.value * (isBottomPosition ? -1 : 1);
+
       return {
         opacity,
-        transform: [{ translateY: translateY + swipeY.value }],
+        transform: [{ translateY: entryTranslateY + swipeTranslateY }],
       };
     });
 
     return (
-      <GestureDetector gesture={composedGesture}>
-        <AnimatedView style={[styles.toastWrapper, animatedStyle]}>
+      <GestureDetector gesture={composed}>
+        <Animated.View style={[styles.toastWrapper, animatedStyle]}>
           <ToastContent
             title={title}
             description={description}
@@ -160,7 +167,7 @@ export const ToastItem = React.memo<ToastItemProps>(
             icon={icon}
             action={action}
           />
-        </AnimatedView>
+        </Animated.View>
       </GestureDetector>
     );
   },

@@ -70,8 +70,12 @@ export const DEFAULT_OFFSET = 40;
 // ── Animation ──
 
 export const ANIMATION_DURATION = 300;
-export const SWIPE_THRESHOLD = 100;
-export const SWIPE_VELOCITY_THRESHOLD = 500;
+export const SWIPE_THRESHOLD = 24;
+export const SWIPE_ELASTIC_RESISTANCE = 0.4;
+export const SWIPE_DISMISS_OFFSET = -300;
+export const ENTRY_SPRING_CONFIG = { damping: 20, stiffness: 170, mass: 1 };
+export const PAN_ACTIVE_OFFSET_Y: [number, number] = [-10, 10];
+export const PAN_FAIL_OFFSET_X: [number, number] = [-5, 5];
 
 // ── Position mapping ──
 

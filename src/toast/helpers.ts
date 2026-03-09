@@ -13,6 +13,7 @@ import {
   TOAST_DESCRIPTION_FONT_SIZE,
   TOAST_DESCRIPTION_LINE_HEIGHT,
   POSITION_STYLES,
+  SWIPE_ELASTIC_RESISTANCE,
 } from './constants';
 
 /** Returns variant-dependent container styles (background, shadow) */
@@ -83,6 +84,13 @@ export function getDescriptionStyles(
   };
 }
 
+/** Applies diminishing resistance as the user drags in the wrong direction */
+export function elasticResistance(distance: number): number {
+  'worklet';
+  const progressiveFactor = 1 / (1 + Math.abs(distance) * 0.02);
+  return distance * SWIPE_ELASTIC_RESISTANCE * progressiveFactor;
+}
+
 /** Returns positioning styles for the toast stack container */
 export function getPositionContainerStyle(
   position: ToastPosition,
@@ -92,7 +100,8 @@ export function getPositionContainerStyle(
 
   return {
     position: 'absolute',
-    width: '100%',
+    left: 0,
+    right: 0,
     paddingHorizontal: 16,
     [vertical]: offset,
     alignItems: 'center',

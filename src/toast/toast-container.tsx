@@ -1,9 +1,8 @@
 import React, { useMemo } from 'react';
 import { Platform, View } from 'react-native';
-import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { ToastItem } from './toast-item';
-import type { ToastState, ToastPosition } from './types';
+import type { ToastContainerProps } from './types';
 import { getPositionContainerStyle } from './helpers';
 import { styles } from './styles';
 
@@ -14,14 +13,6 @@ try {
   FullWindowOverlay = screens.FullWindowOverlay;
 } catch {
   // react-native-screens not available — fall back to regular View
-}
-
-interface ToastContainerProps {
-  toasts: ToastState[];
-  position: ToastPosition;
-  offset: number;
-  gap: number;
-  onRemove: (id: string) => void;
 }
 
 const PositionedStack = ({
@@ -58,7 +49,7 @@ const PositionedStack = ({
       pointerEvents="box-none"
     >
       {orderedToasts.map((t) => (
-        <View key={t.id} style={{ marginBottom: gap }} pointerEvents="box-none">
+        <View key={t.id} style={{ marginBottom: gap }}>
           <ToastItem
             {...t}
             onRemove={onRemove}
@@ -73,21 +64,12 @@ export const ToastContainer = (props: ToastContainerProps) => {
   if (Platform.OS === 'ios' && FullWindowOverlay) {
     return (
       <FullWindowOverlay>
-        <GestureHandlerRootView
-          style={styles.gestureRoot}
-          pointerEvents="box-none"
-        >
-          <View style={styles.overlay} pointerEvents="box-none">
-            <PositionedStack {...props} />
-          </View>
-        </GestureHandlerRootView>
+        <View style={[styles.overlay, styles.gestureRoot]} pointerEvents="box-none">
+          <PositionedStack {...props} />
+        </View>
       </FullWindowOverlay>
     );
   }
 
-  return (
-    <View style={styles.overlay} pointerEvents="box-none">
-      <PositionedStack {...props} />
-    </View>
-  );
+  return <PositionedStack {...props} />;
 };

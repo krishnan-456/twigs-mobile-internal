@@ -1,9 +1,8 @@
 import React, { useMemo } from 'react';
 import { View, Text as RNText, Dimensions } from 'react-native';
-import type { ReactElement } from 'react';
 import { useTheme } from '../context';
 import { CircleLoader } from '../loader';
-import type { ToastVariant } from './types';
+import type { ToastVariant, ToastContentProps } from './types';
 import { TOAST_ICON_SIZE, TOAST_MAX_WIDTH, DEFAULT_VARIANT, VARIANT_COLORS } from './constants';
 import {
   getVariantContainerStyles,
@@ -16,14 +15,6 @@ import { styles } from './styles';
 import { VARIANT_ICONS, InfoCircleFilledIcon } from './icons';
 
 const screenWidth = Dimensions.get('window').width;
-
-interface ToastContentProps {
-  title: string;
-  description?: string;
-  variant?: ToastVariant;
-  icon?: ReactElement | null;
-  action?: ReactElement | null;
-}
 
 /**
  * Visual content renderer for a single toast. Consumed by ToastItem.

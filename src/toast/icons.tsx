@@ -1,21 +1,12 @@
 import React from 'react';
 import { Svg, Path, Circle } from 'react-native-svg';
-
-interface IconProps {
-  size: number;
-  color: string;
-}
-
-interface InfoIconProps extends IconProps {
-  /** Color for the "i" mark — should match the toast background to create a cutout effect */
-  innerColor: string;
-}
+import type { ToastIconProps, ToastInfoIconProps } from './types';
 
 /**
  * Filled check-circle icon for success/default variants.
  * Uses evenodd fill rule so the checkmark is a cutout showing the background through it.
  */
-export const CheckCircleFilledIcon = ({ size, color }: IconProps) => (
+export const CheckCircleFilledIcon = ({ size, color }: ToastIconProps) => (
   <Svg width={size} height={size} viewBox="0 0 24 24" fill="none">
     <Path
       fillRule="evenodd"
@@ -30,7 +21,7 @@ export const CheckCircleFilledIcon = ({ size, color }: IconProps) => (
  * Filled alert-triangle icon for error variant.
  * Uses evenodd so the exclamation mark is a cutout.
  */
-export const AlertFilledIcon = ({ size, color }: IconProps) => (
+export const AlertFilledIcon = ({ size, color }: ToastIconProps) => (
   <Svg width={size} height={size} viewBox="0 0 24 24" fill="none">
     <Path
       fillRule="evenodd"
@@ -46,7 +37,7 @@ export const AlertFilledIcon = ({ size, color }: IconProps) => (
  * Uses the exact Figma paths: filled circle + serif-style "i" stroked in the
  * toast background color to create the visual cutout effect.
  */
-export const InfoCircleFilledIcon = ({ size, color, innerColor }: InfoIconProps) => (
+export const InfoCircleFilledIcon = ({ size, color, innerColor }: ToastInfoIconProps) => (
   <Svg width={size} height={size} viewBox="0 0 24 24" fill="none">
     <Path
       d="M12 21C16.9706 21 21 16.9706 21 12C21 7.02944 16.9706 3 12 3C7.02944 3 3 7.02944 3 12C3 16.9706 7.02944 21 12 21Z"
@@ -64,7 +55,7 @@ export const InfoCircleFilledIcon = ({ size, color, innerColor }: InfoIconProps)
 );
 
 /** Maps toast variant to its default icon component (excludes warning which needs innerColor) */
-export const VARIANT_ICONS: Record<string, React.FC<IconProps>> = {
+export const VARIANT_ICONS: Record<string, React.FC<ToastIconProps>> = {
   default: CheckCircleFilledIcon,
   success: CheckCircleFilledIcon,
   error: AlertFilledIcon,
