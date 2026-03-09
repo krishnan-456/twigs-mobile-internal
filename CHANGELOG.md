@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.4.3](https://github.com/krishnan-456/twigs-mobile-internal/compare/v0.4.2...v0.4.3) (2026-03-09)
+
+### Bug Fixes
+
+* font family ([3c39632](https://github.com/krishnan-456/twigs-mobile-internal/commit/3c39632259ec8bd8b6eb3e6d711c785f103b5787))
+
 ## [0.4.2](https://github.com/krishnan-456/twigs-mobile-internal/compare/v0.4.1...v0.4.2) (2026-03-09)
 
 ### Features
