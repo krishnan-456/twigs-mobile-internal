@@ -117,12 +117,8 @@ const meta = {
     position: {
       control: 'select',
       options: [
-        'top-left',
         'top-center',
-        'top-right',
-        'bottom-left',
         'bottom-center',
-        'bottom-right',
       ] as ToastPosition[],
       description: 'Display position',
     },
@@ -155,8 +151,8 @@ export const Docs: Story = {
       <RNText style={docsStyles.title}>Toast</RNText>
       <RNText style={docsStyles.description}>
         Non-blocking notification messages with stacking support. Use the
-        imperative toast() API or the useToast() hook. Supports 6 positions,
-        swipe-to-dismiss, and simultaneous toasts.
+        imperative toast() API or the useToast() hook. Supports top-center and
+        bottom-center positions, swipe-to-dismiss, and simultaneous toasts.
       </RNText>
       <View style={docsStyles.sectionObj}>
         <RNText style={docsStyles.sectionTitle}>Props (toast options)</RNText>
@@ -166,8 +162,7 @@ export const Docs: Story = {
         <RNText style={docsStyles.prop}>• title — primary text</RNText>
         <RNText style={docsStyles.prop}>• description — secondary text</RNText>
         <RNText style={docsStyles.prop}>
-          • position — 'top-left' | 'top-center' | 'top-right' | 'bottom-left'
-          | 'bottom-center' | 'bottom-right'
+          • position — 'top-center' | 'bottom-center'
         </RNText>
         <RNText style={docsStyles.prop}>
           • duration — auto-dismiss in ms (default: 4000)
@@ -278,12 +273,8 @@ export const StackedToasts: Story = {
 export const AllPositions: Story = {
   render: () => {
     const positions: ToastPosition[] = [
-      'top-left',
       'top-center',
-      'top-right',
-      'bottom-left',
       'bottom-center',
-      'bottom-right',
     ];
 
     return (

@@ -6,7 +6,7 @@ Displays short-lived, stackable notification messages with variant-based styling
 
 - **Web source**: `packages/react-components/src/toast/`
 - **Web docs**: https://twigs.surveysparrow.com/
-- **Status**: Feature parity — supports stacking, 6 positions, swipe-to-dismiss, and `useToast()` hook
+- **Status**: Feature parity — supports stacking, 2 positions (top-center, bottom-center), swipe-to-dismiss, and `useToast()` hook
 
 ## Props
 
@@ -40,9 +40,7 @@ Displays short-lived, stackable notification messages with variant-based styling
 ### ToastPosition
 
 ```typescript
-type ToastPosition =
-  | 'top-left' | 'top-center' | 'top-right'
-  | 'bottom-left' | 'bottom-center' | 'bottom-right';
+type ToastPosition = 'top-center' | 'bottom-center';
 ```
 
 ## Variants
@@ -144,12 +142,8 @@ toast.update(id, { title: 'Upload complete!', variant: 'success' });
 ### Position options
 
 ```tsx
-toast({ title: 'Top left', position: 'top-left' });
 toast({ title: 'Top center', position: 'top-center' });
-toast({ title: 'Top right', position: 'top-right' });
-toast({ title: 'Bottom left', position: 'bottom-left' });
 toast({ title: 'Bottom center', position: 'bottom-center' });
-toast({ title: 'Bottom right', position: 'bottom-right' });
 ```
 
 ### With action element
@@ -256,7 +250,7 @@ Toasts support horizontal swipe gestures to dismiss. Swipe left or right past th
 
 | Before | After |
 |--------|-------|
-| `position: 'top' \| 'bottom'` | `position: 'top-center' \| 'bottom-center'` (6 options) |
+| `position: 'top' \| 'bottom'` | `position: 'top-center' \| 'bottom-center'` |
 | `toast.hide()` | `toast.dismiss()` (or `toast.dismiss(id)`) |
 | `onHide` callback | `onDismiss` callback |
 | `topOffset` / `bottomOffset` | `offset` prop on ToastProvider |
@@ -265,7 +259,7 @@ Toasts support horizontal swipe gestures to dismiss. Swipe left or right past th
 ### New features (non-breaking)
 
 - Multiple simultaneous toasts (stacking)
-- 6 position options
+- 2 position options (top-center, bottom-center)
 - `useToast()` React hook
 - `toast.update(id, options)` to modify existing toasts
 - Swipe-to-dismiss with gesture handler

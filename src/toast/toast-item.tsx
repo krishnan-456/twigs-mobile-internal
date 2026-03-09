@@ -1,14 +1,12 @@
 import React, { useEffect, useCallback, useRef } from 'react';
-import { Dimensions } from 'react-native';
 import { Gesture, GestureDetector } from 'react-native-gesture-handler';
 import {
   useAnimatedStyle,
   useSharedValue,
-  withTiming,
   withSpring,
-  runOnJS,
   interpolate,
   Extrapolation,
+  runOnJS,
 } from 'react-native-reanimated';
 import { AnimatedView } from '../utils';
 import { ToastContent } from './toast-content';
@@ -17,12 +15,13 @@ import {
   ANIMATION_DURATION,
   SWIPE_THRESHOLD,
   SWIPE_VELOCITY_THRESHOLD,
+  TOAST_MIN_HEIGHT,
 } from './constants';
-import { getEntryTranslateY } from './helpers';
 import { styles } from './styles';
 
-const WINDOW_HEIGHT = Dimensions.get('window').height;
 const ELASTIC_RESISTANCE = 0.4;
+
+const SPRING_CONFIG = { damping: 20, stiffness: 170, mass: 1 };
 
 function elasticResistance(distance: number): number {
   'worklet';
@@ -46,14 +45,10 @@ export const ToastItem = React.memo<ToastItemProps>(
     onRemove,
   }) => {
     const isTopPosition = position.startsWith('top');
-    const entryY = getEntryTranslateY(position);
-    // Dismiss direction: top-positioned toasts swipe up, bottom-positioned swipe down
     const dismissDirection = isTopPosition ? -1 : 1;
-
+    const hiddenY = dismissDirection * (TOAST_MIN_HEIGHT * 2);
+    const progress = useSharedValue(0);
     const swipeY = useSharedValue(0);
-    const translateY = useSharedValue(entryY);
-    const opacity = useSharedValue(0);
-    const scale = useSharedValue(0.85);
     const isDragging = useRef(false);
     const timerRef = useRef<ReturnType<typeof setTimeout>>();
 
@@ -63,9 +58,7 @@ export const ToastItem = React.memo<ToastItemProps>(
     }, [id, onRemove, onDismissCallback]);
 
     useEffect(() => {
-      opacity.value = withTiming(1, { duration: ANIMATION_DURATION });
-      scale.value = withSpring(1, { damping: 15, stiffness: 150 });
-      translateY.value = withSpring(0, { damping: 15, stiffness: 150 });
+      progress.value = withSpring(1, SPRING_CONFIG);
       onShow?.();
     }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
@@ -95,7 +88,6 @@ export const ToastItem = React.memo<ToastItemProps>(
       .onUpdate((event) => {
         'worklet';
         const raw = event.translationY;
-        // Allow free movement in dismiss direction, apply resistance in opposite direction
         const isInDismissDirection = isTopPosition ? raw < 0 : raw > 0;
         swipeY.value = isInDismissDirection
           ? raw
@@ -111,19 +103,12 @@ export const ToastItem = React.memo<ToastItemProps>(
             Math.abs(vy) > SWIPE_VELOCITY_THRESHOLD);
 
         if (shouldDismiss) {
-          swipeY.value = withTiming(
-            dismissDirection * WINDOW_HEIGHT * 0.5,
-            { duration: 200 },
-            (finished) => {
-              if (finished) runOnJS(dismiss)();
-            },
-          );
-          opacity.value = withTiming(0, { duration: 200 });
-        } else {
-          swipeY.value = withSpring(0, {
-            damping: 15,
-            stiffness: 150,
+          progress.value = withSpring(0, SPRING_CONFIG, (finished) => {
+            if (finished) runOnJS(dismiss)();
           });
+          swipeY.value = withSpring(0, SPRING_CONFIG);
+        } else {
+          swipeY.value = withSpring(0, SPRING_CONFIG);
         }
       })
       .onFinalize(() => {
@@ -145,19 +130,23 @@ export const ToastItem = React.memo<ToastItemProps>(
     const composedGesture = Gesture.Race(panGesture, tapGesture);
 
     const animatedStyle = useAnimatedStyle(() => {
-      const swipeOpacity = interpolate(
-        Math.abs(swipeY.value),
-        [0, SWIPE_THRESHOLD],
-        [1, 0.5],
+      const translateY = interpolate(
+        progress.value,
+        [0, 1],
+        [hiddenY, 0],
+        Extrapolation.CLAMP,
+      );
+
+      const opacity = interpolate(
+        progress.value,
+        [0, 0.7, 1],
+        [0, 1, 1],
         Extrapolation.CLAMP,
       );
 
       return {
-        opacity: opacity.value * swipeOpacity,
-        transform: [
-          { translateY: translateY.value + swipeY.value },
-          { scale: scale.value },
-        ],
+        opacity,
+        transform: [{ translateY: translateY + swipeY.value }],
       };
     });
 

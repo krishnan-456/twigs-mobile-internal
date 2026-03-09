@@ -4,13 +4,7 @@ import type { ReactElement, ReactNode } from 'react';
 export type ToastVariant = 'default' | 'success' | 'error' | 'warning' | 'loading';
 
 /** Toast display position */
-export type ToastPosition =
-  | 'top-left'
-  | 'top-center'
-  | 'top-right'
-  | 'bottom-left'
-  | 'bottom-center'
-  | 'bottom-right';
+export type ToastPosition = 'top-center' | 'bottom-center';
 
 /** Options for the imperative toast() function */
 export interface ToastOptions {
