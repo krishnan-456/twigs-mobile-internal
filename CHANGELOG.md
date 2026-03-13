@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.4.5](https://github.com/krishnan-456/twigs-mobile-internal/compare/v0.4.4...v0.4.5) (2026-03-13)
+
+### Bug Fixes
+
+* uats comments ([22e2397](https://github.com/krishnan-456/twigs-mobile-internal/commit/22e2397fe17b0b4fd2b3aa520201b2a484cd1e50))
+
 ## [0.4.4](https://github.com/krishnan-456/twigs-mobile-internal/compare/v0.4.3...v0.4.4) (2026-03-13)
 
 ### Bug Fixes
