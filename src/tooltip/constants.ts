@@ -15,12 +15,8 @@ export const ARROW_SIZE = {
   height: 6,
 };
 
-/**
- * Fixed arrow offsets from the tooltip edge for start/end alignments.
- * Matches web twigs: top/bottom sides use $4 (8dp), left/right sides use $5 (10dp).
- */
-export const ARROW_OFFSET_HORIZONTAL = 8;
-export const ARROW_OFFSET_VERTICAL = 10;
+/** Arrow inset from tooltip edge for start/end alignments (Figma: 8dp). */
+export const ARROW_EDGE_OFFSET = 8;
 
 export const DEFAULT_SIDE: TooltipSide = 'top';
 export const DEFAULT_SIDE_OFFSET = 6;

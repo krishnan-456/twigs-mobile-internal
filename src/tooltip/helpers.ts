@@ -5,17 +5,38 @@ import type { TooltipSide, TooltipAlign } from './types';
 import {
   TOOLTIP_CONFIG,
   ARROW_SIZE,
-  ARROW_OFFSET_HORIZONTAL,
-  ARROW_OFFSET_VERTICAL,
+  ARROW_EDGE_OFFSET,
 } from './constants';
 
-/** Converts side + align props to a floating-ui Placement string. */
 export function toPlacement(
   side: TooltipSide,
   align: TooltipAlign
 ): Placement {
   if (align === 'center') return side;
   return `${side}-${align === 'start' ? 'start' : 'end'}`;
+}
+
+/**
+ * Calculates the cross-axis shift needed for the tooltip's arrow to point at the trigger's center,
+ * used for left/right sides with start/end alignment.
+ */
+export function getCrossAxisOffset(
+  side: TooltipSide,
+  align: TooltipAlign,
+  refSize: number
+): number {
+  if (align === 'center') return 0;
+
+  const isHorizontalSide = side === 'top' || side === 'bottom';
+  if (isHorizontalSide) return 0;
+
+  const arrowCenter = ARROW_EDGE_OFFSET + ARROW_SIZE.width / 2;
+  const refCenter = refSize / 2;
+
+  if (align === 'start') {
+    return -(arrowCenter - refCenter);
+  }
+  return arrowCenter - refCenter;
 }
 
 export function getContentStyles(theme: TwigsTheme): ViewStyle {
@@ -37,10 +58,6 @@ export function getTextStyles(theme: TwigsTheme): TextStyle {
   };
 }
 
-/**
- * Returns the SVG path for the tooltip arrow triangle.
- * Points toward the trigger element based on side.
- */
 export function getArrowPath(side: TooltipSide): string {
   const { width, height } = ARROW_SIZE;
 
@@ -56,10 +73,7 @@ export function getArrowPath(side: TooltipSide): string {
   }
 }
 
-/**
- * Returns { width, height } for the arrow SVG viewBox, accounting for
- * horizontal (top/bottom) vs vertical (left/right) sides.
- */
+/** Swaps width/height for left/right sides since the arrow rotates 90°. */
 export function getArrowDimensions(
   side: TooltipSide
 ): { width: number; height: number } {
@@ -70,12 +84,9 @@ export function getArrowDimensions(
 }
 
 /**
- * Computes the arrow position style.
- *
- * For `center` alignment the arrow is placed at the floating-ui computed
- * coordinate. For `start`/`end` alignments the arrow is pinned to a fixed
- * offset from the tooltip edge — matching the web twigs library which uses
- * `!important` overrides to force arrow positions at `$4` / `$5` tokens.
+ * For `center` alignment, uses floating-ui's computed coordinate.
+ * For `start`/`end`, pins the arrow at `ARROW_EDGE_OFFSET` from the
+ * corresponding tooltip edge (Figma spec: 8dp).
  */
 export function getArrowPositionStyle(
   side: TooltipSide,
@@ -93,16 +104,16 @@ export function getArrowPositionStyle(
     }
   } else if (align === 'start') {
     if (isHorizontalSide) {
-      result.left = ARROW_OFFSET_HORIZONTAL;
+      result.left = ARROW_EDGE_OFFSET;
     } else {
-      result.top = ARROW_OFFSET_VERTICAL;
+      result.top = ARROW_EDGE_OFFSET;
     }
   } else {
     if (isHorizontalSide) {
-      result.right = ARROW_OFFSET_HORIZONTAL;
+      result.right = ARROW_EDGE_OFFSET;
       result.left = undefined;
     } else {
-      result.bottom = ARROW_OFFSET_VERTICAL;
+      result.bottom = ARROW_EDGE_OFFSET;
       result.top = undefined;
     }
   }
@@ -118,12 +129,7 @@ export function getArrowPositionStyle(
       result.right = -arrowDims.width;
       break;
     case 'right':
-      if (align === 'center') {
-        const x = arrowMiddleware?.x;
-        result.left = (x ?? 0) > 0 ? x! : -arrowDims.width;
-      } else {
-        result.left = -arrowDims.width;
-      }
+      result.left = -arrowDims.width;
       break;
   }
 

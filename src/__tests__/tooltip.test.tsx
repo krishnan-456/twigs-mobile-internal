@@ -5,6 +5,15 @@ import { Tooltip } from '../tooltip';
 import { Button } from '../button';
 import { TwigsProvider } from '../context';
 import { wrap } from './test-utils';
+import {
+  toPlacement,
+  getCrossAxisOffset,
+  getArrowPath,
+  getArrowDimensions,
+  getArrowPositionStyle,
+} from '../tooltip/helpers';
+import { ARROW_EDGE_OFFSET, ARROW_SIZE } from '../tooltip/constants';
+import type { TooltipSide } from '../tooltip/types';
 
 const renderTooltip = (props?: Partial<React.ComponentProps<typeof Tooltip>>) =>
   wrap(
@@ -321,6 +330,181 @@ describe('Tooltip', () => {
       );
       expect(queryByText('First')).toBeNull();
       expect(getByText('Second')).toBeTruthy();
+    });
+  });
+});
+
+// ── Helper unit tests ──
+
+describe('tooltip helpers', () => {
+  describe('toPlacement', () => {
+    it('returns bare side for center alignment', () => {
+      const sides: TooltipSide[] = ['top', 'right', 'bottom', 'left'];
+      sides.forEach((side) => {
+        expect(toPlacement(side, 'center')).toBe(side);
+      });
+    });
+
+    it('appends -start for start alignment', () => {
+      expect(toPlacement('top', 'start')).toBe('top-start');
+      expect(toPlacement('right', 'start')).toBe('right-start');
+      expect(toPlacement('bottom', 'start')).toBe('bottom-start');
+      expect(toPlacement('left', 'start')).toBe('left-start');
+    });
+
+    it('appends -end for end alignment', () => {
+      expect(toPlacement('top', 'end')).toBe('top-end');
+      expect(toPlacement('right', 'end')).toBe('right-end');
+      expect(toPlacement('bottom', 'end')).toBe('bottom-end');
+      expect(toPlacement('left', 'end')).toBe('left-end');
+    });
+  });
+
+  describe('getCrossAxisOffset', () => {
+    it('returns 0 for center alignment', () => {
+      expect(getCrossAxisOffset('left', 'center', 40)).toBe(0);
+      expect(getCrossAxisOffset('right', 'center', 40)).toBe(0);
+      expect(getCrossAxisOffset('top', 'center', 120)).toBe(0);
+    });
+
+    it('returns 0 for top/bottom sides regardless of alignment', () => {
+      expect(getCrossAxisOffset('top', 'start', 120)).toBe(0);
+      expect(getCrossAxisOffset('top', 'end', 120)).toBe(0);
+      expect(getCrossAxisOffset('bottom', 'start', 80)).toBe(0);
+      expect(getCrossAxisOffset('bottom', 'end', 80)).toBe(0);
+    });
+
+    it('computes negative offset for left/right + start with trigger taller than arrow offset', () => {
+      const arrowCenter = ARROW_EDGE_OFFSET + ARROW_SIZE.width / 2;
+      const refHeight = 40;
+      const expected = -(arrowCenter - refHeight / 2);
+      expect(getCrossAxisOffset('right', 'start', refHeight)).toBe(expected);
+      expect(getCrossAxisOffset('left', 'start', refHeight)).toBe(expected);
+    });
+
+    it('computes positive offset for left/right + end', () => {
+      const arrowCenter = ARROW_EDGE_OFFSET + ARROW_SIZE.width / 2;
+      const refHeight = 40;
+      const expected = arrowCenter - refHeight / 2;
+      expect(getCrossAxisOffset('right', 'end', refHeight)).toBe(expected);
+      expect(getCrossAxisOffset('left', 'end', refHeight)).toBe(expected);
+    });
+
+    it('returns 0 when trigger center equals arrow center', () => {
+      const arrowCenter = ARROW_EDGE_OFFSET + ARROW_SIZE.width / 2;
+      const refHeight = arrowCenter * 2;
+      expect(getCrossAxisOffset('right', 'start', refHeight)).toBeCloseTo(0);
+    });
+
+    it('start and end offsets are symmetric (equal magnitude, opposite sign)', () => {
+      const ref = 50;
+      const startOffset = getCrossAxisOffset('right', 'start', ref);
+      const endOffset = getCrossAxisOffset('right', 'end', ref);
+      expect(startOffset).toBe(-endOffset);
+    });
+  });
+
+  describe('getArrowPath', () => {
+    it('returns a valid SVG path for each side', () => {
+      const sides: TooltipSide[] = ['top', 'right', 'bottom', 'left'];
+      sides.forEach((side) => {
+        const path = getArrowPath(side);
+        expect(path).toMatch(/^M[\d.,\s]+L[\d.,\s]+L[\d.,\s]+Z$/);
+      });
+    });
+  });
+
+  describe('getArrowDimensions', () => {
+    it('returns normal dimensions for top/bottom', () => {
+      expect(getArrowDimensions('top')).toEqual({ width: 10, height: 6 });
+      expect(getArrowDimensions('bottom')).toEqual({ width: 10, height: 6 });
+    });
+
+    it('swaps dimensions for left/right', () => {
+      expect(getArrowDimensions('left')).toEqual({ width: 6, height: 10 });
+      expect(getArrowDimensions('right')).toEqual({ width: 6, height: 10 });
+    });
+  });
+
+  describe('getArrowPositionStyle', () => {
+    const hDims = { width: 10, height: 6 };
+    const vDims = { width: 6, height: 10 };
+
+    describe('center alignment', () => {
+      it('uses middleware x for top/bottom', () => {
+        const style = getArrowPositionStyle('top', 'center', hDims, { x: 25 });
+        expect(style).toEqual({ left: 25, bottom: -6 });
+      });
+
+      it('uses middleware y for left/right', () => {
+        const style = getArrowPositionStyle('left', 'center', vDims, { y: 15 });
+        expect(style).toEqual({ top: 15, right: -6 });
+      });
+
+      it('handles undefined middleware gracefully', () => {
+        const style = getArrowPositionStyle('top', 'center', hDims, undefined);
+        expect(style).toEqual({ bottom: -6 });
+      });
+    });
+
+    describe('start alignment', () => {
+      it('pins arrow left for top side', () => {
+        const style = getArrowPositionStyle('top', 'start', hDims, undefined);
+        expect(style).toEqual({ left: ARROW_EDGE_OFFSET, bottom: -6 });
+      });
+
+      it('pins arrow left for bottom side', () => {
+        const style = getArrowPositionStyle('bottom', 'start', hDims, undefined);
+        expect(style).toEqual({ left: ARROW_EDGE_OFFSET, top: -6 });
+      });
+
+      it('pins arrow top for left side', () => {
+        const style = getArrowPositionStyle('left', 'start', vDims, undefined);
+        expect(style).toEqual({ top: ARROW_EDGE_OFFSET, right: -6 });
+      });
+
+      it('pins arrow top for right side', () => {
+        const style = getArrowPositionStyle('right', 'start', vDims, undefined);
+        expect(style).toEqual({ top: ARROW_EDGE_OFFSET, left: -6 });
+      });
+    });
+
+    describe('end alignment', () => {
+      it('pins arrow right for top side', () => {
+        const style = getArrowPositionStyle('top', 'end', hDims, undefined);
+        expect(style).toEqual({
+          right: ARROW_EDGE_OFFSET,
+          left: undefined,
+          bottom: -6,
+        });
+      });
+
+      it('pins arrow right for bottom side', () => {
+        const style = getArrowPositionStyle('bottom', 'end', hDims, undefined);
+        expect(style).toEqual({
+          right: ARROW_EDGE_OFFSET,
+          left: undefined,
+          top: -6,
+        });
+      });
+
+      it('pins arrow bottom for left side', () => {
+        const style = getArrowPositionStyle('left', 'end', vDims, undefined);
+        expect(style).toEqual({
+          bottom: ARROW_EDGE_OFFSET,
+          top: undefined,
+          right: -6,
+        });
+      });
+
+      it('pins arrow bottom for right side', () => {
+        const style = getArrowPositionStyle('right', 'end', vDims, undefined);
+        expect(style).toEqual({
+          bottom: ARROW_EDGE_OFFSET,
+          top: undefined,
+          left: -6,
+        });
+      });
     });
   });
 });

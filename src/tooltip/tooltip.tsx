@@ -10,6 +10,7 @@ import type { TooltipProps } from './types';
 import { DEFAULT_SIDE, DEFAULT_SIDE_OFFSET, ANIMATION_DURATION } from './constants';
 import {
   toPlacement,
+  getCrossAxisOffset,
   getContentStyles,
   getTextStyles,
   getArrowPath,
@@ -55,15 +56,26 @@ export const Tooltip = React.forwardRef<View, TooltipProps>(
 
     const arrowDims = useMemo(() => getArrowDimensions(side), [side]);
 
+    const middleware = useMemo(() => [
+      offset(({ rects }) => ({
+        mainAxis: sideOffset + (hasArrow ? arrowDims.height : 0),
+        crossAxis: getCrossAxisOffset(
+          side,
+          align,
+          side === 'left' || side === 'right'
+            ? rects.reference.height
+            : rects.reference.width
+        ),
+      })),
+      flip(),
+      shift({ padding: 8 }),
+      ...(hasArrow ? [arrow({ element: arrowRef })] : []),
+    ], [sideOffset, hasArrow, arrowDims.height, side, align]);
+
     const { refs, floatingStyles, middlewareData } = useFloating({
       sameScrollView: false,
       placement,
-      middleware: [
-        offset(sideOffset + (hasArrow ? arrowDims.height : 0)),
-        flip(),
-        shift({ padding: 8 }),
-        ...(hasArrow ? [arrow({ element: arrowRef })] : []),
-      ],
+      middleware,
     });
 
     const opacity = useSharedValue(0);
