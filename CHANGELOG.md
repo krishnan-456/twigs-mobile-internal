@@ -1,5 +1,17 @@
 # Changelog
 
+## [0.4.4](https://github.com/krishnan-456/twigs-mobile-internal/compare/v0.4.3...v0.4.4) (2026-03-13)
+
+### Bug Fixes
+
+* uats comments ([af09f09](https://github.com/krishnan-456/twigs-mobile-internal/commit/af09f09342a39675349b7461be416f3ab91bd343))
+
+### Refactoring
+
+* enhance TextInput styles for better layout and responsiveness ([4933163](https://github.com/krishnan-456/twigs-mobile-internal/commit/4933163c2b1e129ca1bf00f30290d6e39629818b))
+* optimize component styles using useMemo for performance improvements in Checkbox, Flex, CircleLoader, LineLoader, Radio, Switch, Text, and TextInput ([0b08e27](https://github.com/krishnan-456/twigs-mobile-internal/commit/0b08e2710c61fa23183e443e7505f26201912fda))
+* replace inline wrap function with shared test-utils for consistent component rendering in tests ([35129ac](https://github.com/krishnan-456/twigs-mobile-internal/commit/35129ac28120096d742710f1b9b5ff2eb24490fb))
+
 ## [0.4.3](https://github.com/krishnan-456/twigs-mobile-internal/compare/v0.4.2...v0.4.3) (2026-03-09)
 
 ### Bug Fixes
