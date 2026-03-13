@@ -1,10 +1,8 @@
 import React from 'react';
-import { render } from '@testing-library/react-native';
 import { Text, View } from 'react-native';
 import { Badge } from '../badge';
 import { TwigsProvider } from '../context';
-
-const wrap = (ui: React.ReactElement) => render(<TwigsProvider>{ui}</TwigsProvider>);
+import { wrap } from './test-utils';
 
 describe('Badge', () => {
   // ── Render ──

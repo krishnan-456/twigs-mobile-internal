@@ -22,7 +22,7 @@ const meta = {
   argTypes: {
     size: {
       control: 'select',
-      options: ['xs', 'sm', 'md', 'lg', 'xl', '2xl', '3xl', '4xl', '5xl'],
+      options: ['xxs', 'xs', 'sm', 'md', 'lg', 'xl', '2xl', '3xl'],
       description: 'Size preset',
     },
     name: {
@@ -39,7 +39,7 @@ const meta = {
     },
     rounded: {
       control: 'select',
-      options: ['xs', 'sm', 'md', 'lg', 'xl', '2xl', '3xl', 'full'],
+      options: ['xxs', 'xs', 'sm', 'md', 'lg', 'xl', '2xl', '3xl', 'full'],
       description: 'Border radius variant',
     },
     backgroundColor: {
@@ -53,7 +53,7 @@ const meta = {
   },
   args: {
     name: 'John Doe',
-    size: 'md',
+    size: 'sm',
     rounded: 'full',
     imageSrc: SAMPLE_AVATAR_URL,
     isAnonymous: false,
@@ -75,7 +75,7 @@ export const Docs: Story = {
       <View style={docsStyles.section}>
         <RNText style={docsStyles.sectionTitle}>Props</RNText>
         <RNText style={docsStyles.prop}>
-          • size — 'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl' ... '5xl' (default: 'md')
+          • size — 'xxs' | 'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl' | '3xl'
         </RNText>
         <RNText style={docsStyles.prop}>• name — name for initials fallback</RNText>
         <RNText style={docsStyles.prop}>• imageSrc — image URL</RNText>
@@ -99,17 +99,18 @@ export const AllVariants: Story = {
   render: () => (
     <View style={{ gap: 16 }}>
       <View style={{ flexDirection: 'row', gap: 12, alignItems: 'center' }}>
-        <Avatar name="A" size="xs" />
-        <Avatar name="B" size="sm" />
-        <Avatar name="C" size="md" />
-        <Avatar name="D" size="lg" />
-        <Avatar name="E" size="xl" />
+        <Avatar name="A" size="xxs" />
+        <Avatar name="B" size="xs" />
+        <Avatar name="C" size="sm" />
+        <Avatar name="D" size="md" />
+        <Avatar name="E" size="lg" />
+        <Avatar name="F" size="xl" />
       </View>
       <View style={{ flexDirection: 'row', gap: 12, alignItems: 'center' }}>
-        <Avatar name="Image" size="lg" imageSrc={SAMPLE_AVATAR_URL} />
-        <Avatar name="Initials" size="lg" />
-        <Avatar name="Anonymous" size="lg" isAnonymous />
-        <Avatar name="Squircle" size="lg" rounded="lg" imageSrc={SAMPLE_AVATAR_URL} />
+        <Avatar name="Image" size="md" imageSrc={SAMPLE_AVATAR_URL} />
+        <Avatar name="Initials" size="md" />
+        <Avatar name="Anonymous" size="md" isAnonymous />
+        <Avatar name="Squircle" size="md" rounded="md" imageSrc={SAMPLE_AVATAR_URL} />
       </View>
     </View>
   ),

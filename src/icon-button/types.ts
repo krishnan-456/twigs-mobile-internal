@@ -1,23 +1,32 @@
 import type { ReactElement } from 'react';
 import type { PressableProps } from 'react-native';
 import type { CommonStyleProps, BaseAccessibilityProps } from '../utils';
-import type { ButtonSize, ButtonColor, ButtonVariant } from '../button';
 
-/** IconButton border radius variants (aligned with Avatar rounded tokens) */
-export type IconButtonRounded = 'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl' | '3xl' | 'full';
+export type IconButtonSize = 'sm' | 'md' | 'lg' | 'xl' | '2xl';
 
-/** Re-export Button types used as IconButton aliases */
-export type IconButtonSize = ButtonSize;
-export type IconButtonColor = ButtonColor;
-export type IconButtonVariant = ButtonVariant;
+export type IconButtonColor =
+  | 'default'
+  | 'primary'
+  | 'secondary'
+  | 'light'
+  | 'error';
 
-/**
- * Props for the IconButton component.
- * A focused icon-only button that wraps Button internally.
- * Supports size, color, variant, rounded, loading state, and full accessibility.
- */
+export type IconButtonVariant = 'solid' | 'ghost' | 'outline';
+
+export type IconButtonRounded =
+  | 'xs'
+  | 'sm'
+  | 'md'
+  | 'lg'
+  | 'xl'
+  | '2xl'
+  | '3xl'
+  | 'full';
+
 export interface IconButtonProps
-  extends Omit<PressableProps, 'style' | 'children'>, CommonStyleProps, BaseAccessibilityProps {
+  extends Omit<PressableProps, 'style' | 'children'>,
+    CommonStyleProps,
+    BaseAccessibilityProps {
   /** Icon element rendered inside the button. Required. */
   icon: ReactElement;
   /** Size preset. @default 'md' */

@@ -1,7 +1,7 @@
 import type { ReactElement, ReactNode } from 'react';
 
 /** Toast variant determines the visual appearance and default icon */
-export type ToastVariant = 'default' | 'success' | 'error' | 'warning' | 'loading';
+export type ToastVariant = 'default' | 'secondary' | 'success' | 'error' | 'warning' | 'loading';
 
 /** Toast display position */
 export type ToastPosition = 'top-center' | 'bottom-center';
@@ -106,6 +106,9 @@ export interface ToastInfoIconProps extends ToastIconProps {
 /** Return type of the useToast hook */
 export interface UseToastReturn {
   show: (options: ToastOptions) => { id: string; dismiss: () => void };
+  secondary: (
+    arg: string | Omit<ToastOptions, 'variant'>,
+  ) => { id: string; dismiss: () => void };
   success: (
     arg: string | Omit<ToastOptions, 'variant'>,
   ) => { id: string; dismiss: () => void };

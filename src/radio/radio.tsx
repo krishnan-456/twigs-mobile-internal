@@ -1,11 +1,12 @@
-import React from 'react';
-import { Pressable, StyleSheet, View, ViewStyle } from 'react-native';
+import React, { useMemo } from 'react';
+import { Pressable, StyleSheet, View } from 'react-native';
 import { Flex } from '../flex';
 import { useTheme } from '../context';
 import type { RadioProps } from './types';
 import { getRadioSizeConfig } from './constants';
 import { createRadioStyles } from './styles';
 
+/** Radio button with outer ring and inner dot, supporting an optional label. */
 export const Radio = React.forwardRef<View, RadioProps>(
   (
     {
@@ -34,12 +35,24 @@ export const Radio = React.forwardRef<View, RadioProps>(
 
     const { outerSize, innerSize } = getRadioSizeConfig(size);
 
-    const outerCircleDynamicStyles: ViewStyle = {
-      width: outerSize,
-      height: outerSize,
-      borderRadius: outerSize / 2,
-      borderColor: selected ? theme.colors.secondary500 : theme.colors.neutral700,
-    };
+    const outerCircleDynamicStyles = useMemo(
+      () => ({
+        width: outerSize,
+        height: outerSize,
+        borderRadius: outerSize / 2,
+        borderColor: selected ? theme.colors.secondary600 : theme.colors.neutral400,
+      }),
+      [outerSize, selected, theme]
+    );
+
+    const innerCircleSizeStyles = useMemo(
+      () => ({
+        width: innerSize,
+        height: innerSize,
+        borderRadius: innerSize / 2,
+      }),
+      [innerSize]
+    );
 
     return (
       <Pressable
@@ -66,11 +79,7 @@ export const Radio = React.forwardRef<View, RadioProps>(
             <View
               style={[
                 styles.innerCircle,
-                {
-                  width: innerSize,
-                  height: innerSize,
-                  borderRadius: innerSize / 2,
-                },
+                innerCircleSizeStyles,
               ]}
             />
           )}

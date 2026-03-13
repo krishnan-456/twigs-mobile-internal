@@ -1,10 +1,8 @@
 import React from 'react';
-import { render } from '@testing-library/react-native';
 import { LineLoader, CircleLoader } from '../loader';
 import { TwigsProvider } from '../context';
 import { LINE_LOADER_DIMENSIONS, CIRCLE_LOADER_DIAMETERS } from '../loader/constants';
-
-const wrap = (ui: React.ReactElement) => render(<TwigsProvider>{ui}</TwigsProvider>);
+import { wrap } from './test-utils';
 
 // ════════════════════════════════════════════════════════════════
 // LineLoader

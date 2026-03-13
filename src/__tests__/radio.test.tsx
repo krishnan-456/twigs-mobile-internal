@@ -1,11 +1,10 @@
 import React from 'react';
-import { render, fireEvent } from '@testing-library/react-native';
+import { fireEvent } from '@testing-library/react-native';
 import { StyleSheet, Text } from 'react-native';
 import { Radio } from '../radio';
 import { TwigsProvider } from '../context';
 import { defaultTheme } from '../theme';
-
-const wrap = (ui: React.ReactElement) => render(<TwigsProvider>{ui}</TwigsProvider>);
+import { wrap } from './test-utils';
 
 const getOuterCircleStyle = (tree: any) => {
   const outerCircle = tree?.children?.[0];
@@ -53,7 +52,7 @@ describe('Radio', () => {
     expect(getByRole('radio')).toBeTruthy();
   });
 
-  it('uses figma-aligned size configs for sm and md', () => {
+  it('applies correct size configs for sm and md', () => {
     const smTree = wrap(<Radio size="sm" />).toJSON() as any;
     const mdTree = wrap(<Radio size="md" />).toJSON() as any;
 
@@ -194,9 +193,9 @@ describe('Radio', () => {
     const checkedOuterStyle = getOuterCircleStyle(checkedTree);
     const checkedInnerStyle = getInnerCircleStyle(checkedTree);
 
-    expect(uncheckedOuterStyle.borderColor).toBe(defaultTheme.colors.neutral700);
-    expect(checkedOuterStyle.borderColor).toBe(defaultTheme.colors.secondary500);
-    expect(checkedInnerStyle.backgroundColor).toBe(defaultTheme.colors.secondary500);
+    expect(uncheckedOuterStyle.borderColor).toBe(defaultTheme.colors.neutral400);
+    expect(checkedOuterStyle.borderColor).toBe(defaultTheme.colors.secondary600);
+    expect(checkedInnerStyle.backgroundColor).toBe(defaultTheme.colors.secondary600);
   });
 
   it('uses size-specific inner dot dimensions for selected state', () => {

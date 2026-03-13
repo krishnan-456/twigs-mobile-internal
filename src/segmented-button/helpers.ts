@@ -10,6 +10,8 @@ import {
   SEGMENT_LINE_HEIGHT,
   SEGMENT_LETTER_SPACING,
   SELECTED_BORDER_WIDTH,
+  SELECTED_SHADOW,
+  SELECTED_ELEVATION,
 } from './constants';
 
 export function getContainerStyles(
@@ -20,7 +22,7 @@ export function getContainerStyles(
   return {
     height: CONTAINER_HEIGHT,
     borderRadius: ROUNDED_RADII[rounded],
-    backgroundColor: colorOpacity(theme.colors.neutral600, CONTAINER_BG_OPACITY),
+    backgroundColor: colorOpacity(theme.colors.secondary500, CONTAINER_BG_OPACITY),
     ...(fullWidth ? { alignSelf: 'stretch' as const } : {}),
   };
 }
@@ -29,8 +31,11 @@ export function getIndicatorStyles(theme: TwigsTheme, rounded: SegmentedButtonRo
   return {
     backgroundColor: theme.colors.white900,
     borderWidth: SELECTED_BORDER_WIDTH,
-    borderColor: theme.colors.neutral200,
+    borderColor: theme.colors.secondary100,
     borderRadius: ROUNDED_RADII[rounded],
+    shadowColor: theme.colors.black900,
+    ...SELECTED_SHADOW,
+    elevation: SELECTED_ELEVATION,
   };
 }
 
@@ -40,7 +45,17 @@ export function getSegmentTextStyles(theme: TwigsTheme, selected: boolean): Text
     lineHeight: SEGMENT_LINE_HEIGHT,
     letterSpacing: SEGMENT_LETTER_SPACING,
     textAlign: 'center',
-    color: selected ? theme.colors.neutral800 : theme.colors.neutral600,
+    color: selected ? theme.colors.secondary700 : theme.colors.secondary600,
     fontFamily: selected ? theme.fonts.bold : theme.fonts.medium,
+  };
+}
+
+export function getSegmentPressedStyles(
+  theme: TwigsTheme,
+  rounded: SegmentedButtonRounded
+): ViewStyle {
+  return {
+    backgroundColor: theme.colors.white900,
+    borderRadius: ROUNDED_RADII[rounded],
   };
 }

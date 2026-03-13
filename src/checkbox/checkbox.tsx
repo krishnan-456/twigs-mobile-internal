@@ -1,5 +1,5 @@
-import React from 'react';
-import { Pressable, StyleSheet, View, ViewStyle } from 'react-native';
+import React, { useMemo } from 'react';
+import { Pressable, StyleSheet, View } from 'react-native';
 import { Box } from '../box';
 import { Flex } from '../flex';
 import { useTheme } from '../context';
@@ -8,6 +8,7 @@ import { getCheckboxSizeConfig } from './constants';
 import { createCheckboxStyles } from './styles';
 import { TickIcon, HorizontalLineIcon } from './icons';
 
+/** Checkbox with checked, unchecked, and indeterminate states, supporting an optional label. */
 export const Checkbox = React.forwardRef<View, CheckboxProps>(
   (
     {
@@ -44,12 +45,15 @@ export const Checkbox = React.forwardRef<View, CheckboxProps>(
     const isChecked = checked !== false;
     const sizeConfig = getCheckboxSizeConfig(size);
 
-    const checkboxDynamicStyles: ViewStyle = {
-      width: sizeConfig.width,
-      height: sizeConfig.height,
-      borderColor: isChecked ? 'transparent' : theme.colors.neutral400,
-      backgroundColor: isChecked ? theme.colors.secondary600 : theme.colors.white900,
-    };
+    const checkboxDynamicStyles = useMemo(
+      () => ({
+        width: sizeConfig.width,
+        height: sizeConfig.height,
+        borderColor: isChecked ? 'transparent' : theme.colors.neutral400,
+        backgroundColor: isChecked ? theme.colors.secondary600 : theme.colors.white900,
+      }),
+      [sizeConfig.width, sizeConfig.height, isChecked, theme]
+    );
 
     return (
       <Pressable

@@ -1,6 +1,3 @@
-// ── Named sub-types for each token category ──
-// Consumers can import these to type individual overrides.
-
 export interface ThemeColors {
   primary: string;
   secondary: string;
@@ -204,8 +201,7 @@ export interface ThemeTransitions {
   [key: string]: number;
 }
 
-// ── Composite theme interface ──
-
+/** Complete theme object consumed by all Twigs components via `useTheme()`. */
 export interface TwigsTheme {
   colors: ThemeColors;
   space: ThemeSpace;
@@ -223,9 +219,7 @@ export interface TwigsTheme {
   transitions: ThemeTransitions;
 }
 
-// ── Default theme values ──
-// All dimension tokens are React Native dp numbers (1rem web = 16dp).
-
+/** Default theme values. All dimension tokens are React Native dp numbers. */
 export const defaultTheme: TwigsTheme = {
   colors: {
     primary: '#2E666D',
@@ -432,6 +426,7 @@ export const defaultTheme: TwigsTheme = {
     '4xl': 64,
   },
 
+  // Matches web twigs (empty by default, consumer-extensible)
   letterSpacings: {},
 
   // Component sizes in dp (web px = dp)
@@ -481,6 +476,7 @@ export const defaultTheme: TwigsTheme = {
     xl: 5,
   },
 
+  // Matches web twigs (empty by default, consumer-extensible)
   borderStyles: {},
 
   // Border radii in dp. round/pill use 9999 (RN equivalent of 50%/9999px)
@@ -502,6 +498,7 @@ export const defaultTheme: TwigsTheme = {
     sm: '0px 5px 15px rgba(0, 0, 0, 0.04)',
   },
 
+  // Matches web twigs (empty by default, consumer-extensible)
   zIndices: {},
 
   // Transition durations in milliseconds

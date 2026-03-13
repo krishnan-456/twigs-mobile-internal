@@ -1,6 +1,7 @@
 import { StyleSheet, ViewStyle, StyleProp } from 'react-native';
 import type { AnimateStyle } from 'react-native-reanimated';
 import type { TwigsTheme } from '../theme';
+import { SHEET_BORDER_RADIUS, SHEET_BORDER_WIDTH, SHEET_BOTTOM_PADDING } from './constants';
 
 /**
  * Gorhom BottomSheet expects an animated-compatible style type.
@@ -23,12 +24,12 @@ export const getDefaultSheetStyle = (
 ): AnimatedViewStyle =>
   StyleSheet.flatten([
     {
-      borderTopLeftRadius: 16,
-      borderTopRightRadius: 16,
+      borderTopLeftRadius: SHEET_BORDER_RADIUS,
+      borderTopRightRadius: SHEET_BORDER_RADIUS,
       backgroundColor: theme.colors.white900,
-      borderWidth: 1,
+      borderWidth: SHEET_BORDER_WIDTH,
       borderColor: theme.colors.neutral100,
-      paddingBottom: safeAreaBottomInset + 8,
+      paddingBottom: safeAreaBottomInset + SHEET_BOTTOM_PADDING,
       overflow: 'hidden' as const,
     },
     overrides,

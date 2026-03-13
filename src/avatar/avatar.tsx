@@ -13,8 +13,7 @@ import {
 import { getAvatarBorderRadius, getFallbackInitials } from './helpers';
 import { avatarStyles } from './styles';
 
-/** Avatar displaying an image or fallback initials, aligned with the web twigs library. */
-
+/** Displays a user avatar with image, initials fallback, or anonymous placeholder. */
 export const Avatar = React.forwardRef<View, AvatarProps>(
   (
     {

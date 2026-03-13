@@ -10,7 +10,7 @@ export const createRadioStyles = (theme: TwigsTheme) =>
       justifyContent: 'center',
     },
     innerCircle: {
-      backgroundColor: theme.colors.secondary500,
+      backgroundColor: theme.colors.secondary600,
     },
     labelContainer: {
       marginLeft: theme.space['4'],

@@ -9,17 +9,14 @@ import {
   DEFAULT_AVATAR_GROUP_ROUNDED,
   DEFAULT_AVATAR_GROUP_SIZE,
 } from './avatar-group.constants';
-import { getAvatarGroupItemStyles, getAvatarGroupOverlayTextStyles } from './avatar-group.helpers';
+import {
+  getAvatarChildren,
+  getAvatarGroupItemStyles,
+  getAvatarGroupOverlayTextStyles,
+} from './avatar-group.helpers';
 import { avatarGroupStyles } from './avatar-group.styles';
 import type { AvatarGroupProps } from './avatar-group.types';
 import type { AvatarProps } from './types';
-
-const isAvatarElement = (child: React.ReactNode): child is React.ReactElement<AvatarProps> =>
-  React.isValidElement<AvatarProps>(child);
-
-const getAvatarChildren = (
-  children: AvatarGroupProps['children']
-): React.ReactElement<AvatarProps>[] => React.Children.toArray(children).filter(isAvatarElement);
 
 /** Overlapping avatar stack with optional "+N" overflow indicator. */
 export const AvatarGroup = React.forwardRef<View, AvatarGroupProps>(
@@ -56,14 +53,14 @@ export const AvatarGroup = React.forwardRef<View, AvatarGroupProps>(
 
     const overflowOverlayStyle: ViewStyle = useMemo(
       () => ({
-        backgroundColor: colorOpacity(theme.colors.black900, 0.5),
+        backgroundColor: colorOpacity(theme.colors.black900, 0.4),
       }),
       [theme.colors.black900]
     );
 
     const overflowLabelStyle = useMemo(
-      () => getAvatarGroupOverlayTextStyles(theme, size),
-      [theme, size]
+      () => getAvatarGroupOverlayTextStyles(size),
+      [size]
     );
 
     return (
@@ -113,7 +110,6 @@ export const AvatarGroup = React.forwardRef<View, AvatarGroupProps>(
                 <Text
                   color={theme.colors.white900}
                   fontFamily={theme.fonts.bold}
-                  fontWeight="700"
                   fontSize={overflowLabelStyle.fontSize}
                   lineHeight={overflowLabelStyle.lineHeight}
                   letterSpacing={overflowLabelStyle.letterSpacing}

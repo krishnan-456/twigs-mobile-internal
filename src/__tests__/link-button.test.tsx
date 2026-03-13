@@ -1,9 +1,8 @@
 import React from 'react';
-import { render, fireEvent } from '@testing-library/react-native';
+import { fireEvent } from '@testing-library/react-native';
 import { LinkButton } from '../link-button';
 import { TwigsProvider } from '../context';
-
-const wrap = (ui: React.ReactElement) => render(<TwigsProvider>{ui}</TwigsProvider>);
+import { wrap } from './test-utils';
 
 describe('LinkButton', () => {
   it('has displayName "LinkButton"', () => {
@@ -49,7 +48,7 @@ describe('LinkButton', () => {
   });
 
   describe('colors', () => {
-    const colors = ['primary', 'default'] as const;
+    const colors = ['primary', 'secondary', 'light'] as const;
 
     colors.forEach((color) => {
       it(`renders with color="${color}"`, () => {
@@ -80,7 +79,7 @@ describe('LinkButton', () => {
 
   it('renders all size+color+variant combinations without crashing', () => {
     const sizes = ['sm', 'md'] as const;
-    const colors = ['primary', 'default'] as const;
+    const colors = ['primary', 'secondary', 'light'] as const;
     const variants = ['medium', 'bold'] as const;
     sizes.forEach((size) => {
       colors.forEach((color) => {

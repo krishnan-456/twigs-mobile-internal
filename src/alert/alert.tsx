@@ -3,27 +3,16 @@ import { View, Text as RNText } from 'react-native';
 import { useTheme } from '../context';
 import { Button } from '../button';
 import type { AlertProps } from './types';
-import { DEFAULT_SIZE, DEFAULT_STATUS } from './constants';
-import {
-  getSizeStyles,
-  getStatusContainerStyles,
-  getIconColor,
-  getTextStyles,
-  getStatusIconSize,
-  getCloseIconSize,
-} from './helpers';
+import { DEFAULT_STATUS, ALERT_ICON_SIZE, ALERT_CLOSE_ICON_SIZE } from './constants';
+import { getStatusContainerStyles, getIconColor, getTextStyles } from './helpers';
 import { styles } from './styles';
 import { STATUS_ICONS, CloseIcon } from './icons';
 
-/**
- * Alert component displays contextual feedback messages with status indicators.
- * Aligned with the web twigs library's Alert component.
- */
+/** Contextual feedback banner with status icon, content, and optional close action. */
 export const Alert = React.forwardRef<View, AlertProps>(
   (
     {
       status = DEFAULT_STATUS,
-      size = DEFAULT_SIZE,
       icon,
       closable = false,
       onClose,
@@ -42,26 +31,21 @@ export const Alert = React.forwardRef<View, AlertProps>(
   ) => {
     const theme = useTheme();
 
-    const sizeStyles = useMemo(() => getSizeStyles(size), [size]);
     const statusStyles = useMemo(() => getStatusContainerStyles(theme, status), [theme, status]);
-    const textStyles = useMemo(() => getTextStyles(theme, status, size), [theme, status, size]);
-
+    const textStyles = useMemo(() => getTextStyles(theme), [theme]);
     const iconColor = useMemo(() => getIconColor(theme, status), [theme, status]);
-    const statusIconSize = useMemo(() => getStatusIconSize(size), [size]);
-    const closeIconSize = useMemo(() => getCloseIconSize(size), [size]);
 
-    // Render the appropriate icon
     const renderIcon = () => {
       if (icon) {
         return React.cloneElement(icon, {
-          width: statusIconSize,
-          height: statusIconSize,
+          width: ALERT_ICON_SIZE,
+          height: ALERT_ICON_SIZE,
           color: iconColor,
         });
       }
 
       const DefaultIcon = STATUS_ICONS[status];
-      return <DefaultIcon size={statusIconSize} color={iconColor} />;
+      return <DefaultIcon size={ALERT_ICON_SIZE} color={iconColor} />;
     };
 
     // Mobile deviation: Using accessibilityLiveRegion for dynamic alerts
@@ -78,7 +62,7 @@ export const Alert = React.forwardRef<View, AlertProps>(
         accessibilityHint={accessibilityHint}
         accessibilityState={accessibilityState}
         accessibilityLiveRegion={computedLiveRegion}
-        style={[styles.container, sizeStyles, statusStyles, css, style]}
+        style={[styles.container, statusStyles, css, style]}
         {...rest}
       >
         <View style={styles.iconContainer}>{renderIcon()}</View>
@@ -92,10 +76,9 @@ export const Alert = React.forwardRef<View, AlertProps>(
             accessible
             accessibilityLabel="Close alert"
             accessibilityHint="Dismisses this alert"
-            size={size === 'sm' ? 'xs' : 'sm'}
+            size="sm"
             color="default"
-            variant="ghost"
-            icon={<CloseIcon size={closeIconSize} color={theme.colors.neutral800} />}
+            icon={<CloseIcon size={ALERT_CLOSE_ICON_SIZE} color={theme.colors.neutral800} />}
             style={styles.closeButton}
             {...(onClose && { onPress: onClose })}
           />

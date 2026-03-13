@@ -2,8 +2,8 @@ import { ReactElement, ReactNode } from 'react';
 import { PressableProps, TextStyle } from 'react-native';
 import { CommonStyleProps, BaseAccessibilityProps } from '../utils';
 
-export type ButtonSize = 'xxs' | 'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl';
-export type ButtonColor = 'default' | 'primary' | 'secondary' | 'bright' | 'light' | 'error';
+export type ButtonSize = 'sm' | 'md' | 'lg' | 'xl' | '2xl';
+export type ButtonColor = 'default' | 'primary' | 'secondary' | 'light' | 'error';
 export type ButtonVariant = 'solid' | 'ghost' | 'outline';
 
 export interface ButtonProps extends CommonStyleProps, BaseAccessibilityProps {

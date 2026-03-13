@@ -1,13 +1,11 @@
-import React, { forwardRef, useRef, useState } from 'react';
+import React, { forwardRef, useMemo, useRef, useState } from 'react';
 import {
   Pressable,
   TextInput as RNTextInput,
   NativeSyntheticEvent,
   TextInputFocusEventData,
   StyleSheet,
-  TextStyle,
   View,
-  ViewStyle,
 } from 'react-native';
 import { useTheme } from '../context';
 import { Box } from '../box';
@@ -17,6 +15,7 @@ import type { TextInputProps } from './types';
 import { getSizeConfig } from './constants';
 import { createTextInputStyles } from './styles';
 
+/** Themed text input with size/variant presets, icon slots, error state, and password toggle. */
 export const TextInput = forwardRef<RNTextInput, TextInputProps>(
   (
     {
@@ -105,32 +104,39 @@ export const TextInput = forwardRef<RNTextInput, TextInputProps>(
     const hasLeftIconOrElement = hasLeftIcon || hasLeftElement;
     const hasRightIconOrElement = hasRightIcon || hasRightElement;
 
-    const inputWrapperStyles: ViewStyle = {
-      height: config.height,
-      borderRadius: config.borderRadius,
-      backgroundColor: variant === 'filled' ? theme.colors.neutral50 : theme.colors.white900,
-    };
+    const inputWrapperStyles = useMemo(() => {
+      const base = {
+        height: config.height,
+        borderRadius: config.borderRadius,
+        backgroundColor: variant === 'filled' ? theme.colors.neutral50 : theme.colors.white900,
+        borderTopColor: undefined as string | undefined,
+        borderRightColor: undefined as string | undefined,
+        borderLeftColor: undefined as string | undefined,
+        borderBottomColor: undefined as string | undefined,
+        borderColor: undefined as string | undefined,
+      };
 
-    if (errorBorder) {
-      inputWrapperStyles.borderTopColor = isFocused
-        ? theme.colors.neutral500
-        : theme.colors.black300;
-      inputWrapperStyles.borderRightColor = isFocused
-        ? theme.colors.neutral500
-        : theme.colors.black300;
-      inputWrapperStyles.borderLeftColor = isFocused
-        ? theme.colors.neutral500
-        : theme.colors.black300;
-      inputWrapperStyles.borderBottomColor = theme.colors.negative500;
-    } else {
-      inputWrapperStyles.borderColor = isFocused ? theme.colors.neutral500 : theme.colors.black300;
-    }
+      if (errorBorder) {
+        const sideColor = isFocused ? theme.colors.neutral500 : theme.colors.black300;
+        base.borderTopColor = sideColor;
+        base.borderRightColor = sideColor;
+        base.borderLeftColor = sideColor;
+        base.borderBottomColor = theme.colors.negative500;
+      } else {
+        base.borderColor = isFocused ? theme.colors.neutral500 : theme.colors.black300;
+      }
 
-    const textInputStyles: TextStyle = {
-      fontSize: config.fontSize,
-      paddingLeft: hasLeftIconOrElement ? config.leftIconPadding : config.paddingHorizontal,
-      paddingRight: hasRightIconOrElement ? config.rightIconPadding : config.paddingHorizontal,
-    };
+      return base;
+    }, [config.height, config.borderRadius, variant, errorBorder, isFocused, theme]);
+
+    const textInputStyles = useMemo(
+      () => ({
+        fontSize: config.fontSize,
+        paddingLeft: hasLeftIconOrElement ? config.leftIconPadding : config.paddingHorizontal,
+        paddingRight: hasRightIconOrElement ? config.rightIconPadding : config.paddingHorizontal,
+      }),
+      [config.fontSize, config.leftIconPadding, config.rightIconPadding, config.paddingHorizontal, hasLeftIconOrElement, hasRightIconOrElement]
+    );
 
     const renderInput = () => (
       <RNTextInput
@@ -184,7 +190,7 @@ export const TextInput = forwardRef<RNTextInput, TextInputProps>(
 
     if (hasLeftIcon || hasRightIcon || hasLeftElement || hasRightElement) {
       return (
-        <Flex gap={4} css={{ width: '100%' }}>
+        <Flex gap={4} css={styles.fullWidth}>
           <Box
             css={StyleSheet.flatten([
               styles.container,
@@ -241,11 +247,7 @@ export const TextInput = forwardRef<RNTextInput, TextInputProps>(
                   style={StyleSheet.flatten([
                     styles.iconContainer,
                     styles.iconContainerRight,
-                    {
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                    },
+                    styles.iconButtonContainer,
                   ])}
                 >
                   {React.isValidElement(rightIcon)
@@ -281,7 +283,7 @@ export const TextInput = forwardRef<RNTextInput, TextInputProps>(
     }
 
     return (
-      <Flex gap={4} css={{ width: '100%' }}>
+      <Flex gap={4} css={styles.fullWidth}>
         <Box
           css={StyleSheet.flatten([
             styles.container,

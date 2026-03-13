@@ -6,10 +6,7 @@ import { DEFAULT_SIZE, DEFAULT_COLOR, DEFAULT_ROUNDED } from './constants';
 import { getSizeStyles, getColorStyles, getTextStyles, getIconSize, getIconColor } from './helpers';
 import { styles } from './styles';
 
-/**
- * Badge component displays compact pill-shaped labels, tags, and status indicators.
- * Mobile-only component based on the Figma BadgePill design.
- */
+/** Compact pill-shaped element for labels, tags, and status indicators. */
 export const Badge = React.forwardRef<View, BadgeProps>(
   (
     {

@@ -1,13 +1,13 @@
-import React, { useEffect, useState } from 'react';
-import type { ViewStyle } from 'react-native';
+import React, { useEffect, useMemo, useState } from 'react';
 import { Pressable, View } from 'react-native';
 import { Easing, useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated';
 import { AnimatedView } from '../utils';
 import { useTheme } from '../context';
 import type { SwitchProps } from './types';
-import { DEFAULT_SWITCH_SIZE, getSwitchSizeConfig } from './constants';
+import { CHECKED_COLOR_MAP, DEFAULT_SWITCH_SIZE, getSwitchSizeConfig } from './constants';
 import { createSwitchStyles } from './styles';
 
+/** Toggle switch with animated thumb, supporting controlled and uncontrolled modes. */
 export const Switch = React.forwardRef<View, SwitchProps>(
   (
     {
@@ -18,6 +18,7 @@ export const Switch = React.forwardRef<View, SwitchProps>(
       onChange,
       disabled = false,
       size = DEFAULT_SWITCH_SIZE,
+      color = 'primary',
       css,
       style,
       accessible = true,
@@ -69,25 +70,33 @@ export const Switch = React.forwardRef<View, SwitchProps>(
       transform: [{ translateX: translateX.value }],
     }));
 
-    const switchSizeStyles: ViewStyle = {
-      width: sizeConfig.track.width,
-      height: sizeConfig.track.height,
-    };
+    const switchSizeStyles = useMemo(
+      () => ({
+        width: sizeConfig.track.width,
+        height: sizeConfig.track.height,
+      }),
+      [sizeConfig.track.width, sizeConfig.track.height]
+    );
 
-    const thumbSizeStyles: ViewStyle = {
-      width: sizeConfig.thumb.size,
-      height: sizeConfig.thumb.size,
-    };
+    const thumbSizeStyles = useMemo(
+      () => ({
+        width: sizeConfig.thumb.size,
+        height: sizeConfig.thumb.size,
+      }),
+      [sizeConfig.thumb.size]
+    );
 
-    const switchStateStyles: ViewStyle = {
-      backgroundColor: disabled
-        ? resolvedChecked
-          ? theme.colors.primary100
-          : theme.colors.neutral200
-        : resolvedChecked
-          ? theme.colors.primary500
+    const checkedColorToken = CHECKED_COLOR_MAP[color];
+
+    const switchStateStyles = useMemo(
+      () => ({
+        backgroundColor: resolvedChecked
+          ? theme.colors[checkedColorToken]
           : theme.colors.neutral400,
-    };
+        opacity: disabled ? 0.4 : 1,
+      }),
+      [disabled, resolvedChecked, theme, checkedColorToken]
+    );
 
     const resolvedAccessibilityState = {
       ...accessibilityState,

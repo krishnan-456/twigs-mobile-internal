@@ -1,13 +1,12 @@
 import React from 'react';
-import { render, fireEvent } from '@testing-library/react-native';
+import { fireEvent } from '@testing-library/react-native';
 import { Text } from 'react-native';
 import { Button } from '../button';
 import { getPressedStyle } from '../button/helpers';
 import { TwigsProvider } from '../context';
 import { defaultTheme } from '../theme';
 import { colorOpacity } from '../utils';
-
-const wrap = (ui: React.ReactElement) => render(<TwigsProvider>{ui}</TwigsProvider>);
+import { wrap } from './test-utils';
 
 describe('Button', () => {
   // ── Render ──
@@ -31,7 +30,7 @@ describe('Button', () => {
   // ── Variants ──
 
   describe('sizes', () => {
-    const sizes = ['xxs', 'xs', 'sm', 'md', 'lg', 'xl', '2xl'] as const;
+    const sizes = ['sm', 'md', 'lg', 'xl', '2xl'] as const;
 
     sizes.forEach((size) => {
       it(`renders with size="${size}"`, () => {
@@ -42,7 +41,7 @@ describe('Button', () => {
   });
 
   describe('colors', () => {
-    const colors = ['default', 'primary', 'secondary', 'bright', 'light', 'error'] as const;
+    const colors = ['default', 'primary', 'secondary', 'light', 'error'] as const;
 
     colors.forEach((color) => {
       it(`renders with color="${color}"`, () => {
@@ -64,7 +63,7 @@ describe('Button', () => {
   });
 
   it('renders all color+variant combinations without crashing', () => {
-    const colors = ['default', 'primary', 'secondary', 'bright', 'light', 'error'] as const;
+    const colors = ['default', 'primary', 'secondary', 'light', 'error'] as const;
     const variants = ['solid', 'ghost', 'outline'] as const;
     colors.forEach((color) => {
       variants.forEach((variant) => {
@@ -272,19 +271,29 @@ describe('Button', () => {
   // ── Shade mapping ──
 
   describe('shade mapping', () => {
-    it('uses colorOpacity for default outline pressed background', () => {
-      const pressedStyle = getPressedStyle('default', 'outline', defaultTheme);
-      expect(pressedStyle.backgroundColor).toBe(colorOpacity(defaultTheme.colors.black900, 0.04));
+    it('uses secondary600 bg for secondary solid regular', () => {
+      const pressedStyle = getPressedStyle('secondary', 'solid', defaultTheme);
+      expect(pressedStyle.backgroundColor).toBe(defaultTheme.colors.secondary800);
     });
 
-    it('uses colorOpacity for bright solid pressed background', () => {
-      const pressedStyle = getPressedStyle('bright', 'solid', defaultTheme);
-      expect(pressedStyle.backgroundColor).toBe(colorOpacity(defaultTheme.colors.black900, 0.08));
+    it('uses negative600 bg for error solid regular (pressed → negative800)', () => {
+      const pressedStyle = getPressedStyle('error', 'solid', defaultTheme);
+      expect(pressedStyle.backgroundColor).toBe(defaultTheme.colors.negative800);
     });
 
     it('uses colorOpacity for light solid pressed background', () => {
       const pressedStyle = getPressedStyle('light', 'solid', defaultTheme);
       expect(pressedStyle.backgroundColor).toBe(colorOpacity(defaultTheme.colors.white900, 0.2));
+    });
+
+    it('uses primary200 border for primary outline regular', () => {
+      const pressedStyle = getPressedStyle('primary', 'outline', defaultTheme);
+      expect(pressedStyle.borderColor).toBe(defaultTheme.colors.primary400);
+    });
+
+    it('uses secondary200 border for secondary outline regular', () => {
+      const pressedStyle = getPressedStyle('secondary', 'outline', defaultTheme);
+      expect(pressedStyle.borderColor).toBe(defaultTheme.colors.secondary400);
     });
   });
 

@@ -1,31 +1,19 @@
-import { CommonStyleProps } from '../utils';
+import type { CommonStyleProps, BaseAccessibilityProps } from '../utils';
 
-/**
- * Size variants for LineLoader.
- * Aligned with web twigs: sm, md, lg, xl.
- */
 export type LineLoaderSize = 'sm' | 'md' | 'lg' | 'xl';
-
-/**
- * Size variants for CircleLoader.
- * Aligned with web twigs: xs, sm, md, lg, xl, 2xl, 3xl.
- */
 export type CircleLoaderSize = 'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl' | '3xl';
-
-/**
- * Color variants for loaders.
- * Aligned with web twigs: primary, secondary, bright, negative, accent.
- */
 export type LoaderColor = 'primary' | 'secondary' | 'bright' | 'negative' | 'accent';
 
-export interface LineLoaderProps extends CommonStyleProps {
+/** Props for the LineLoader component. */
+export interface LineLoaderProps extends CommonStyleProps, BaseAccessibilityProps {
   /** Size preset. @default 'sm' */
   size?: LineLoaderSize;
   /** Color preset. @default 'primary' */
   color?: LoaderColor;
 }
 
-export interface CircleLoaderProps extends CommonStyleProps {
+/** Props for the CircleLoader component. */
+export interface CircleLoaderProps extends CommonStyleProps, BaseAccessibilityProps {
   /** Size preset. @default 'md' */
   size?: CircleLoaderSize;
   /** Color preset. @default 'primary' */

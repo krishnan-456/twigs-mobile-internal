@@ -47,6 +47,12 @@ const docsStyles = StyleSheet.create({
   prop: { fontSize: 13, color: '#444', lineHeight: 18 },
 });
 
+const getActionLinkColorForVariant = (variant: ToastVariant) => {
+  if (variant === 'default') return 'primary';
+  if (variant === 'warning') return 'secondary';
+  return 'light';
+};
+
 const ToastStory = ({
   title,
   description,
@@ -65,7 +71,7 @@ const ToastStory = ({
       action: showAction ? (
         <LinkButton
           size="sm"
-          color="light"
+          color={getActionLinkColorForVariant(variant)}
           variant="bold"
           onPress={() => toast.dismiss()}
         >
@@ -99,6 +105,7 @@ const meta = {
       control: 'select',
       options: [
         'default',
+        'secondary',
         'success',
         'error',
         'warning',
@@ -157,7 +164,7 @@ export const Docs: Story = {
       <View style={docsStyles.sectionObj}>
         <RNText style={docsStyles.sectionTitle}>Props (toast options)</RNText>
         <RNText style={docsStyles.prop}>
-          • variant — 'default' | 'success' | 'error' | 'warning' | 'loading'
+          • variant — 'default' | 'secondary' | 'success' | 'error' | 'warning' | 'loading'
         </RNText>
         <RNText style={docsStyles.prop}>• title — primary text</RNText>
         <RNText style={docsStyles.prop}>• description — secondary text</RNText>
@@ -192,6 +199,7 @@ export const AllVariants: Story = {
   render: () => {
     const variants: ToastVariant[] = [
       'default',
+      'secondary',
       'success',
       'error',
       'warning',
@@ -216,7 +224,7 @@ export const AllVariants: Story = {
                     variant !== 'loading' ? (
                       <LinkButton
                         size="sm"
-                        color={variant === 'warning' ? 'secondary' : 'light'}
+                        color={getActionLinkColorForVariant(variant)}
                         variant="bold"
                         onPress={() => toast.dismiss()}
                       >

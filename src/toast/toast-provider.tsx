@@ -2,6 +2,7 @@ import React, { useState, useCallback, useMemo, useEffect, useLayoutEffect } fro
 import { StyleSheet, View } from 'react-native';
 import { ToastContext, setGlobalToastHandlers } from './use-toast';
 import { ToastContainer } from './toast-container';
+import { generateToastId } from './helpers';
 import type {
   ToastProviderProps,
   ToastState,
@@ -20,12 +21,6 @@ import {
 const providerStyles = StyleSheet.create({
   root: { flex: 1 },
 });
-
-let idCounter = 0;
-function generateId(): string {
-  idCounter += 1;
-  return `twigs-toast-${idCounter}`;
-}
 
 /**
  * Provides toast infrastructure for the app. Must be placed inside TwigsProvider
@@ -59,7 +54,7 @@ export const ToastProvider = ({
 
   const add = useCallback(
     (options: ToastOptions) => {
-      const id = options.id ?? generateId();
+      const id = options.id ?? generateToastId();
 
       setToasts((prev) => {
         const existingIdx = prev.findIndex((t) => t.id === id);

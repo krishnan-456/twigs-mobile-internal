@@ -1,11 +1,7 @@
 import type { ViewProps } from 'react-native';
 import type { CommonStyleProps, BaseAccessibilityProps } from '../utils';
 
-/** Alert status variants for visual appearance */
 export type AlertStatus = 'default' | 'info' | 'success' | 'warning' | 'error';
-
-/** Alert size variants */
-export type AlertSize = 'sm' | 'md';
 
 /**
  * Props for the Alert component.
@@ -15,8 +11,6 @@ export interface AlertProps
   extends Omit<ViewProps, 'style'>, CommonStyleProps, BaseAccessibilityProps {
   /** The status/type of alert which determines colors and icon */
   status?: AlertStatus;
-  /** The size of the alert */
-  size?: AlertSize;
   /** Custom icon to display. If not provided, a default icon based on status is shown */
   icon?: React.ReactElement;
   /** Whether the alert can be dismissed */

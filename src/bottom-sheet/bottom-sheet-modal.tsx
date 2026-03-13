@@ -11,6 +11,7 @@ import { BottomSheetHeader } from './bottom-sheet-header';
 import type { BottomSheetModalProps, BottomSheetHeaderProps } from './types';
 import { getDefaultSheetStyle } from './styles';
 
+/** Modal variant of BottomSheet that presents on top of a backdrop overlay. */
 export const BottomSheetModal = forwardRef<GorhomBottomSheetModal, BottomSheetModalProps>(
   (
     {

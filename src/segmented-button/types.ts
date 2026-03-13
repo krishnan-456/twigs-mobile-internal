@@ -11,7 +11,6 @@ export interface SegmentedButtonOption {
   disabled?: boolean;
 }
 
-/** Border radius of the segmented button container and segments (aligned with Avatar tokens). */
 export type SegmentedButtonRounded = 'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl' | '3xl' | 'full';
 
 /** Props for the SegmentedButton component. */

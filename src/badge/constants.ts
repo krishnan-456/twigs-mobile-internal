@@ -9,14 +9,13 @@ interface SizeConfig {
   gap: number;
 }
 
-/** Size configuration from Figma BadgePill spec */
 export const SIZE_CONFIG: Record<BadgeSize, SizeConfig> = {
   sm: {
     height: 24,
     paddingHorizontal: 8,
     fontSize: 12,
     lineHeight: 16,
-    iconSize: 12,
+    iconSize: 16,
     gap: 0,
   },
   md: {
@@ -29,7 +28,6 @@ export const SIZE_CONFIG: Record<BadgeSize, SizeConfig> = {
   },
 };
 
-/** Border radius per rounded variant (aligned with Avatar tokens). */
 export const ROUNDED_RADII: Record<BadgeRounded, number> = {
   xs: 4,
   sm: 8,
@@ -41,11 +39,11 @@ export const ROUNDED_RADII: Record<BadgeRounded, number> = {
   full: 9999,
 };
 
-/** Background color token keys per color variant (solid fill) */
-export const COLOR_BG_MAP: Record<BadgeColor, string> = {
+/** `null` means the background is computed at runtime (e.g. primary uses an alpha overlay). */
+export const COLOR_BG_MAP: Record<BadgeColor, string | null> = {
   default: 'neutral100',
   white: 'white900',
-  primary: 'primary50',
+  primary: null,
   secondary: 'secondary600',
   accent: 'accent100',
   positive: 'positive100',
@@ -53,7 +51,8 @@ export const COLOR_BG_MAP: Record<BadgeColor, string> = {
   attention: 'warning100',
 };
 
-/** Text color token keys per color variant */
+export const PRIMARY_BG_OPACITY = 0.08;
+
 export const COLOR_TEXT_MAP: Record<BadgeColor, string> = {
   default: 'neutral900',
   white: 'neutral900',
@@ -65,7 +64,6 @@ export const COLOR_TEXT_MAP: Record<BadgeColor, string> = {
   attention: 'warning800',
 };
 
-/** Border color token keys — only 'white' has a visible border */
 export const COLOR_BORDER_MAP: Record<BadgeColor, string | null> = {
   default: null,
   white: 'neutral200',

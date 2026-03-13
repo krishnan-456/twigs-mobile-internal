@@ -7,21 +7,16 @@ export const SEGMENT_LINE_HEIGHT = 20;
 export const SEGMENT_LETTER_SPACING = 0.2;
 export const SELECTED_BORDER_WIDTH = 1.5;
 
-/** Shadow applied to the selected segment (iOS). */
 export const SELECTED_SHADOW = {
-  shadowColor: '#000000',
   shadowOffset: { width: 1, height: 1 },
   shadowOpacity: 0.04,
   shadowRadius: 5,
 } as const;
 
-/** Elevation for Android shadow on selected segment. */
 export const SELECTED_ELEVATION = 2;
 
-/** Container background opacity (Figma: neutral at 8% opacity). */
 export const CONTAINER_BG_OPACITY = 0.08;
 
-/** Border radius values per rounded variant (aligned with Avatar tokens). */
 export const ROUNDED_RADII: Record<SegmentedButtonRounded, number> = {
   xs: 4,
   sm: 8,
@@ -35,5 +30,4 @@ export const ROUNDED_RADII: Record<SegmentedButtonRounded, number> = {
 
 export const DEFAULT_ROUNDED: SegmentedButtonRounded = 'full';
 
-/** Duration (ms) of the slide animation between segments. */
 export const SLIDE_DURATION = 200;

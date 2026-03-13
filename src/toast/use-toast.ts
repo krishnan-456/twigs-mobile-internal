@@ -7,6 +7,7 @@ import type {
 
 export const ToastContext = createContext<ToastContextType | null>(null);
 
+/** Returns the toast context — throws if called outside ToastProvider. */
 export function useToastContext(): ToastContextType {
   const context = useContext(ToastContext);
   if (!context) {
@@ -29,6 +30,12 @@ export function useToast(): UseToastReturn {
 
   const show = useCallback(
     (options: ToastOptions) => ctx.add(options),
+    [ctx],
+  );
+
+  const secondary = useCallback(
+    (arg: ShorthandArg) =>
+      ctx.add({ ...normalizeShorthand(arg), variant: 'secondary' }),
     [ctx],
   );
 
@@ -66,15 +73,14 @@ export function useToast(): UseToastReturn {
     [ctx],
   );
 
-  return { show, success, error, warning, loading, dismiss, update };
+  return { show, secondary, success, error, warning, loading, dismiss, update };
 }
-
-// ── Global imperative handlers ──
 
 let globalAdd: ToastContextType['add'] | null = null;
 let globalDismiss: ToastContextType['dismiss'] | null = null;
 let globalUpdate: ToastContextType['update'] | null = null;
 
+/** Registers global toast handlers — called internally by ToastProvider on mount. */
 export function setGlobalToastHandlers(
   add: typeof globalAdd,
   dismiss: typeof globalDismiss,
@@ -112,6 +118,7 @@ function createVariantShorthand(variant: ToastOptions['variant']) {
  *
  * @example
  * toast({ title: 'Hello', variant: 'success' });
+ * toast.secondary('Info');
  * toast.success('Saved!');
  * toast.error('Failed!');
  * toast.warning('Careful');
@@ -121,6 +128,7 @@ function createVariantShorthand(variant: ToastOptions['variant']) {
  * toast.update(id, { title: 'Updated!' });
  */
 export const toast = Object.assign(showToast, {
+  secondary: createVariantShorthand('secondary'),
   success: createVariantShorthand('success'),
   error: createVariantShorthand('error'),
   warning: createVariantShorthand('warning'),

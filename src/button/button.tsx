@@ -1,4 +1,4 @@
-import React, { ReactElement, ReactNode } from 'react';
+import React, { ReactElement, ReactNode, useCallback, useEffect, useMemo } from 'react';
 import { Pressable, PressableProps, Text, View, ViewStyle } from 'react-native';
 import { useAnimatedStyle, useSharedValue, withRepeat, withTiming } from 'react-native-reanimated';
 import { AnimatedView } from '../utils';
@@ -14,9 +14,12 @@ import {
   getIconSize,
   getLoaderColorFromButton,
   getLineLoaderSizeFromButton,
+  getLineLoaderWidthFromButton,
   getCircleLoaderSizeFromButton,
   getPressedStyle,
   getButtonLoaderMargin,
+  getTextColor,
+  getPressedTextColor,
 } from './helpers';
 import { buttonStyles } from './styles';
 
@@ -28,6 +31,7 @@ interface ButtonSideElementProps {
   size: ButtonSize;
   loaderColor: LoaderColor;
   containerStyle?: ViewStyle;
+  iconColor?: string;
 }
 
 const ButtonSideElement: React.FC<ButtonSideElementProps> = ({
@@ -38,6 +42,7 @@ const ButtonSideElement: React.FC<ButtonSideElementProps> = ({
   size,
   loaderColor,
   containerStyle,
+  iconColor,
 }) => {
   const iconSize = getIconSize(size, position);
   const iconContainerStyle = getIconContainerStyles({ position, size });
@@ -46,25 +51,31 @@ const ButtonSideElement: React.FC<ButtonSideElementProps> = ({
     let loaderElement: ReactNode;
 
     if (React.isValidElement(loader)) {
-      // Custom ReactElement loader
       loaderElement = loader;
     } else if (loader === 'circle') {
       loaderElement = (
         <CircleLoader color={loaderColor} size={getCircleLoaderSizeFromButton(size)} />
       );
     } else {
-      // Default: line loader
-      loaderElement = <LineLoader color={loaderColor} size={getLineLoaderSizeFromButton(size)} />;
+      loaderElement = (
+        <LineLoader
+          color={loaderColor}
+          size={getLineLoaderSizeFromButton(size)}
+          css={{ width: getLineLoaderWidthFromButton(size) }}
+        />
+      );
     }
 
     return <View style={[iconContainerStyle, containerStyle]}>{loaderElement}</View>;
   }
 
   if (icon) {
+    const colorProps = iconColor ? { color: iconColor } : {};
     return (
       <View style={[iconContainerStyle, containerStyle]}>
         {React.cloneElement(icon, {
           size: iconSize,
+          ...colorProps,
           ...(icon.props || {}),
         })}
       </View>
@@ -110,7 +121,7 @@ export const Button = React.forwardRef<View, ButtonProps>(
 
     const opacity = useSharedValue(1);
 
-    React.useEffect(() => {
+    useEffect(() => {
       if (loading) {
         opacity.value = withRepeat(withTiming(0.7, { duration: 600 }), -1, true);
       } else {
@@ -120,9 +131,9 @@ export const Button = React.forwardRef<View, ButtonProps>(
 
     const animatedContentStyle = useAnimatedStyle(() => ({ opacity: opacity.value }), []);
 
-    const buttonLoaderMargin = React.useMemo(() => getButtonLoaderMargin(size), [size]);
+    const buttonLoaderMargin = useMemo(() => getButtonLoaderMargin(size), [size]);
 
-    const handlePress = React.useCallback<NonNullable<PressableProps['onPress']>>(
+    const handlePress = useCallback<NonNullable<PressableProps['onPress']>>(
       (event) => {
         if (!disabled && !loading && onPress) {
           onPress(event);
@@ -131,81 +142,25 @@ export const Button = React.forwardRef<View, ButtonProps>(
       [disabled, loading, onPress]
     );
 
-    const pressedStyle = React.useMemo(
+    const pressedStyle = useMemo(
       () => getPressedStyle(color, variant, theme),
       // eslint-disable-next-line react-hooks/exhaustive-deps
       [color, variant]
     );
 
     const buttonDynamicStyles = getButtonStyles({ size, color, variant, isIcon, theme });
-    const buttonTextStyles = getButtonTextStyles({ size, color, variant, theme });
 
-    const renderContent = React.useCallback(() => {
-      if (isIcon) {
-        return (
-          <ButtonSideElement
-            icon={icon}
-            loading={loading}
-            loader={loader}
-            position="center"
-            size={size}
-            loaderColor={loaderColor}
-          />
-        );
-      }
+    const regularTextStyles = useMemo(
+      () => getButtonTextStyles({ size, color, variant, theme, pressed: false }),
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+      [size, color, variant]
+    );
 
-      return (
-        <Flex direction="row" align="center" justify="center">
-          {(leftIcon || (hasNoIcon && loading)) && (
-            <ButtonSideElement
-              icon={leftIcon}
-              loading={loading && (!!leftIcon || hasNoIcon)}
-              loader={loader}
-              position="left"
-              size={size}
-              loaderColor={loaderColor}
-              // eslint-disable-next-line react-native/no-inline-styles
-              containerStyle={{
-                marginRight: hasNoIcon && !loading ? 0 : buttonLoaderMargin,
-              }}
-            />
-          )}
-
-          {children && (
-            <AnimatedContentWrapper style={animatedContentStyle}>
-              <Text style={[buttonTextStyles, textStyle]}>{children}</Text>
-            </AnimatedContentWrapper>
-          )}
-
-          {rightIcon && (
-            <ButtonSideElement
-              icon={rightIcon}
-              loading={loading}
-              loader={loader}
-              position="right"
-              size={size}
-              loaderColor={loaderColor}
-              containerStyle={{ marginLeft: buttonLoaderMargin }}
-            />
-          )}
-        </Flex>
-      );
-    }, [
-      isIcon,
-      icon,
-      loading,
-      loader,
-      size,
-      loaderColor,
-      leftIcon,
-      hasNoIcon,
-      buttonLoaderMargin,
-      children,
-      animatedContentStyle,
-      buttonTextStyles,
-      textStyle,
-      rightIcon,
-    ]);
+    const pressedTextStyles = useMemo(
+      () => getButtonTextStyles({ size, color, variant, theme, pressed: true }),
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+      [size, color, variant]
+    );
 
     return (
       <Pressable
@@ -225,7 +180,65 @@ export const Button = React.forwardRef<View, ButtonProps>(
         ]}
         {...rest}
       >
-        {renderContent()}
+        {({ pressed }: { pressed: boolean }) => {
+          const isPressed = pressed && !disabled && !loading;
+          const currentTextStyles = isPressed ? pressedTextStyles : regularTextStyles;
+          const currentIconColor = isPressed
+            ? getPressedTextColor(color, variant, theme)
+            : getTextColor(color, variant, theme);
+
+          if (isIcon) {
+            return (
+              <ButtonSideElement
+                icon={icon}
+                loading={loading}
+                loader={loader}
+                position="center"
+                size={size}
+                loaderColor={loaderColor}
+                iconColor={currentIconColor}
+              />
+            );
+          }
+
+          return (
+            <Flex direction="row" align="center" justify="center">
+              {(leftIcon || (hasNoIcon && loading)) && (
+                <ButtonSideElement
+                  icon={leftIcon}
+                  loading={loading && (!!leftIcon || hasNoIcon)}
+                  loader={loader}
+                  position="left"
+                  size={size}
+                  loaderColor={loaderColor}
+                  iconColor={currentIconColor}
+                  containerStyle={{
+                    marginRight: hasNoIcon && !loading ? 0 : buttonLoaderMargin,
+                  }}
+                />
+              )}
+
+              {children && (
+                <AnimatedContentWrapper style={animatedContentStyle}>
+                  <Text style={[currentTextStyles, textStyle]}>{children}</Text>
+                </AnimatedContentWrapper>
+              )}
+
+              {rightIcon && (
+                <ButtonSideElement
+                  icon={rightIcon}
+                  loading={loading}
+                  loader={loader}
+                  position="right"
+                  size={size}
+                  loaderColor={loaderColor}
+                  iconColor={currentIconColor}
+                  containerStyle={{ marginLeft: buttonLoaderMargin }}
+                />
+              )}
+            </Flex>
+          );
+        }}
       </Pressable>
     );
   }

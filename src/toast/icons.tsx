@@ -2,10 +2,7 @@ import React from 'react';
 import { Svg, Path, Circle } from 'react-native-svg';
 import type { ToastIconProps, ToastInfoIconProps } from './types';
 
-/**
- * Filled check-circle icon for success/default variants.
- * Uses evenodd fill rule so the checkmark is a cutout showing the background through it.
- */
+/** Filled check-circle icon for success/default variants. */
 export const CheckCircleFilledIcon = ({ size, color }: ToastIconProps) => (
   <Svg width={size} height={size} viewBox="0 0 24 24" fill="none">
     <Path
@@ -17,10 +14,7 @@ export const CheckCircleFilledIcon = ({ size, color }: ToastIconProps) => (
   </Svg>
 );
 
-/**
- * Filled alert-triangle icon for error variant.
- * Uses evenodd so the exclamation mark is a cutout.
- */
+/** Filled alert-triangle icon for error variant. */
 export const AlertFilledIcon = ({ size, color }: ToastIconProps) => (
   <Svg width={size} height={size} viewBox="0 0 24 24" fill="none">
     <Path
@@ -32,11 +26,7 @@ export const AlertFilledIcon = ({ size, color }: ToastIconProps) => (
   </Svg>
 );
 
-/**
- * Filled info-circle icon for warning/info variant.
- * Uses the exact Figma paths: filled circle + serif-style "i" stroked in the
- * toast background color to create the visual cutout effect.
- */
+/** Filled info-circle icon with inner cutout color for the "i" glyph. */
 export const InfoCircleFilledIcon = ({ size, color, innerColor }: ToastInfoIconProps) => (
   <Svg width={size} height={size} viewBox="0 0 24 24" fill="none">
     <Path
@@ -54,9 +44,9 @@ export const InfoCircleFilledIcon = ({ size, color, innerColor }: ToastInfoIconP
   </Svg>
 );
 
-/** Maps toast variant to its default icon component (excludes warning which needs innerColor) */
 export const VARIANT_ICONS: Record<string, React.FC<ToastIconProps>> = {
   default: CheckCircleFilledIcon,
+  secondary: CheckCircleFilledIcon,
   success: CheckCircleFilledIcon,
   error: AlertFilledIcon,
 };

@@ -1,6 +1,6 @@
 // Alert
 export { Alert } from './alert';
-export type { AlertProps, AlertStatus, AlertSize } from './alert';
+export type { AlertProps, AlertStatus } from './alert';
 
 // Avatar
 export { Avatar, AvatarGroup } from './avatar';
@@ -49,7 +49,7 @@ export type {
 
 // Chip
 export { Chip } from './chip';
-export type { ChipProps, ChipSize, ChipColor, ChipVariant, ChipRounded } from './chip';
+export type { ChipProps, ChipSize, ChipColor, ChipRounded } from './chip';
 
 // Checkbox
 export { Checkbox } from './checkbox';
@@ -99,11 +99,11 @@ export type { SeparatorProps, SeparatorOrientation } from './separator';
 
 // Switch
 export { Switch } from './switch';
-export type { SwitchProps, SwitchSize } from './switch';
+export type { SwitchProps, SwitchSize, SwitchColor } from './switch';
 
 // Tooltip
 export { Tooltip } from './tooltip';
-export type { TooltipProps, TooltipSize, TooltipSide, TooltipAlign } from './tooltip';
+export type { TooltipProps, TooltipSide, TooltipAlign } from './tooltip';
 
 // Text
 export { Text } from './text';

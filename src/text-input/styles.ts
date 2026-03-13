@@ -49,4 +49,12 @@ export const createTextInputStyles = (theme: TwigsTheme) =>
     iconContainerRightElement: {
       right: 0,
     },
+    iconButtonContainer: {
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+    },
+    fullWidth: {
+      width: '100%',
+    },
   });

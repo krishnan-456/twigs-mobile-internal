@@ -22,11 +22,6 @@ const meta = {
       options: ['default', 'info', 'success', 'warning', 'error'],
       description: 'Visual status variant',
     },
-    size: {
-      control: 'select',
-      options: ['sm', 'md'],
-      description: 'Size of the alert',
-    },
     closable: {
       control: 'boolean',
       description: 'Whether the alert can be dismissed',
@@ -38,7 +33,6 @@ const meta = {
   },
   args: {
     status: 'info',
-    size: 'md',
     closable: false,
     children: 'This is an alert message.',
   },
@@ -59,9 +53,8 @@ export const Docs: Story = {
       <View style={docsStyles.section}>
         <RNText style={docsStyles.sectionTitle}>Props</RNText>
         <RNText style={docsStyles.prop}>
-          • status — 'default' | 'info' | 'success' | 'warning' | 'error' (default: 'default')
+          • status — 'default' | 'info' | 'success' | 'warning' | 'error' (default: 'info')
         </RNText>
-        <RNText style={docsStyles.prop}>• size — 'sm' | 'md' (default: 'md')</RNText>
         <RNText style={docsStyles.prop}>• closable — boolean (default: false)</RNText>
         <RNText style={docsStyles.prop}>• onClose — callback when dismiss is pressed</RNText>
         <RNText style={docsStyles.prop}>• children — alert message content</RNText>
@@ -92,14 +85,6 @@ export const AllVariants: Story = {
         </Alert>
         <Alert status="error" closable>
           Closable error alert
-        </Alert>
-      </View>
-      <View style={{ gap: 8 }}>
-        <Alert status="info" size="sm">
-          Small info alert
-        </Alert>
-        <Alert status="info" size="md">
-          Medium info alert
         </Alert>
       </View>
     </View>

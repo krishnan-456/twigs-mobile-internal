@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, act } from '@testing-library/react-native';
+import { act } from '@testing-library/react-native';
 import { Text } from 'react-native';
 import { TwigsProvider } from '../context';
 import { ToastProvider } from '../toast/toast-provider';
@@ -8,8 +8,7 @@ import { ToastContent } from '../toast/toast-content';
 import { useToast } from '../toast/use-toast';
 import type { ToastVariant } from '../toast/types';
 import { VARIANT_COLORS } from '../toast/constants';
-
-const wrap = (ui: React.ReactElement) => render(<TwigsProvider>{ui}</TwigsProvider>);
+import { wrap } from './test-utils';
 
 describe('Toast', () => {
   beforeEach(() => {
@@ -88,6 +87,7 @@ describe('Toast', () => {
   describe('variants', () => {
     const variants: ToastVariant[] = [
       'default',
+      'secondary',
       'success',
       'error',
       'warning',
@@ -113,6 +113,7 @@ describe('Toast', () => {
     it('has color config for all variants', () => {
       const allVariants: ToastVariant[] = [
         'default',
+        'secondary',
         'success',
         'error',
         'warning',
@@ -202,6 +203,20 @@ describe('Toast', () => {
       expect(result).toHaveProperty('id');
       expect(result).toHaveProperty('dismiss');
       expect(typeof result!.dismiss).toBe('function');
+    });
+
+    it('toast.secondary() shorthand works with string', () => {
+      const { getByText } = wrap(
+        <ToastProvider>
+          <Text>App</Text>
+        </ToastProvider>,
+      );
+
+      act(() => {
+        toast.secondary('Info');
+      });
+
+      expect(getByText('Info')).toBeTruthy();
     });
 
     it('toast.success() shorthand works with string', () => {
@@ -391,6 +406,8 @@ describe('Toast', () => {
 
   describe('useToast()', () => {
     it('throws when used outside ToastProvider', () => {
+      const spy = jest.spyOn(console, 'error').mockImplementation(() => {});
+
       const ThrowingComponent = () => {
         useToast();
         return null;
@@ -399,6 +416,8 @@ describe('Toast', () => {
       expect(() => wrap(<ThrowingComponent />)).toThrow(
         'useToastContext must be used within a ToastProvider',
       );
+
+      spy.mockRestore();
     });
 
     it('returns toast methods when inside ToastProvider', () => {
@@ -417,6 +436,7 @@ describe('Toast', () => {
 
       expect(hookResult).toBeDefined();
       expect(typeof hookResult!.show).toBe('function');
+      expect(typeof hookResult!.secondary).toBe('function');
       expect(typeof hookResult!.success).toBe('function');
       expect(typeof hookResult!.error).toBe('function');
       expect(typeof hookResult!.warning).toBe('function');

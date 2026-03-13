@@ -1,11 +1,10 @@
 import React from 'react';
-import { render, fireEvent } from '@testing-library/react-native';
+import { fireEvent } from '@testing-library/react-native';
 import { StyleSheet, Text } from 'react-native';
 import { Checkbox } from '../checkbox';
 import { TwigsProvider } from '../context';
 import { defaultTheme } from '../theme';
-
-const wrap = (ui: React.ReactElement) => render(<TwigsProvider>{ui}</TwigsProvider>);
+import { wrap } from './test-utils';
 
 const getCheckboxBoxStyle = (tree: any) => {
   const checkboxBox = tree?.children?.[0];
@@ -47,7 +46,7 @@ describe('Checkbox', () => {
     expect(getByRole('checkbox')).toBeTruthy();
   });
 
-  it('uses figma-aligned size configs for sm and md', () => {
+  it('applies correct size configs for sm and md', () => {
     const smTree = wrap(<Checkbox size="sm" />).toJSON() as any;
     const mdTree = wrap(<Checkbox size="md" />).toJSON() as any;
 
@@ -187,7 +186,7 @@ describe('Checkbox', () => {
     expect(getByRole('checkbox').props.accessibilityState.checked).toBe('mixed');
   });
 
-  it('uses figma token colors for unchecked and checked states', () => {
+  it('applies correct colors for unchecked and checked states', () => {
     const uncheckedTree = wrap(<Checkbox checked={false} />).toJSON() as any;
     const checkedTree = wrap(<Checkbox checked />).toJSON() as any;
     const indeterminateTree = wrap(<Checkbox checked="indeterminate" />).toJSON() as any;

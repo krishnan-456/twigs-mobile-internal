@@ -1,10 +1,9 @@
 import React from 'react';
-import { fireEvent, render } from '@testing-library/react-native';
+import { fireEvent } from '@testing-library/react-native';
 import { Image, StyleSheet } from 'react-native';
 import { Avatar } from '../avatar';
 import { TwigsProvider } from '../context';
-
-const wrap = (ui: React.ReactElement) => render(<TwigsProvider>{ui}</TwigsProvider>);
+import { wrap } from './test-utils';
 
 describe('Avatar', () => {
   // Render
@@ -28,7 +27,7 @@ describe('Avatar', () => {
 
   // Variants
   describe('Variants', () => {
-    it.each(['xs', 'sm', 'md', 'lg', 'xl', '2xl', '3xl', '4xl', '5xl'] as const)(
+    it.each(['xxs', 'xs', 'sm', 'md', 'lg', 'xl', '2xl', '3xl'] as const)(
       'renders size="%s"',
       (size) => {
         const { getByRole } = wrap(<Avatar name="A" size={size} />);
@@ -36,7 +35,7 @@ describe('Avatar', () => {
       }
     );
 
-    it.each(['xs', 'sm', 'md', 'lg', 'xl', '2xl', '3xl', 'full'] as const)(
+    it.each(['xxs', 'xs', 'sm', 'md', 'lg', 'xl', '2xl', '3xl', 'full'] as const)(
       'renders rounded="%s"',
       (rounded) => {
         const { getByRole } = wrap(<Avatar name="A" rounded={rounded} />);

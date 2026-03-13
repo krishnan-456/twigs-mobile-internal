@@ -4,6 +4,7 @@ import { resolveMargin } from '../utils';
 import { useTheme } from '../context';
 import type { SeparatorProps } from './types';
 
+/** Visual divider line, horizontal or vertical, with optional decorative mode. */
 export const Separator = forwardRef<View, SeparatorProps>(
   ({ orientation = 'horizontal', color, decorative = false, css, style, testID, ...rest }, ref) => {
     const theme = useTheme();
