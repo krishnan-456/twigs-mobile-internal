@@ -43,8 +43,10 @@ export function getActiveStyles(theme: TwigsTheme, color: ChipColor): ViewStyle 
 
   return {
     backgroundColor: bg,
-    borderWidth: t.activeBorder ? 1 : 0,
-    ...(t.activeBorder && { borderColor: theme.colors[t.activeBorder] }),
+    borderWidth: 1,
+    borderColor: t.activeBorder
+      ? theme.colors[t.activeBorder]
+      : 'transparent',
   };
 }
 
