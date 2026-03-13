@@ -60,28 +60,7 @@ describe('Alert', () => {
       const { getByTestId } = wrap(<Alert testID="alert">Alert message</Alert>);
       const alert = getByTestId('alert');
       expect(alert).toBeTruthy();
-      // Verify it renders (default status should work)
       expect(alert.props.accessibilityRole).toBe('alert');
-    });
-  });
-
-  describe('size', () => {
-    const sizes: Array<'sm' | 'md'> = ['sm', 'md'];
-
-    sizes.forEach((size) => {
-      it(`renders with size="${size}"`, () => {
-        const { getByTestId } = wrap(
-          <Alert testID="alert" size={size}>
-            Alert message
-          </Alert>
-        );
-        expect(getByTestId('alert')).toBeTruthy();
-      });
-    });
-
-    it('uses default size="sm" when size prop is not provided', () => {
-      const { getByTestId } = wrap(<Alert testID="alert">Alert message</Alert>);
-      expect(getByTestId('alert')).toBeTruthy();
     });
   });
 
@@ -347,26 +326,6 @@ describe('Alert', () => {
       );
       const alertAfter = getByTestId('alert');
       expect(alertAfter.props.accessibilityLiveRegion).toBe('none');
-    });
-
-    it('updates when size changes via rerender', () => {
-      const { getByTestId, rerender } = wrap(
-        <Alert testID="alert" size="sm">
-          Alert message
-        </Alert>
-      );
-      const alertBefore = getByTestId('alert');
-      expect(alertBefore).toBeTruthy();
-
-      rerender(
-        <TwigsProvider>
-          <Alert testID="alert" size="md">
-            Alert message
-          </Alert>
-        </TwigsProvider>
-      );
-      const alertAfter = getByTestId('alert');
-      expect(alertAfter).toBeTruthy();
     });
 
     it('shows close button when closable changes from false to true', () => {

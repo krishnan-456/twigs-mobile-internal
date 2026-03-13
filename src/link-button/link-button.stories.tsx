@@ -11,6 +11,14 @@ const docsStyles = StyleSheet.create({
   section: { gap: 8 },
   sectionTitle: { fontSize: 16, fontWeight: '600' },
   prop: { fontSize: 13, color: '#444', lineHeight: 18 },
+  darkBg: {
+    backgroundColor: '#1E293B',
+    padding: 16,
+    borderRadius: 8,
+    flexDirection: 'row',
+    gap: 16,
+    alignItems: 'center',
+  },
 });
 
 const meta = {
@@ -24,7 +32,7 @@ const meta = {
     },
     color: {
       control: 'select',
-      options: ['primary', 'default'],
+      options: ['primary', 'secondary', 'light'],
       description: 'Color variant',
     },
     variant: {
@@ -64,7 +72,9 @@ export const Docs: Story = {
       <View style={docsStyles.section}>
         <RNText style={docsStyles.sectionTitle}>Props</RNText>
         <RNText style={docsStyles.prop}>• size — 'sm' | 'md' (default: 'md')</RNText>
-        <RNText style={docsStyles.prop}>• color — 'primary' | 'default' (default: 'primary')</RNText>
+        <RNText style={docsStyles.prop}>
+          • color — 'primary' | 'secondary' | 'light' (default: 'primary')
+        </RNText>
         <RNText style={docsStyles.prop}>• variant — 'medium' | 'bold' (default: 'medium')</RNText>
         <RNText style={docsStyles.prop}>• disabled — boolean (default: false)</RNText>
       </View>
@@ -84,18 +94,27 @@ export const AllVariants: Story = {
       <View style={{ flexDirection: 'row', gap: 16, alignItems: 'center' }}>
         <LinkButton size="sm" color="primary" variant="medium">SM Primary</LinkButton>
         <LinkButton size="sm" color="primary" variant="bold">SM Bold</LinkButton>
-        <LinkButton size="sm" color="default" variant="medium">SM Default</LinkButton>
-        <LinkButton size="sm" color="default" variant="bold">SM Bold Default</LinkButton>
+        <LinkButton size="sm" color="secondary" variant="medium">SM Secondary</LinkButton>
+        <LinkButton size="sm" color="secondary" variant="bold">SM Bold Secondary</LinkButton>
       </View>
       <View style={{ flexDirection: 'row', gap: 16, alignItems: 'center' }}>
         <LinkButton size="md" color="primary" variant="medium">MD Primary</LinkButton>
         <LinkButton size="md" color="primary" variant="bold">MD Bold</LinkButton>
-        <LinkButton size="md" color="default" variant="medium">MD Default</LinkButton>
-        <LinkButton size="md" color="default" variant="bold">MD Bold Default</LinkButton>
+        <LinkButton size="md" color="secondary" variant="medium">MD Secondary</LinkButton>
+        <LinkButton size="md" color="secondary" variant="bold">MD Bold Secondary</LinkButton>
+      </View>
+      <View style={docsStyles.darkBg}>
+        <LinkButton size="sm" color="light" variant="medium">SM Light</LinkButton>
+        <LinkButton size="sm" color="light" variant="bold">SM Bold Light</LinkButton>
+        <LinkButton size="md" color="light" variant="medium">MD Light</LinkButton>
+        <LinkButton size="md" color="light" variant="bold">MD Bold Light</LinkButton>
       </View>
       <View style={{ flexDirection: 'row', gap: 16, alignItems: 'center' }}>
         <LinkButton disabled size="md" color="primary">Disabled Primary</LinkButton>
-        <LinkButton disabled size="md" color="default">Disabled Default</LinkButton>
+        <LinkButton disabled size="md" color="secondary">Disabled Secondary</LinkButton>
+      </View>
+      <View style={docsStyles.darkBg}>
+        <LinkButton disabled size="md" color="light">Disabled Light</LinkButton>
       </View>
     </View>
   ),

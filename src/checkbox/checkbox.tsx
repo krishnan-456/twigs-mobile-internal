@@ -8,6 +8,7 @@ import { getCheckboxSizeConfig } from './constants';
 import { createCheckboxStyles } from './styles';
 import { TickIcon, HorizontalLineIcon } from './icons';
 
+/** Checkbox with checked, unchecked, and indeterminate states, supporting an optional label. */
 export const Checkbox = React.forwardRef<View, CheckboxProps>(
   (
     {

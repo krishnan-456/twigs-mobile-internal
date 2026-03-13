@@ -1,7 +1,5 @@
 import type { ToastVariant, ToastPosition } from './types';
 
-// ── Variant color configuration ──
-
 interface VariantColorConfig {
   background: string;
   text: string;
@@ -9,9 +7,14 @@ interface VariantColorConfig {
   actionText: string;
 }
 
-/** Color token keys per toast variant — values are keys of theme.colors */
 export const VARIANT_COLORS: Record<ToastVariant, VariantColorConfig> = {
   default: {
+    background: 'accent100',
+    text: 'neutral900',
+    icon: 'accent500',
+    actionText: 'primary500',
+  },
+  secondary: {
     background: 'secondary800',
     text: 'white900',
     icon: 'white900',
@@ -43,8 +46,6 @@ export const VARIANT_COLORS: Record<ToastVariant, VariantColorConfig> = {
   },
 };
 
-// ── Toast dimensions ──
-
 export const TOAST_ICON_SIZE = 24;
 export const TOAST_BORDER_RADIUS = 8;
 export const TOAST_PADDING_HORIZONTAL = 16;
@@ -58,16 +59,12 @@ export const TOAST_TITLE_LINE_HEIGHT = 20;
 export const TOAST_DESCRIPTION_FONT_SIZE = 12;
 export const TOAST_DESCRIPTION_LINE_HEIGHT = 16;
 
-// ── Defaults ──
-
 export const DEFAULT_VARIANT: ToastVariant = 'default';
 export const DEFAULT_DURATION = 4000;
 export const DEFAULT_POSITION: ToastPosition = 'bottom-center';
 export const DEFAULT_MAX_TOASTS = 3;
 export const DEFAULT_GAP = 8;
 export const DEFAULT_OFFSET = 40;
-
-// ── Animation ──
 
 export const ANIMATION_DURATION = 300;
 export const SWIPE_THRESHOLD = 24;
@@ -76,8 +73,6 @@ export const SWIPE_DISMISS_OFFSET = -300;
 export const ENTRY_SPRING_CONFIG = { damping: 20, stiffness: 170, mass: 1 };
 export const PAN_ACTIVE_OFFSET_Y: [number, number] = [-10, 10];
 export const PAN_FAIL_OFFSET_X: [number, number] = [-5, 5];
-
-// ── Position mapping ──
 
 export const POSITION_STYLES: Record<
   ToastPosition,

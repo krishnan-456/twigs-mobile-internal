@@ -52,7 +52,7 @@ describe('Radio', () => {
     expect(getByRole('radio')).toBeTruthy();
   });
 
-  it('uses figma-aligned size configs for sm and md', () => {
+  it('applies correct size configs for sm and md', () => {
     const smTree = wrap(<Radio size="sm" />).toJSON() as any;
     const mdTree = wrap(<Radio size="md" />).toJSON() as any;
 
@@ -193,9 +193,9 @@ describe('Radio', () => {
     const checkedOuterStyle = getOuterCircleStyle(checkedTree);
     const checkedInnerStyle = getInnerCircleStyle(checkedTree);
 
-    expect(uncheckedOuterStyle.borderColor).toBe(defaultTheme.colors.neutral700);
-    expect(checkedOuterStyle.borderColor).toBe(defaultTheme.colors.secondary500);
-    expect(checkedInnerStyle.backgroundColor).toBe(defaultTheme.colors.secondary500);
+    expect(uncheckedOuterStyle.borderColor).toBe(defaultTheme.colors.neutral400);
+    expect(checkedOuterStyle.borderColor).toBe(defaultTheme.colors.secondary600);
+    expect(checkedInnerStyle.backgroundColor).toBe(defaultTheme.colors.secondary600);
   });
 
   it('uses size-specific inner dot dimensions for selected state', () => {

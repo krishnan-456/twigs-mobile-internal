@@ -79,26 +79,6 @@ describe('Tooltip', () => {
   // ── Variants ──
 
   describe('variants', () => {
-    describe('size', () => {
-      const sizes = ['sm', 'md', 'lg'] as const;
-
-      sizes.forEach((size) => {
-        it(`renders with size="${size}"`, () => {
-          const { getByTestId, getByText } = renderTooltip({
-            size,
-            defaultOpen: true,
-          });
-          expect(getByTestId('trigger')).toBeTruthy();
-          expect(getByText('Tooltip text')).toBeTruthy();
-        });
-      });
-
-      it('uses default size="sm" when size prop is not provided', () => {
-        const { getByText } = renderTooltip({ defaultOpen: true });
-        expect(getByText('Tooltip text')).toBeTruthy();
-      });
-    });
-
     describe('side', () => {
       const sides = ['top', 'right', 'bottom', 'left'] as const;
 
@@ -341,24 +321,6 @@ describe('Tooltip', () => {
       );
       expect(queryByText('First')).toBeNull();
       expect(getByText('Second')).toBeTruthy();
-    });
-
-    it('updates size when size prop changes', () => {
-      const { getByText, rerender } = wrap(
-        <Tooltip content="Tooltip text" size="sm" open={true}>
-          <Button testID="trigger">Trigger</Button>
-        </Tooltip>
-      );
-      expect(getByText('Tooltip text')).toBeTruthy();
-
-      rerender(
-        <TwigsProvider>
-          <Tooltip content="Tooltip text" size="lg" open={true}>
-            <Button testID="trigger">Trigger</Button>
-          </Tooltip>
-        </TwigsProvider>
-      );
-      expect(getByText('Tooltip text')).toBeTruthy();
     });
   });
 });

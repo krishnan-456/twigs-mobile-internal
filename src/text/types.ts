@@ -2,9 +2,16 @@ import { ReactNode } from 'react';
 import { AccessibilityRole, TextStyle } from 'react-native';
 import { MarginProps, PaddingProps } from '../utils';
 
+/**
+ * Props for the Text component.
+ * Extends `MarginProps` and `PaddingProps` for spacing shorthand.
+ * `css` is applied before `style` for layered text style overrides.
+ */
 export interface TextProps extends MarginProps, PaddingProps {
   children?: ReactNode;
+  /** Text styles applied before `style`. */
   css?: TextStyle;
+  /** Text styles applied last for final overrides. */
   style?: TextStyle;
   fontSize?: number;
   fontFamily?: string;

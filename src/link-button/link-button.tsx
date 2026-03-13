@@ -49,14 +49,20 @@ export const LinkButton = React.forwardRef<View, LinkButtonProps>(
       [disabled, onPress]
     );
 
-    const pressedStyle = useMemo(
+    const pressedBgStyle = useMemo(
       () => getLinkButtonPressedStyle(color, theme),
       // eslint-disable-next-line react-hooks/exhaustive-deps
       [color]
     );
 
-    const labelStyles = useMemo(
-      () => getLinkButtonTextStyles({ size, color, variant, theme }),
+    const regularTextStyles = useMemo(
+      () => getLinkButtonTextStyles({ size, color, variant, pressed: false, theme }),
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+      [size, color, variant]
+    );
+
+    const pressedTextStyles = useMemo(
+      () => getLinkButtonTextStyles({ size, color, variant, pressed: true, theme }),
       // eslint-disable-next-line react-hooks/exhaustive-deps
       [size, color, variant]
     );
@@ -74,14 +80,23 @@ export const LinkButton = React.forwardRef<View, LinkButtonProps>(
         }
         style={({ pressed }: { pressed: boolean }) => [
           styles.base,
-          pressed && !disabled && pressedStyle,
+          pressed && !disabled && pressedBgStyle,
           disabled && styles.disabled,
           css,
           style,
         ]}
         {...rest}
       >
-        <Text style={[labelStyles, textStyle]}>{children}</Text>
+        {({ pressed }: { pressed: boolean }) => (
+          <Text
+            style={[
+              pressed && !disabled ? pressedTextStyles : regularTextStyles,
+              textStyle,
+            ]}
+          >
+            {children}
+          </Text>
+        )}
       </Pressable>
     );
   }

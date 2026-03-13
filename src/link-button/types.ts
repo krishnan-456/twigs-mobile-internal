@@ -2,13 +2,10 @@ import type { ReactNode } from 'react';
 import type { PressableProps, TextStyle } from 'react-native';
 import type { CommonStyleProps, BaseAccessibilityProps } from '../utils';
 
-/** LinkButton size variants */
 export type LinkButtonSize = 'sm' | 'md';
 
-/** LinkButton color variants */
-export type LinkButtonColor = 'primary' | 'default';
+export type LinkButtonColor = 'primary' | 'secondary' | 'light';
 
-/** LinkButton visual variant controlling font weight */
 export type LinkButtonVariant = 'medium' | 'bold';
 
 /**

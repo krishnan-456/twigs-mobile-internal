@@ -36,7 +36,7 @@ describe('AvatarGroup', () => {
 
   // Variants
   describe('Variants', () => {
-    it.each(['xs', 'sm', 'md', 'lg', 'xl', '2xl', '3xl', '4xl', '5xl'] as const)(
+    it.each(['xxs', 'xs', 'sm', 'md', 'lg', 'xl', '2xl', '3xl'] as const)(
       'renders size="%s"',
       (size) => {
         const { getByTestId } = wrap(
@@ -49,7 +49,7 @@ describe('AvatarGroup', () => {
       }
     );
 
-    it.each(['xs', 'sm', 'md', 'lg', 'xl', '2xl', '3xl', 'full'] as const)(
+    it.each(['xxs', 'xs', 'sm', 'md', 'lg', 'xl', '2xl', '3xl', 'full'] as const)(
       'renders rounded="%s"',
       (rounded) => {
         const { getByTestId } = wrap(

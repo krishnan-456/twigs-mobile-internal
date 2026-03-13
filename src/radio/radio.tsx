@@ -6,6 +6,7 @@ import type { RadioProps } from './types';
 import { getRadioSizeConfig } from './constants';
 import { createRadioStyles } from './styles';
 
+/** Radio button with outer ring and inner dot, supporting an optional label. */
 export const Radio = React.forwardRef<View, RadioProps>(
   (
     {
@@ -39,7 +40,7 @@ export const Radio = React.forwardRef<View, RadioProps>(
         width: outerSize,
         height: outerSize,
         borderRadius: outerSize / 2,
-        borderColor: selected ? theme.colors.secondary500 : theme.colors.neutral700,
+        borderColor: selected ? theme.colors.secondary600 : theme.colors.neutral400,
       }),
       [outerSize, selected, theme]
     );

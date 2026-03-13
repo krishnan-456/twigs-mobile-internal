@@ -8,10 +8,10 @@ import Animated, {
   withTiming,
 } from 'react-native-reanimated';
 import { Svg, Circle } from 'react-native-svg';
-import { colorOpacity } from '../utils';
 import { useTheme } from '../context';
 import type { CircleLoaderProps } from './types';
 import { CIRCLE_LOADER_DIAMETERS, CIRCLE_STROKE_WIDTHS } from './constants';
+import { getLoaderColors } from './helpers';
 
 const styles = StyleSheet.create({
   container: {
@@ -20,40 +20,15 @@ const styles = StyleSheet.create({
   },
 });
 
+/** Animated circular spinner using SVG arcs with a rotating quarter-circle indicator. */
 export const CircleLoader = React.forwardRef<View, CircleLoaderProps>(
   ({ size = 'md', color = 'primary', css, style }, ref) => {
     const theme = useTheme();
     const rotation = useSharedValue(0);
 
-    const colorMap: Record<string, { ring: string; dot: string }> = useMemo(
-      () => ({
-        primary: {
-          ring: colorOpacity(theme.colors.primary800, 0.25),
-          dot: theme.colors.primary800,
-        },
-        secondary: {
-          ring: colorOpacity(theme.colors.secondary700, 0.4),
-          dot: theme.colors.secondary700,
-        },
-        bright: {
-          ring: colorOpacity(theme.colors.white900, 0.5),
-          dot: theme.colors.white900,
-        },
-        negative: {
-          ring: colorOpacity(theme.colors.negative500, 0.4),
-          dot: theme.colors.negative700,
-        },
-        accent: {
-          ring: colorOpacity(theme.colors.accent500, 0.2),
-          dot: theme.colors.accent500,
-        },
-      }),
-      [theme]
-    );
-
+    const colors = useMemo(() => getLoaderColors(theme, color), [theme, color]);
     const diameter = CIRCLE_LOADER_DIAMETERS[size] ?? 12;
     const strokeWidth = CIRCLE_STROKE_WIDTHS[size] ?? 2;
-    const colors = colorMap[color] ?? colorMap.primary;
     const radius = (diameter - strokeWidth) / 2;
     const circumference = 2 * Math.PI * radius;
 
@@ -87,7 +62,7 @@ export const CircleLoader = React.forwardRef<View, CircleLoaderProps>(
               cx={diameter / 2}
               cy={diameter / 2}
               r={radius}
-              stroke={colors.ring}
+              stroke={colors.bg}
               strokeWidth={strokeWidth}
               fill="none"
             />
@@ -95,7 +70,7 @@ export const CircleLoader = React.forwardRef<View, CircleLoaderProps>(
               cx={diameter / 2}
               cy={diameter / 2}
               r={radius}
-              stroke={colors.dot}
+              stroke={colors.fg}
               strokeWidth={strokeWidth}
               fill="none"
               strokeDasharray={`${circumference * 0.25} ${circumference * 0.75}`}

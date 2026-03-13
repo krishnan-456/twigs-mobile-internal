@@ -1,31 +1,29 @@
 import React, { useState, useEffect, useCallback, useMemo, useRef } from 'react';
 import { View, Pressable, Modal } from 'react-native';
 import { useFloating, offset, flip, shift, arrow } from '@floating-ui/react-native';
-import type { Placement } from '@floating-ui/react-native';
 import { useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated';
 import { Svg, Path } from 'react-native-svg';
 import { useTheme } from '../context';
 import { Text } from '../text';
 import { AnimatedView } from '../utils';
 import type { TooltipProps } from './types';
-import { DEFAULT_SIZE, DEFAULT_SIDE, DEFAULT_SIDE_OFFSET, ANIMATION_DURATION } from './constants';
-import { getContentStyles, getTextStyles, getArrowPath, getArrowDimensions } from './helpers';
+import { DEFAULT_SIDE, DEFAULT_SIDE_OFFSET, ANIMATION_DURATION } from './constants';
+import {
+  toPlacement,
+  getContentStyles,
+  getTextStyles,
+  getArrowPath,
+  getArrowDimensions,
+  getArrowPositionStyle,
+} from './helpers';
 import { styles } from './styles';
 
-function toPlacement(
-  side: NonNullable<TooltipProps['side']>,
-  align: NonNullable<TooltipProps['align']>
-): Placement {
-  if (align === 'center') return side;
-  return `${side}-${align === 'start' ? 'start' : 'end'}`;
-}
-
+/** Floating content bubble anchored to a trigger element with arrow pointer. */
 export const Tooltip = React.forwardRef<View, TooltipProps>(
   (
     {
       content,
       children,
-      size = DEFAULT_SIZE,
       side = DEFAULT_SIDE,
       align = 'center',
       open: controlledOpen,
@@ -55,11 +53,13 @@ export const Tooltip = React.forwardRef<View, TooltipProps>(
 
     const placement = useMemo(() => toPlacement(side, align), [side, align]);
 
+    const arrowDims = useMemo(() => getArrowDimensions(side), [side]);
+
     const { refs, floatingStyles, middlewareData } = useFloating({
       sameScrollView: false,
       placement,
       middleware: [
-        offset(sideOffset + (hasArrow ? getArrowDimensions(size, side).height : 0)),
+        offset(sideOffset + (hasArrow ? arrowDims.height : 0)),
         flip(),
         shift({ padding: 8 }),
         ...(hasArrow ? [arrow({ element: arrowRef })] : []),
@@ -117,8 +117,8 @@ export const Tooltip = React.forwardRef<View, TooltipProps>(
       }
     }, [isOpen, handleClose, handleOpen]);
 
-    const contentStyle = useMemo(() => getContentStyles(theme, size), [theme, size]);
-    const textStyle = useMemo(() => getTextStyles(theme, size), [theme, size]);
+    const contentStyle = useMemo(() => getContentStyles(theme), [theme]);
+    const textStyle = useMemo(() => getTextStyles(theme), [theme]);
 
     const triggerProps = useMemo(() => {
       if (triggerAction === 'longPress') {
@@ -127,33 +127,12 @@ export const Tooltip = React.forwardRef<View, TooltipProps>(
       return { onPress: handleToggle };
     }, [triggerAction, handleToggle]);
 
-    const arrowDims = useMemo(() => getArrowDimensions(size, side), [size, side]);
-    const arrowPathD = useMemo(() => getArrowPath(size, side), [size, side]);
+    const arrowPathD = useMemo(() => getArrowPath(side), [side]);
 
-    const arrowPositionStyle = useMemo(() => {
-      const arrowData = middlewareData.arrow;
-      if (!arrowData) return {};
-      const { x, y } = arrowData;
-      const result: Record<string, number> = {};
-      if (x != null) result.left = x;
-      if (y != null) result.top = y;
-
-      switch (side) {
-        case 'top':
-          result.bottom = -arrowDims.height;
-          break;
-        case 'bottom':
-          result.top = -arrowDims.height;
-          break;
-        case 'left':
-          result.right = -arrowDims.width;
-          break;
-        case 'right':
-          result.left = (x ?? 0) > 0 ? x! : -arrowDims.width;
-          break;
-      }
-      return result;
-    }, [middlewareData.arrow, side, arrowDims]);
+    const arrowPositionStyle = useMemo(
+      () => getArrowPositionStyle(side, align, arrowDims, middlewareData.arrow),
+      [side, align, arrowDims, middlewareData.arrow]
+    );
 
     if (!content) return <>{children}</>;
 

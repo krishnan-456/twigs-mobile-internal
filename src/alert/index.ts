@@ -1,2 +1,2 @@
 export { Alert } from './alert';
-export type { AlertProps, AlertStatus, AlertSize } from './types';
+export type { AlertProps, AlertStatus } from './types';

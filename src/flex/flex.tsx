@@ -3,6 +3,7 @@ import { View, ViewStyle } from 'react-native';
 import { resolveMargin, resolvePadding } from '../utils';
 import type { FlexProps } from './types';
 
+/** Flexbox layout container with direction, alignment, and spacing shorthand props. */
 export const Flex = React.forwardRef<View, FlexProps>(
   ({ css, style, children, ...rest }, ref) => {
     const marginProps = {

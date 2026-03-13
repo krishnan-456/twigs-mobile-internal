@@ -87,6 +87,7 @@ describe('Toast', () => {
   describe('variants', () => {
     const variants: ToastVariant[] = [
       'default',
+      'secondary',
       'success',
       'error',
       'warning',
@@ -112,6 +113,7 @@ describe('Toast', () => {
     it('has color config for all variants', () => {
       const allVariants: ToastVariant[] = [
         'default',
+        'secondary',
         'success',
         'error',
         'warning',
@@ -201,6 +203,20 @@ describe('Toast', () => {
       expect(result).toHaveProperty('id');
       expect(result).toHaveProperty('dismiss');
       expect(typeof result!.dismiss).toBe('function');
+    });
+
+    it('toast.secondary() shorthand works with string', () => {
+      const { getByText } = wrap(
+        <ToastProvider>
+          <Text>App</Text>
+        </ToastProvider>,
+      );
+
+      act(() => {
+        toast.secondary('Info');
+      });
+
+      expect(getByText('Info')).toBeTruthy();
     });
 
     it('toast.success() shorthand works with string', () => {
@@ -420,6 +436,7 @@ describe('Toast', () => {
 
       expect(hookResult).toBeDefined();
       expect(typeof hookResult!.show).toBe('function');
+      expect(typeof hookResult!.secondary).toBe('function');
       expect(typeof hookResult!.success).toBe('function');
       expect(typeof hookResult!.error).toBe('function');
       expect(typeof hookResult!.warning).toBe('function');

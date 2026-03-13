@@ -28,10 +28,10 @@ const ModalDemo = (args: ModalProps) => {
             </ModalDescription>
           </ModalHeader>
           <ModalFooter>
-            <Button size="lg" color="default" variant="solid" onPress={() => setVisible(false)}>
+            <Button size="xl" color="default" variant="solid" onPress={() => setVisible(false)}>
               Cancel
             </Button>
-            <Button size="lg" color="error" variant="solid" onPress={() => setVisible(false)}>
+            <Button size="xl" color="error" variant="solid" onPress={() => setVisible(false)}>
               Confirm
             </Button>
           </ModalFooter>
@@ -58,15 +58,9 @@ const meta = {
       control: 'boolean',
       description: 'Whether pressing the backdrop closes the modal',
     },
-    animationType: {
-      control: 'select',
-      options: ['none', 'fade', 'slide'],
-      description: 'Animation type for the modal',
-    },
   },
   args: {
     closeOnBackdropPress: true,
-    animationType: 'fade',
   },
 } satisfies Meta<ModalProps>;
 
@@ -88,9 +82,6 @@ export const Docs: Story = {
         <RNText style={docsStyles.prop}>• onClose — callback when dismissed</RNText>
         <RNText style={docsStyles.prop}>
           • closeOnBackdropPress — boolean (default: true)
-        </RNText>
-        <RNText style={docsStyles.prop}>
-          • animationType — 'none' | 'fade' | 'slide' (default: 'fade')
         </RNText>
       </View>
       <View style={docsStyles.section}>
@@ -114,7 +105,6 @@ export const AllVariants: Story = {
       <View style={{ gap: 12 }}>
         <Button onPress={() => setActiveModal('confirm')}>Confirmation Modal</Button>
         <Button onPress={() => setActiveModal('body')}>Modal with Body</Button>
-        <Button onPress={() => setActiveModal('slide')}>Slide Animation</Button>
 
         <Modal
           visible={activeModal === 'confirm'}
@@ -147,26 +137,8 @@ export const AllVariants: Story = {
               <Text>Form fields would go here.</Text>
             </ModalBody>
             <ModalFooter>
-              <Button size="lg" color="default" onPress={() => setActiveModal(null)}>Cancel</Button>
-              <Button size="lg" color="primary" onPress={() => setActiveModal(null)}>Save</Button>
-            </ModalFooter>
-          </ModalContent>
-        </Modal>
-
-        <Modal
-          visible={activeModal === 'slide'}
-          onClose={() => setActiveModal(null)}
-          animationType="slide"
-        >
-          <ModalContent>
-            <ModalHeader>
-              <ModalTitle>Slide In</ModalTitle>
-              <ModalDescription>This modal slides up from the bottom.</ModalDescription>
-            </ModalHeader>
-            <ModalFooter>
-              <Button size="lg" color="primary" onPress={() => setActiveModal(null)}>
-                Got it
-              </Button>
+              <Button size="xl" color="default" onPress={() => setActiveModal(null)}>Cancel</Button>
+              <Button size="xl" color="primary" onPress={() => setActiveModal(null)}>Save</Button>
             </ModalFooter>
           </ModalContent>
         </Modal>

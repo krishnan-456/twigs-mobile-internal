@@ -1,10 +1,8 @@
 import type { ViewProps } from 'react-native';
 import type { CommonStyleProps, BaseAccessibilityProps } from '../utils';
 
-/** Badge size variants */
 export type BadgeSize = 'sm' | 'md';
 
-/** Badge color variants derived from Figma BadgePill design */
 export type BadgeColor =
   | 'default'
   | 'white'
@@ -15,7 +13,6 @@ export type BadgeColor =
   | 'negative'
   | 'attention';
 
-/** Badge border radius (aligned with Avatar rounded tokens) */
 export type BadgeRounded = 'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl' | '3xl' | 'full';
 
 /**

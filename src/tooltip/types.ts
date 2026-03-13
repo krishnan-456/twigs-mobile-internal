@@ -2,9 +2,6 @@ import type { ReactNode } from 'react';
 import type { ViewProps } from 'react-native';
 import type { CommonStyleProps, BaseAccessibilityProps } from '../utils';
 
-/** Tooltip size variants matching web twigs-react sm | md | lg */
-export type TooltipSize = 'sm' | 'md' | 'lg';
-
 /** Side of the reference element where the tooltip appears */
 export type TooltipSide = 'top' | 'right' | 'bottom' | 'left';
 
@@ -24,8 +21,6 @@ export interface TooltipProps
   content: ReactNode;
   /** Trigger element that the tooltip anchors to */
   children: ReactNode;
-  /** Size variant (default: 'sm') */
-  size?: TooltipSize;
   /** Which side of the trigger the tooltip appears on (default: 'top') */
   side?: TooltipSide;
   /** Alignment along the side axis (default: 'center') */

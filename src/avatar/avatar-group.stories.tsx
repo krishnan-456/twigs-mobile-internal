@@ -50,12 +50,12 @@ const meta = {
     },
     size: {
       control: 'select',
-      options: ['xs', 'sm', 'md', 'lg', 'xl', '2xl', '3xl', '4xl', '5xl'],
+      options: ['xxs', 'xs', 'sm', 'md', 'lg', 'xl', '2xl', '3xl'],
       description: 'Avatar size applied to all children',
     },
     rounded: {
       control: 'select',
-      options: ['xs', 'sm', 'md', 'lg', 'xl', '2xl', '3xl', 'full'],
+      options: ['xxs', 'xs', 'sm', 'md', 'lg', 'xl', '2xl', '3xl', 'full'],
       description: 'Border radius variant',
     },
     children: {
@@ -64,7 +64,7 @@ const meta = {
     },
   },
   args: {
-    size: 'sm',
+    size: 'xs',
     rounded: 'full',
     limit: 4,
     children: DEFAULT_STORY_CHILDREN,
@@ -92,7 +92,7 @@ export const Docs: Story = {
       </View>
       <View style={docsStyles.section}>
         <RNText style={docsStyles.sectionTitle}>Usage</RNText>
-        <AvatarGroup size="sm" limit={3}>
+        <AvatarGroup size="xs" limit={3}>
           {SAMPLE_AVATARS.slice(0, 5).map((a) => (
             <Avatar key={a.name} name={a.name} imageSrc={a.imageSrc} />
           ))}
@@ -109,7 +109,7 @@ export const Default: Story = {
 export const AllVariants: Story = {
   render: () => (
     <View style={{ gap: 16 }}>
-      {(['xs', 'sm', 'md', 'lg', 'xl'] as const).map((size) => (
+      {(['xxs', 'xs', 'sm', 'md', 'lg', 'xl'] as const).map((size) => (
         <AvatarGroup key={size} size={size} limit={4}>
           {SAMPLE_AVATARS.slice(0, 6).map((avatar) => (
             <Avatar key={`${size}-${avatar.name}`} name={avatar.name} imageSrc={avatar.imageSrc} />

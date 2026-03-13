@@ -4,6 +4,7 @@ export const styles = StyleSheet.create({
   container: {
     flexDirection: 'row',
     alignItems: 'center',
+    overflow: 'hidden',
   },
   indicator: {
     position: 'absolute',

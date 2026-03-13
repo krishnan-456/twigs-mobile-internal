@@ -13,13 +13,10 @@ export const SELECTED_SHADOW = {
   shadowRadius: 5,
 } as const;
 
-/** Elevation for Android shadow on selected segment. */
 export const SELECTED_ELEVATION = 2;
 
-/** Container background opacity (Figma: neutral at 8% opacity). */
 export const CONTAINER_BG_OPACITY = 0.08;
 
-/** Border radius values per rounded variant (aligned with Avatar tokens). */
 export const ROUNDED_RADII: Record<SegmentedButtonRounded, number> = {
   xs: 4,
   sm: 8,
@@ -33,5 +30,4 @@ export const ROUNDED_RADII: Record<SegmentedButtonRounded, number> = {
 
 export const DEFAULT_ROUNDED: SegmentedButtonRounded = 'full';
 
-/** Duration (ms) of the slide animation between segments. */
 export const SLIDE_DURATION = 200;

@@ -1,6 +1,3 @@
-// ── Named sub-types for each token category ──
-// Consumers can import these to type individual overrides.
-
 export interface ThemeColors {
   primary: string;
   secondary: string;
@@ -204,8 +201,7 @@ export interface ThemeTransitions {
   [key: string]: number;
 }
 
-// ── Composite theme interface ──
-
+/** Complete theme object consumed by all Twigs components via `useTheme()`. */
 export interface TwigsTheme {
   colors: ThemeColors;
   space: ThemeSpace;
@@ -223,9 +219,7 @@ export interface TwigsTheme {
   transitions: ThemeTransitions;
 }
 
-// ── Default theme values ──
-// All dimension tokens are React Native dp numbers (1rem web = 16dp).
-
+/** Default theme values. All dimension tokens are React Native dp numbers. */
 export const defaultTheme: TwigsTheme = {
   colors: {
     primary: '#2E666D',

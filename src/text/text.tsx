@@ -6,6 +6,7 @@ import type { TextProps } from './types';
 
 const DEFAULT_FONT_SIZE = 14;
 
+/** Themed text component with typography, spacing, and truncation props. */
 export const Text = React.forwardRef<RNText, TextProps>(
   ({ children, css, style, ...rest }, ref) => {
     const theme = useTheme();

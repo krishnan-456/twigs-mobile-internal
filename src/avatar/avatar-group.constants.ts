@@ -1,83 +1,77 @@
 import type { AvatarSize, AvatarSizeProp } from './types';
 
-type AvatarGroupOverlapSizeKey = '3' | '4' | '5' | '6';
-type AvatarGroupBorderWidthKey = 'xs' | 'sm';
-type AvatarGroupFontSizeKey = 'xxs' | 'xs' | 'md' | '3xl';
-
 export interface AvatarGroupSizeConfig {
-  overlapSizeKey: AvatarGroupOverlapSizeKey;
-  borderWidthKey: AvatarGroupBorderWidthKey;
-  overlayFontSizeKey: AvatarGroupFontSizeKey;
-  overlayLineHeightKey: AvatarGroupFontSizeKey;
+  /** Negative margin overlap between avatars (dp). */
+  overlap: number;
+  /** White border width around each avatar (dp). */
+  borderWidth: number;
+  /** Font size for the overflow "+N" label (dp). */
+  overlayFontSize: number;
+  /** Line height for the overflow "+N" label (dp). */
+  overlayLineHeight: number;
+  /** Letter spacing for the overflow "+N" label. */
   overlayLetterSpacing: number;
 }
 
 export const DEFAULT_AVATAR_GROUP_LIMIT = 0;
-export const DEFAULT_AVATAR_GROUP_SIZE: AvatarSizeProp = 'sm';
+export const DEFAULT_AVATAR_GROUP_SIZE: AvatarSizeProp = 'xs';
 export const DEFAULT_AVATAR_GROUP_ROUNDED: AvatarSize = 'full';
 
 export const AVATAR_GROUP_SIZE_CONFIG: Record<AvatarSizeProp, AvatarGroupSizeConfig> = {
+  xxs: {
+    overlap: 8,
+    borderWidth: 1,
+    overlayFontSize: 8,
+    overlayLineHeight: 12,
+    overlayLetterSpacing: 0.06,
+  },
   xs: {
-    overlapSizeKey: '3',
-    borderWidthKey: 'xs',
-    overlayFontSizeKey: 'xxs',
-    overlayLineHeightKey: 'xxs',
-    overlayLetterSpacing: 0.6,
+    overlap: 12,
+    borderWidth: 1,
+    overlayFontSize: 10,
+    overlayLineHeight: 14,
+    overlayLetterSpacing: 0.06,
   },
   sm: {
-    overlapSizeKey: '3',
-    borderWidthKey: 'xs',
-    overlayFontSizeKey: 'xxs',
-    overlayLineHeightKey: 'xxs',
-    overlayLetterSpacing: 0.6,
+    overlap: 16,
+    borderWidth: 1.5,
+    overlayFontSize: 12,
+    overlayLineHeight: 16,
+    overlayLetterSpacing: 0.048,
   },
   md: {
-    overlapSizeKey: '4',
-    borderWidthKey: 'sm',
-    overlayFontSizeKey: 'xs',
-    overlayLineHeightKey: 'xs',
-    overlayLetterSpacing: 0.4,
+    overlap: 20,
+    borderWidth: 2,
+    overlayFontSize: 14,
+    overlayLineHeight: 20,
+    overlayLetterSpacing: 0.028,
   },
   lg: {
-    overlapSizeKey: '5',
-    borderWidthKey: 'sm',
-    overlayFontSizeKey: 'md',
-    overlayLineHeightKey: 'md',
+    overlap: 24,
+    borderWidth: 2,
+    overlayFontSize: 16,
+    overlayLineHeight: 24,
     overlayLetterSpacing: 0,
   },
   xl: {
-    overlapSizeKey: '6',
-    borderWidthKey: 'sm',
-    overlayFontSizeKey: 'md',
-    overlayLineHeightKey: 'md',
+    overlap: 32,
+    borderWidth: 2,
+    overlayFontSize: 18,
+    overlayLineHeight: 26,
     overlayLetterSpacing: 0,
   },
   '2xl': {
-    overlapSizeKey: '6',
-    borderWidthKey: 'sm',
-    overlayFontSizeKey: 'md',
-    overlayLineHeightKey: 'md',
+    overlap: 40,
+    borderWidth: 2,
+    overlayFontSize: 24,
+    overlayLineHeight: 32,
     overlayLetterSpacing: 0,
   },
   '3xl': {
-    overlapSizeKey: '6',
-    borderWidthKey: 'sm',
-    overlayFontSizeKey: '3xl',
-    overlayLineHeightKey: '3xl',
-    overlayLetterSpacing: 0,
-  },
-  '4xl': {
-    overlapSizeKey: '6',
-    borderWidthKey: 'sm',
-    overlayFontSizeKey: '3xl',
-    overlayLineHeightKey: '3xl',
-    overlayLetterSpacing: 0,
-  },
-  '5xl': {
-    overlapSizeKey: '6',
-    borderWidthKey: 'sm',
-    overlayFontSizeKey: '3xl',
-    overlayLineHeightKey: '3xl',
+    overlap: 48,
+    borderWidth: 2,
+    overlayFontSize: 28,
+    overlayLineHeight: 36,
     overlayLetterSpacing: 0,
   },
 };

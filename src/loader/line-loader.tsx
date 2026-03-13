@@ -1,10 +1,11 @@
 import React, { useEffect, useMemo } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { useAnimatedStyle, useSharedValue, withRepeat, withTiming } from 'react-native-reanimated';
-import { AnimatedView, colorOpacity } from '../utils';
+import { AnimatedView } from '../utils';
 import { useTheme } from '../context';
 import type { LineLoaderProps } from './types';
 import { LINE_LOADER_DIMENSIONS } from './constants';
+import { getLoaderColors } from './helpers';
 
 const styles = StyleSheet.create({
   container: {
@@ -13,39 +14,14 @@ const styles = StyleSheet.create({
   },
 });
 
+/** Animated horizontal line loader with a sliding dot indicator. */
 export const LineLoader = React.forwardRef<View, LineLoaderProps>(
   ({ size = 'sm', color = 'primary', css, style }, ref) => {
     const theme = useTheme();
     const progress = useSharedValue(0);
 
-    const colorMap: Record<string, { track: string; dot: string }> = useMemo(
-      () => ({
-        primary: {
-          track: colorOpacity(theme.colors.primary800, 0.25),
-          dot: theme.colors.primary800,
-        },
-        secondary: {
-          track: colorOpacity(theme.colors.secondary700, 0.4),
-          dot: theme.colors.secondary700,
-        },
-        bright: {
-          track: colorOpacity(theme.colors.white900, 0.5),
-          dot: theme.colors.white900,
-        },
-        negative: {
-          track: colorOpacity(theme.colors.negative500, 0.4),
-          dot: theme.colors.negative700,
-        },
-        accent: {
-          track: colorOpacity(theme.colors.accent500, 0.2),
-          dot: theme.colors.accent500,
-        },
-      }),
-      [theme]
-    );
-
+    const colors = useMemo(() => getLoaderColors(theme, color), [theme, color]);
     const { width, height } = LINE_LOADER_DIMENSIONS[size] ?? LINE_LOADER_DIMENSIONS.sm;
-    const colors = colorMap[color] ?? colorMap.primary;
 
     useEffect(() => {
       progress.value = withRepeat(withTiming(1, { duration: 1000 }), -1, false);
@@ -61,19 +37,19 @@ export const LineLoader = React.forwardRef<View, LineLoaderProps>(
         opacity,
         width: width * 0.4,
         height,
-        backgroundColor: colors.dot,
+        backgroundColor: colors.fg,
         borderRadius: height / 2,
       };
-    }, [width, height, colors.dot]);
+    }, [width, height, colors.fg]);
 
     const containerStyle = useMemo(
       () => ({
         width,
         height,
-        backgroundColor: colors.track,
+        backgroundColor: colors.bg,
         borderRadius: height / 2,
       }),
-      [width, height, colors.track]
+      [width, height, colors.bg]
     );
 
     return (

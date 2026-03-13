@@ -15,6 +15,7 @@ import type { TextInputProps } from './types';
 import { getSizeConfig } from './constants';
 import { createTextInputStyles } from './styles';
 
+/** Themed text input with size/variant presets, icon slots, error state, and password toggle. */
 export const TextInput = forwardRef<RNTextInput, TextInputProps>(
   (
     {

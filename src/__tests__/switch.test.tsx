@@ -11,8 +11,8 @@ const getSwitchStyle = (switchElement: ReturnType<typeof render>['getByRole']) =
   return StyleSheet.flatten(Array.isArray(style) ? style : [style]);
 };
 
-// From switch constants: sm track 28x14, md track 40x20
-const SM_TRACK = { width: 28, height: 14 };
+// From switch constants: sm track 28x16, md track 40x20
+const SM_TRACK = { width: 28, height: 16 };
 const MD_TRACK = { width: 40, height: 20 };
 
 describe('Switch', () => {
@@ -65,6 +65,53 @@ describe('Switch', () => {
     const style = getSwitchStyle(getByRole);
     expect(style.width).toBe(MD_TRACK.width);
     expect(style.height).toBe(MD_TRACK.height);
+  });
+
+  // ── Color variants ──
+
+  describe('color prop', () => {
+    it('uses primary500 background when checked with color="primary"', () => {
+      const { getByRole } = wrap(<Switch value color="primary" />);
+      const style = getSwitchStyle(getByRole);
+      expect(style.backgroundColor).toBe('#00828D');
+    });
+
+    it('uses secondary600 background when checked with color="secondary"', () => {
+      const { getByRole } = wrap(<Switch value color="secondary" />);
+      const style = getSwitchStyle(getByRole);
+      expect(style.backgroundColor).toBe('#4E596C');
+    });
+
+    it('uses neutral400 background when unchecked regardless of color', () => {
+      const { getByRole: getByRolePrimary } = wrap(
+        <Switch value={false} color="primary" />
+      );
+      const { getByRole: getByRoleSecondary } = wrap(
+        <Switch value={false} color="secondary" />
+      );
+      const primaryStyle = getSwitchStyle(getByRolePrimary);
+      const secondaryStyle = getSwitchStyle(getByRoleSecondary);
+      expect(primaryStyle.backgroundColor).toBe('#9E9E9E');
+      expect(secondaryStyle.backgroundColor).toBe('#9E9E9E');
+    });
+
+    it('applies opacity 0.4 when disabled', () => {
+      const { getByRole } = wrap(<Switch value disabled />);
+      const style = getSwitchStyle(getByRole);
+      expect(style.opacity).toBe(0.4);
+    });
+
+    it('applies opacity 1 when not disabled', () => {
+      const { getByRole } = wrap(<Switch value />);
+      const style = getSwitchStyle(getByRole);
+      expect(style.opacity).toBe(1);
+    });
+
+    it('defaults to color="primary" when no color prop provided', () => {
+      const { getByRole } = wrap(<Switch value />);
+      const style = getSwitchStyle(getByRole);
+      expect(style.backgroundColor).toBe('#00828D');
+    });
   });
 
   // ── Accessibility ──

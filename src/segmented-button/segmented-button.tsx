@@ -4,11 +4,17 @@ import type { LayoutChangeEvent } from 'react-native';
 import { useSharedValue, useAnimatedStyle, withTiming, Easing } from 'react-native-reanimated';
 import { AnimatedView } from '../utils';
 import { useTheme } from '../context';
-import type { SegmentedButtonProps } from './types';
+import type { SegmentedButtonProps, SegmentedButtonRounded } from './types';
 import { DEFAULT_ROUNDED, SLIDE_DURATION } from './constants';
-import { getContainerStyles, getIndicatorStyles, getSegmentTextStyles } from './helpers';
+import {
+  getContainerStyles,
+  getIndicatorStyles,
+  getSegmentTextStyles,
+  getSegmentPressedStyles,
+} from './helpers';
 import { styles } from './styles';
 
+/** Horizontal group of mutually exclusive options with an animated sliding indicator. */
 export const SegmentedButton = React.forwardRef<View, SegmentedButtonProps>(
   (
     {
@@ -117,6 +123,7 @@ export const SegmentedButton = React.forwardRef<View, SegmentedButtonProps>(
               label={option.label}
               selected={isSelected}
               disabled={isSegmentDisabled}
+              rounded={rounded}
               onSelect={() => handleSelect(option.value)}
             />
           );
@@ -132,17 +139,31 @@ interface SegmentInternalProps {
   label: string;
   selected: boolean;
   disabled: boolean;
+  rounded: SegmentedButtonRounded;
   onSelect: () => void;
 }
 
-const Segment: React.FC<SegmentInternalProps> = ({ label, selected, disabled, onSelect }) => {
+const Segment: React.FC<SegmentInternalProps> = ({
+  label,
+  selected,
+  disabled,
+  rounded,
+  onSelect,
+}) => {
   const theme = useTheme();
 
   const textDynamicStyles = useMemo(() => getSegmentTextStyles(theme, selected), [theme, selected]);
+  const pressedStyles = useMemo(
+    () => getSegmentPressedStyles(theme, rounded),
+    [theme, rounded]
+  );
 
   return (
     <Pressable
-      style={styles.segment}
+      style={({ pressed }) => [
+        styles.segment,
+        !selected && pressed && pressedStyles,
+      ]}
       onPress={onSelect}
       disabled={disabled}
       accessible

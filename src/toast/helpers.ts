@@ -1,6 +1,13 @@
 import type { ViewStyle, TextStyle } from 'react-native';
 import type { TwigsTheme } from '../theme';
 import type { ToastVariant, ToastPosition } from './types';
+
+let idCounter = 0;
+
+export function generateToastId(): string {
+  idCounter += 1;
+  return `twigs-toast-${idCounter}`;
+}
 import {
   VARIANT_COLORS,
   TOAST_BORDER_RADIUS,
@@ -16,7 +23,6 @@ import {
   SWIPE_ELASTIC_RESISTANCE,
 } from './constants';
 
-/** Returns variant-dependent container styles (background, shadow) */
 export function getVariantContainerStyles(
   theme: TwigsTheme,
   variant: ToastVariant,
@@ -32,14 +38,13 @@ export function getVariantContainerStyles(
     minHeight: TOAST_MIN_HEIGHT,
     gap: TOAST_CONTAINER_GAP,
     shadowColor: theme.colors.black900,
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.15,
-    shadowRadius: 8,
-    elevation: 5,
+    shadowOffset: { width: 2, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3,
   };
 }
 
-/** Returns the icon fill color for a given variant */
 export function getIconColor(
   theme: TwigsTheme,
   variant: ToastVariant,
@@ -48,7 +53,6 @@ export function getIconColor(
   return theme.colors[colorKey];
 }
 
-/** Returns the background color for a given variant (used as innerColor for info icon) */
 export function getBackgroundColor(
   theme: TwigsTheme,
   variant: ToastVariant,
@@ -58,7 +62,6 @@ export function getBackgroundColor(
   return theme.colors[colorKey];
 }
 
-/** Returns title text styles for a given variant */
 export function getTitleStyles(
   theme: TwigsTheme,
   variant: ToastVariant,
@@ -72,7 +75,6 @@ export function getTitleStyles(
   };
 }
 
-/** Returns description text styles for a given variant */
 export function getDescriptionStyles(
   theme: TwigsTheme,
   variant: ToastVariant,
@@ -86,14 +88,16 @@ export function getDescriptionStyles(
   };
 }
 
-/** Applies diminishing resistance as the user drags in the wrong direction */
+/**
+ * Applies elastic resistance to a swipe distance (Reanimated worklet).
+ * Returns a dampened value that decreases progressively as distance grows.
+ */
 export function elasticResistance(distance: number): number {
   'worklet';
   const progressiveFactor = 1 / (1 + Math.abs(distance) * 0.02);
   return distance * SWIPE_ELASTIC_RESISTANCE * progressiveFactor;
 }
 
-/** Returns positioning styles for the toast stack container */
 export function getPositionContainerStyle(
   position: ToastPosition,
   offset: number,

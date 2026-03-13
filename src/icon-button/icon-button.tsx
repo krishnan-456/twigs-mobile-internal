@@ -1,16 +1,30 @@
-import React, { isValidElement, useMemo, ReactElement } from 'react';
-import { View, ViewStyle } from 'react-native';
-import { Button } from '../button';
+import React, {
+  useMemo,
+  useCallback,
+  type ReactElement,
+  type ReactNode,
+} from 'react';
+import { Pressable, type PressableProps, StyleSheet, View } from 'react-native';
 import { useTheme } from '../context';
+import { LineLoader, CircleLoader } from '../loader';
 import type { IconButtonProps } from './types';
-import { getIconColor } from './helpers';
-import { ROUNDED_RADII, DEFAULT_ROUNDED } from './constants';
+import {
+  getIconButtonStyles,
+  getIconButtonPressedStyles,
+  getIconColor,
+  getIconSize,
+  getLoaderColor,
+  getLineLoaderSize,
+  getLineLoaderWidth,
+  getCircleLoaderSize,
+} from './helpers';
+import { ROUNDED_RADII, DEFAULT_ROUNDED, DISABLED_OPACITY } from './constants';
 
-/**
- * A focused icon-only button that delegates to Button internally.
- * Uses a `rounded` prop for border radius control (aligned with Avatar tokens).
- * Web parity: mirrors twigs-react IconButton which wraps the web Button.
- */
+const styles = StyleSheet.create({
+  disabled: { opacity: DISABLED_OPACITY },
+});
+
+/** Icon-only pressable button with size, color, variant, and loading presets. */
 export const IconButton = React.forwardRef<View, IconButtonProps>(
   (
     {
@@ -21,48 +35,116 @@ export const IconButton = React.forwardRef<View, IconButtonProps>(
       rounded = DEFAULT_ROUNDED,
       disabled = false,
       loading = false,
-      loader,
+      loader = 'line',
       css,
       style,
       accessibilityLabel,
+      onPress,
       ...rest
     },
     ref
   ) => {
     const theme = useTheme();
 
-    const iconColor = useMemo(
-      () => getIconColor(color, variant, theme),
+    const baseStyles = useMemo(
+      () => getIconButtonStyles(color, variant, size, theme),
+      [color, variant, size, theme]
+    );
+
+    const pressedStyles = useMemo(
+      () => getIconButtonPressedStyles(color, variant, theme),
       [color, variant, theme]
     );
 
-    const element = useMemo<ReactElement | undefined>(() => {
-      if (!isValidElement(icon)) return undefined;
-      return React.cloneElement(icon as ReactElement<{ color?: string }>, {
-        color: iconColor,
-      });
-    }, [icon, iconColor]);
+    const radiusOverride = useMemo(
+      () => ({ borderRadius: ROUNDED_RADII[rounded] }),
+      [rounded]
+    );
 
-    const mergedCss = useMemo<ViewStyle | undefined>(() => {
-      const radius = ROUNDED_RADII[rounded];
-      return { borderRadius: radius, ...css };
-    }, [rounded, css]);
+    const iconSize = useMemo(() => getIconSize(size), [size]);
+
+    const regularIconColor = useMemo(
+      () => getIconColor(color, variant, theme, false),
+      [color, variant, theme]
+    );
+
+    const pressedIconColor = useMemo(
+      () => getIconColor(color, variant, theme, true),
+      [color, variant, theme]
+    );
+
+    const loaderColor = useMemo(
+      () => getLoaderColor(color, variant),
+      [color, variant]
+    );
+
+    const handlePress = useCallback<NonNullable<PressableProps['onPress']>>(
+      (event) => {
+        if (!disabled && !loading && onPress) {
+          onPress(event);
+        }
+      },
+      [disabled, loading, onPress]
+    );
+
+    const renderIcon = useCallback(
+      (pressed: boolean) => {
+        if (!React.isValidElement(icon)) return null;
+
+        const currentIconColor =
+          pressed && !disabled && !loading
+            ? pressedIconColor
+            : regularIconColor;
+
+        return React.cloneElement(
+          icon as ReactElement<{ color?: string; size?: number }>,
+          { color: currentIconColor, size: iconSize }
+        );
+      },
+      [icon, iconSize, regularIconColor, pressedIconColor, disabled, loading]
+    );
+
+    const lineLoaderWidthStyle = useMemo(
+      () => ({ width: getLineLoaderWidth(size) }),
+      [size]
+    );
+
+    const renderLoader = useCallback((): ReactNode => {
+      if (React.isValidElement(loader)) return loader;
+      if (loader === 'circle') {
+        return <CircleLoader color={loaderColor} size={getCircleLoaderSize(size)} />;
+      }
+      return (
+        <LineLoader
+          color={loaderColor}
+          size={getLineLoaderSize(size)}
+          css={lineLoaderWidthStyle}
+        />
+      );
+    }, [loader, loaderColor, size, lineLoaderWidthStyle]);
 
     return (
-      <Button
+      <Pressable
         ref={ref}
-        icon={element}
-        size={size}
-        color={color}
-        variant={variant}
-        disabled={disabled}
-        loading={loading}
-        loader={loader}
+        onPress={handlePress}
+        accessible
+        accessibilityRole="button"
+        accessibilityState={{ disabled, busy: loading }}
         accessibilityLabel={accessibilityLabel ?? 'Icon button'}
-        css={mergedCss}
-        style={style}
+        style={({ pressed }: { pressed: boolean }) => [
+          baseStyles,
+          radiusOverride,
+          disabled && styles.disabled,
+          pressed && !disabled && !loading && pressedStyles,
+          css,
+          style,
+        ]}
         {...rest}
-      />
+      >
+        {({ pressed }: { pressed: boolean }) =>
+          loading ? renderLoader() : renderIcon(pressed)
+        }
+      </Pressable>
     );
   }
 );

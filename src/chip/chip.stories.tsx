@@ -1,16 +1,28 @@
 import React, { useState } from 'react';
-import { View, Text as RNText, StyleSheet, Alert } from 'react-native';
+import { View, Text as RNText, StyleSheet } from 'react-native';
 import type { Meta, StoryObj } from '@storybook/react-native';
 import { Svg, Path } from 'react-native-svg';
 import { Chip } from './chip';
 import type { ChipProps } from './types';
 
-const PlusIcon = ({ size = 16, color = '#111' }: { size?: number; color?: string }) => (
-  <Svg width={size} height={size} viewBox="0 0 24 24" fill="none">
+const PlusIcon = ({ size = 16, color = '#3D424D' }: { size?: number; color?: string }) => (
+  <Svg width={size} height={size} viewBox="0 0 16 16" fill="none">
     <Path
-      d="M12 5V19M5 12H19"
+      d="M8 3.33331V12.6666M3.33331 7.99998H12.6666"
       stroke={color}
-      strokeWidth={2}
+      strokeWidth={1.5}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+  </Svg>
+);
+
+const ChevronDownIcon = ({ size = 16, color = '#3D424D' }: { size?: number; color?: string }) => (
+  <Svg width={size} height={size} viewBox="0 0 16 16" fill="none">
+    <Path
+      d="M4 6L8 10L12 6"
+      stroke={color}
+      strokeWidth={1.5}
       strokeLinecap="round"
       strokeLinejoin="round"
     />
@@ -26,37 +38,37 @@ const docsStyles = StyleSheet.create({
   prop: { fontSize: 13, color: '#444', lineHeight: 18 },
 });
 
+interface StoryArgs extends ChipProps {
+  leftIcon?: boolean;
+  rightIcon?: boolean;
+}
+
 const meta = {
   title: 'Components/Chip',
   component: Chip,
   argTypes: {
     size: {
       control: 'select',
-      options: ['sm', 'md'],
+      options: ['sm', 'md', 'lg'],
       description: 'Size variant',
     },
     color: {
       control: 'select',
-      options: ['default', 'primary', 'secondary', 'error', 'warning', 'success', 'accent'],
+      options: ['secondary', 'primary'],
       description: 'Color variant',
-    },
-    variant: {
-      control: 'select',
-      options: ['solid', 'outline'],
-      description: 'Visual variant',
     },
     rounded: {
       control: 'select',
-      options: ['xs', 'sm', 'md', 'lg', 'xl', '2xl', '3xl', 'full'],
+      options: ['xxs', 'xs', 'sm', 'md', 'lg', 'xl', '2xl', '3xl', 'full'],
       description: 'Border radius variant',
     },
-    closable: {
+    leftIcon: {
       control: 'boolean',
-      description: 'Show close button',
+      description: 'Show left icon (Plus)',
     },
-    selectable: {
+    rightIcon: {
       control: 'boolean',
-      description: 'Enable toggle behavior',
+      description: 'Show right icon (Chevron)',
     },
     disabled: {
       control: 'boolean',
@@ -70,14 +82,13 @@ const meta = {
   args: {
     children: 'Content',
     size: 'sm',
-    color: 'default',
-    variant: 'solid',
-    rounded: 'sm',
-    closable: false,
-    selectable: false,
+    color: 'secondary',
+    rounded: 'xs',
+    leftIcon: true,
+    rightIcon: true,
     disabled: false,
   },
-} satisfies Meta<ChipProps>;
+} satisfies Meta<StoryArgs>;
 
 export default meta;
 
@@ -88,58 +99,228 @@ export const Docs: Story = {
     <View style={docsStyles.container}>
       <RNText style={docsStyles.title}>Chip</RNText>
       <RNText style={docsStyles.description}>
-        Compact element for tags, filters, or selections. Supports solid/outline variants, closable
-        state, selectable toggle, and icon elements.
+        Selectable pill for filters, tags, and selections. Supports secondary and primary color
+        variants with left/right icon slots, and three interactive states: normal, pressed, and
+        active.
       </RNText>
       <View style={docsStyles.section}>
         <RNText style={docsStyles.sectionTitle}>Props</RNText>
-        <RNText style={docsStyles.prop}>• size — 'sm' | 'md' (default: 'sm')</RNText>
         <RNText style={docsStyles.prop}>
-          • color — 'default' | 'primary' | 'secondary' | 'error' | 'warning' | 'success' |
-          'accent'
+          • size — 'sm' | 'md' | 'lg' (default: 'sm')
         </RNText>
-        <RNText style={docsStyles.prop}>• variant — 'solid' | 'outline' (default: 'solid')</RNText>
-        <RNText style={docsStyles.prop}>• closable — show close button (default: false)</RNText>
-        <RNText style={docsStyles.prop}>• selectable — enable toggle (default: false)</RNText>
+        <RNText style={docsStyles.prop}>
+          • color — 'secondary' | 'primary' (default: 'secondary')
+        </RNText>
+        <RNText style={docsStyles.prop}>
+          • rounded — 'xxs' | 'xs' | ... | '3xl' | 'full' (default: 'xs')
+        </RNText>
         <RNText style={docsStyles.prop}>• disabled — boolean (default: false)</RNText>
+        <RNText style={docsStyles.prop}>
+          • leftElement / rightElement — optional icon elements
+        </RNText>
+        <RNText style={docsStyles.prop}>
+          • active / defaultActive / onActiveStateChange — toggle state
+        </RNText>
       </View>
       <View style={docsStyles.section}>
         <RNText style={docsStyles.sectionTitle}>Usage</RNText>
-        <Chip color="primary">Chip</Chip>
+        <Chip
+          color="secondary"
+          leftElement={<PlusIcon />}
+          rightElement={<ChevronDownIcon />}
+        >
+          Content
+        </Chip>
       </View>
     </View>
   ),
 };
 
-export const Default: Story = {};
+export const Default: Story = {
+  render: (args) => {
+    const { leftIcon, rightIcon, ...chipProps } = args as StoryArgs;
+    return (
+      <Chip
+        {...chipProps}
+        leftElement={leftIcon ? <PlusIcon /> : undefined}
+        rightElement={rightIcon ? <ChevronDownIcon /> : undefined}
+      />
+    );
+  },
+};
 
-export const AllVariants: Story = {
-  render: () => (
-    <View style={{ gap: 16 }}>
-      <View style={{ flexDirection: 'row', gap: 8, flexWrap: 'wrap' }}>
-        <Chip color="default">Default</Chip>
-        <Chip color="primary">Primary</Chip>
-        <Chip color="secondary">Secondary</Chip>
-        <Chip color="error">Error</Chip>
-        <Chip color="warning">Warning</Chip>
-        <Chip color="success">Success</Chip>
-        <Chip color="accent">Accent</Chip>
-      </View>
-      <View style={{ flexDirection: 'row', gap: 8, flexWrap: 'wrap' }}>
-        <Chip variant="outline" color="default">Outline</Chip>
-        <Chip variant="outline" color="primary">Primary</Chip>
-        <Chip variant="outline" color="secondary">Secondary</Chip>
-      </View>
+const AllVariantsDemo = () => {
+  const [a1, setA1] = useState(false);
+  const [a2, setA2] = useState(false);
+  const [a3, setA3] = useState(false);
+  const [a4, setA4] = useState(false);
+  const [a5, setA5] = useState(false);
+  const [a6, setA6] = useState(false);
+
+  return (
+    <View style={{ gap: 24 }}>
+      <RNText style={{ fontSize: 14, fontWeight: '600' }}>
+        Secondary — Squircle (tap to toggle)
+      </RNText>
       <View style={{ flexDirection: 'row', gap: 8, alignItems: 'center' }}>
-        <Chip size="sm">SM</Chip>
-        <Chip size="md">MD</Chip>
-        <Chip rounded="full">Pill</Chip>
-        <Chip closable onClose={() => Alert.alert('Closed')}>Closable</Chip>
+        <Chip
+          size="sm"
+          active={a1}
+          onActiveStateChange={setA1}
+          leftElement={<PlusIcon />}
+          rightElement={<ChevronDownIcon />}
+        >
+          Content
+        </Chip>
+        <Chip
+          size="md"
+          active={a2}
+          onActiveStateChange={setA2}
+          leftElement={<PlusIcon />}
+          rightElement={<ChevronDownIcon />}
+        >
+          Content
+        </Chip>
+        <Chip
+          size="lg"
+          active={a3}
+          onActiveStateChange={setA3}
+          leftElement={<PlusIcon />}
+          rightElement={<ChevronDownIcon />}
+        >
+          Content
+        </Chip>
       </View>
+
+      <RNText style={{ fontSize: 14, fontWeight: '600' }}>
+        Secondary — Full / Rounded (tap to toggle)
+      </RNText>
+      <View style={{ flexDirection: 'row', gap: 8, alignItems: 'center' }}>
+        <Chip
+          size="sm"
+          rounded="full"
+          active={a1}
+          onActiveStateChange={setA1}
+          leftElement={<PlusIcon />}
+          rightElement={<ChevronDownIcon />}
+        >
+          Content
+        </Chip>
+        <Chip
+          size="md"
+          rounded="full"
+          active={a2}
+          onActiveStateChange={setA2}
+          leftElement={<PlusIcon />}
+          rightElement={<ChevronDownIcon />}
+        >
+          Content
+        </Chip>
+        <Chip
+          size="lg"
+          rounded="full"
+          active={a3}
+          onActiveStateChange={setA3}
+          leftElement={<PlusIcon />}
+          rightElement={<ChevronDownIcon />}
+        >
+          Content
+        </Chip>
+      </View>
+
+      <RNText style={{ fontSize: 14, fontWeight: '600' }}>
+        Primary — Squircle (tap to toggle)
+      </RNText>
+      <View style={{ flexDirection: 'row', gap: 8, alignItems: 'center' }}>
+        <Chip
+          size="sm"
+          color="primary"
+          active={a4}
+          onActiveStateChange={setA4}
+          leftElement={<PlusIcon />}
+          rightElement={<ChevronDownIcon />}
+        >
+          Content
+        </Chip>
+        <Chip
+          size="md"
+          color="primary"
+          active={a5}
+          onActiveStateChange={setA5}
+          leftElement={<PlusIcon />}
+          rightElement={<ChevronDownIcon />}
+        >
+          Content
+        </Chip>
+        <Chip
+          size="lg"
+          color="primary"
+          active={a6}
+          onActiveStateChange={setA6}
+          leftElement={<PlusIcon />}
+          rightElement={<ChevronDownIcon />}
+        >
+          Content
+        </Chip>
+      </View>
+
+      <RNText style={{ fontSize: 14, fontWeight: '600' }}>
+        Primary — Full / Rounded (tap to toggle)
+      </RNText>
+      <View style={{ flexDirection: 'row', gap: 8, alignItems: 'center' }}>
+        <Chip
+          size="sm"
+          color="primary"
+          rounded="full"
+          active={a4}
+          onActiveStateChange={setA4}
+          leftElement={<PlusIcon />}
+          rightElement={<ChevronDownIcon />}
+        >
+          Content
+        </Chip>
+        <Chip
+          size="md"
+          color="primary"
+          rounded="full"
+          active={a5}
+          onActiveStateChange={setA5}
+          leftElement={<PlusIcon />}
+          rightElement={<ChevronDownIcon />}
+        >
+          Content
+        </Chip>
+        <Chip
+          size="lg"
+          color="primary"
+          rounded="full"
+          active={a6}
+          onActiveStateChange={setA6}
+          leftElement={<PlusIcon />}
+          rightElement={<ChevronDownIcon />}
+        >
+          Content
+        </Chip>
+      </View>
+
+      <RNText style={{ fontSize: 14, fontWeight: '600' }}>Disabled</RNText>
       <View style={{ flexDirection: 'row', gap: 8 }}>
-        <Chip leftElement={<PlusIcon />} rightElement={<PlusIcon />}>With Icons</Chip>
-        <Chip disabled>Disabled</Chip>
+        <Chip disabled leftElement={<PlusIcon />} rightElement={<ChevronDownIcon />}>
+          Content
+        </Chip>
+        <Chip
+          color="primary"
+          disabled
+          leftElement={<PlusIcon />}
+          rightElement={<ChevronDownIcon />}
+        >
+          Content
+        </Chip>
       </View>
     </View>
-  ),
+  );
+};
+
+export const AllVariants: Story = {
+  render: () => <AllVariantsDemo />,
 };

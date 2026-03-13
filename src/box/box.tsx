@@ -3,6 +3,7 @@ import { View, ViewStyle } from 'react-native';
 import { resolveMargin, resolvePadding } from '../utils';
 import type { BoxProps } from './types';
 
+/** Basic layout container with margin and padding shorthand props. */
 export const Box = forwardRef<View, BoxProps>(({ css, style, children, ...rest }, ref) => {
   const {
     margin,

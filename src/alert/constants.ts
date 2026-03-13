@@ -1,59 +1,27 @@
-import type { AlertSize, AlertStatus } from './types';
+import type { AlertStatus } from './types';
 
-interface SizeConfig {
-  paddingHorizontal: number;
-  paddingVertical: number;
-  fontSize: number;
-  lineHeight: number;
-  fontKey: 'regular' | 'medium' | 'bold';
-  statusIconSize: number;
-  closeIconSize: number;
-  gap: number;
-  borderRadius: number;
-}
+export const ALERT_PADDING_LEFT = 12;
+export const ALERT_PADDING_RIGHT = 8;
+export const ALERT_PADDING_VERTICAL = 8;
+export const ALERT_GAP = 8;
+export const ALERT_BORDER_RADIUS = 8;
+export const ALERT_FONT_SIZE = 14;
+export const ALERT_LINE_HEIGHT = 20;
+export const ALERT_ICON_SIZE = 20;
+export const ALERT_CLOSE_ICON_SIZE = 16;
+export const ALERT_MIN_HEIGHT = 40;
+export const ALERT_TEXT_COLOR = 'neutral900';
 
-/** Size configuration for alert variants */
-export const SIZE_CONFIG: Record<AlertSize, SizeConfig> = {
-  sm: {
-    paddingHorizontal: 8,
-    paddingVertical: 6,
-    fontSize: 14,
-    lineHeight: 20,
-    fontKey: 'regular',
-    statusIconSize: 20,
-    closeIconSize: 14,
-    gap: 8,
-    borderRadius: 8,
-  },
-  md: {
-    paddingHorizontal: 12,
-    paddingVertical: 10,
-    fontSize: 16,
-    lineHeight: 24,
-    fontKey: 'medium',
-    statusIconSize: 24,
-    closeIconSize: 16,
-    gap: 12,
-    borderRadius: 12,
-  },
-};
-
-/** Default size for the alert component */
-export const DEFAULT_SIZE: AlertSize = 'sm';
-
-/** Default status for the alert component */
 export const DEFAULT_STATUS: AlertStatus = 'info';
 
-/** Status to theme color key mapping for backgrounds */
 export const STATUS_BG_COLORS: Record<AlertStatus, string> = {
-  default: 'neutral100',
-  info: 'accent100',
-  success: 'positive100',
+  default: 'neutral50',
+  info: 'accent50',
+  success: 'positive50',
   warning: 'warning100',
   error: 'negative100',
 };
 
-/** Status to theme color key mapping for borders */
 export const STATUS_BORDER_COLORS: Record<AlertStatus, string> = {
   default: 'neutral200',
   info: 'accent200',
@@ -62,7 +30,6 @@ export const STATUS_BORDER_COLORS: Record<AlertStatus, string> = {
   error: 'negative200',
 };
 
-/** Status to theme color key mapping for icons */
 export const STATUS_ICON_COLORS: Record<AlertStatus, string> = {
   default: 'neutral600',
   info: 'accent800',
@@ -70,6 +37,3 @@ export const STATUS_ICON_COLORS: Record<AlertStatus, string> = {
   warning: 'warning800',
   error: 'negative800',
 };
-
-/** Text color token — all variants use dark text per Figma spec */
-export const ALERT_TEXT_COLOR = 'black900';

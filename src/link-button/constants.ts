@@ -16,8 +16,7 @@ export const SIZE_CONFIG: Record<LinkButtonSize, LinkButtonSizeConfig> = {
 };
 
 export interface LinkButtonVariantConfig {
-  fontFamily: string;
-  fontWeight: '500' | '700';
+  fontFamily: 'regular' | 'medium' | 'bold';
 }
 
 /**
@@ -25,15 +24,10 @@ export interface LinkButtonVariantConfig {
  * fontFamily is a theme token key resolved at render time.
  */
 export const VARIANT_CONFIG: Record<LinkButtonVariant, LinkButtonVariantConfig> = {
-  medium: { fontFamily: 'medium', fontWeight: '500' },
-  bold: { fontFamily: 'bold', fontWeight: '700' },
+  medium: { fontFamily: 'medium' },
+  bold: { fontFamily: 'bold' },
 };
 
-/**
- * Pressed background opacity factor for the link button highlight.
- * Derived from Figma: 15% opacity fill on press.
- */
 export const PRESSED_BG_OPACITY = 0.15;
 
-/** Disabled opacity matching Figma spec (0.5). */
 export const DISABLED_OPACITY = 0.5;

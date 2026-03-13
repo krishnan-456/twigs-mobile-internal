@@ -2,10 +2,7 @@ import type { AccessibilityRole, ViewProps, ViewStyle, TextStyle } from 'react-n
 import type { AnimatedProps } from 'react-native-reanimated';
 import Animated from 'react-native-reanimated';
 
-/**
- * Aligned with React Native accessibility API:
- * @see https://reactnative.dev/docs/accessibility
- */
+/** @see https://reactnative.dev/docs/accessibility */
 export interface BaseAccessibilityProps {
   accessible?: boolean;
   accessibilityRole?: AccessibilityRole;
@@ -63,16 +60,22 @@ export interface ResolvedSpacing {
   right: number;
 }
 
+/**
+ * Provides `css` and `style` props for component style overrides.
+ * `css` is applied before `style`, allowing layered customization.
+ */
 export interface CommonStyleProps {
   css?: ViewStyle;
   style?: ViewStyle;
 }
 
+/** Type-safe wrapper around `Animated.View` from react-native-reanimated. */
 type AnimatedViewComponent = React.FC<AnimatedProps<ViewProps>>;
 export const AnimatedView: AnimatedViewComponent = Animated.View as unknown as React.FC<
   AnimatedProps<ViewProps>
 >;
 
+/** Resolves margin shorthand props into individual top/bottom/left/right values. */
 export const resolveMargin = (props: MarginProps, defaultSpacing = 0): ResolvedSpacing => ({
   top: props.marginTop ?? props.marginVertical ?? props.margin ?? defaultSpacing,
   bottom: props.marginBottom ?? props.marginVertical ?? props.margin ?? defaultSpacing,
@@ -80,6 +83,7 @@ export const resolveMargin = (props: MarginProps, defaultSpacing = 0): ResolvedS
   right: props.marginRight ?? props.marginHorizontal ?? props.margin ?? defaultSpacing,
 });
 
+/** Resolves padding shorthand props into individual top/bottom/left/right values. */
 export const resolvePadding = (props: PaddingProps, defaultSpacing = 0): ResolvedSpacing => ({
   top: props.paddingTop ?? props.paddingVertical ?? props.padding ?? defaultSpacing,
   bottom: props.paddingBottom ?? props.paddingVertical ?? props.padding ?? defaultSpacing,
@@ -128,6 +132,11 @@ export const colorOpacity = (color: string, opacity: number): string => {
   return `#${fullHex}${alpha}`;
 };
 
+/**
+ * Builds a platform-safe text style. On the system font, `fontWeight` is
+ * included directly; on custom fonts the weight is baked into the family
+ * name so the property is omitted to avoid Android rendering issues.
+ */
 export const createTextStyle = (
   fontFamily: string,
   fontWeight?:

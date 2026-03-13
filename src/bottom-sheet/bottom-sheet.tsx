@@ -10,6 +10,7 @@ import { BottomSheetHeader } from './bottom-sheet-header';
 import type { BottomSheetProps, BottomSheetHeaderProps } from './types';
 import { getDefaultSheetStyle } from './styles';
 
+/** Themed wrapper around @gorhom/bottom-sheet with a built-in drag handle and optional title. */
 export const BottomSheet = forwardRef<GorhomBottomSheet, BottomSheetProps>(
   ({ title, children, style, handleStyle, handleIndicatorStyle, headerStyle, ...props }, ref) => {
     const theme = useTheme();
